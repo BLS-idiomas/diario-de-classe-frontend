@@ -2,7 +2,7 @@ export const Sidebar = ({ sidebarExpanded, toggleSidebar }) => {
   return (
     <aside
       className={`fixed left-0 top-16 bottom-0 bg-gray-50 border-r border-gray-200 transition-all duration-300 ease-in-out z-30 ${
-        sidebarExpanded ? "w-[700px]" : "w-20"
+        sidebarExpanded ? 'w-[700px]' : 'w-20'
       }`}
     >
       <div className="flex flex-col h-full">

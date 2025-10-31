@@ -1,20 +1,20 @@
-import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
-import { Layout } from "@/components";
+import { Geist, Geist_Mono } from 'next/font/google';
+import './globals.css';
+import { Layout } from '@/components';
 
 const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
+  variable: '--font-geist-sans',
+  subsets: ['latin'],
 });
 
 const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+  variable: '--font-geist-mono',
+  subsets: ['latin'],
 });
 
 export const metadata = {
-  title: "Diário de Classe",
-  description: "Sistema de gestão escolar",
+  title: 'Diário de Classe',
+  description: 'Sistema de gestão escolar',
 };
 
 export default function RootLayout({ children }) {
