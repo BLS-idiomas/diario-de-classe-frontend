@@ -1,0 +1,24 @@
+#!/bin/sh
+
+# Validar mensagem de commit
+commit_regex='^(feat|fix|docs|style|refactor|test|chore)(\(.+\))?: .{1,50}'
+commit_message=$(cat "$1")
+
+if ! echo "$commit_message" | grep -qE "$commit_regex"; then
+    echo "❌ Mensagem de commit inválida!"
+    echo ""
+    echo "A mensagem deve seguir o padrão:"
+    echo "tipo(escopo): descrição"
+    echo ""
+    echo "Tipos válidos:"
+    echo "- feat: nova funcionalidade"
+    echo "- fix: correção de bug"
+    echo "- docs: documentação"
+    echo "- style: formatação, estilo"
+    echo "- refactor: refatoração"
+    echo "- test: testes"
+    echo "- chore: tarefas de manutenção"
+    echo ""
+    echo "Exemplo: 'feat(header): adicionar navegação responsiva'"
+    exit 1
+fi
