@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Header, Sidebar, Footer } from "./";
+import { Header, Sidebar, Footer } from "..";
 
 export const Layout = ({ children }) => {
   const [sidebarExpanded, setSidebarExpanded] = useState(false);
