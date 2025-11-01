@@ -324,7 +324,7 @@ describe('ToastProvider', () => {
       expect(screen.getByTestId('toast-count')).toHaveTextContent('1');
 
       // Fast forward time by 5 seconds (default duration)
-      act(() => {
+      await act(async () => {
         jest.advanceTimersByTime(5000);
       });
 
@@ -347,7 +347,7 @@ describe('ToastProvider', () => {
       expect(screen.getByText('Quick message')).toBeInTheDocument();
 
       // Fast forward time by 1 second (custom duration)
-      act(() => {
+      await act(async () => {
         jest.advanceTimersByTime(1000);
       });
 
@@ -367,7 +367,7 @@ describe('ToastProvider', () => {
       expect(screen.getByText('Persistent message')).toBeInTheDocument();
 
       // Fast forward time by 10 seconds
-      act(() => {
+      await act(async () => {
         jest.advanceTimersByTime(10000);
       });
 
@@ -386,14 +386,14 @@ describe('ToastProvider', () => {
       expect(screen.getByText('Long message')).toBeInTheDocument();
 
       // Fast forward time by 5 seconds (should still be there)
-      act(() => {
+      await act(async () => {
         jest.advanceTimersByTime(5000);
       });
 
       expect(screen.getByText('Long message')).toBeInTheDocument();
 
       // Fast forward time by another 5 seconds (total 10s - should be removed)
-      act(() => {
+      await act(async () => {
         jest.advanceTimersByTime(5000);
       });
 
@@ -507,7 +507,7 @@ describe('ToastProvider', () => {
       expect(screen.getByTestId('toast-count')).toHaveTextContent('2');
 
       // Fast forward to when custom toast should be removed (3s)
-      act(() => {
+      await act(async () => {
         jest.advanceTimersByTime(3000);
       });
 
@@ -518,7 +518,7 @@ describe('ToastProvider', () => {
       });
 
       // Fast forward to when success toast should be removed (5s total)
-      act(() => {
+      await act(async () => {
         jest.advanceTimersByTime(2000);
       });
 
