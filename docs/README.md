@@ -19,6 +19,12 @@ Este diretório contém toda a documentação técnica do projeto **Diário de C
 | --------------- | ------------------------------------ | ------------------------------------------- |
 | **React Query** | [`REACT_QUERY.md`](./REACT_QUERY.md) | Gerenciamento de estado de servidor e cache |
 
+### 🎨 Componentes UI
+
+| Componente       | Arquivo                  | Descrição                              |
+| ---------------- | ------------------------ | -------------------------------------- |
+| **Toast System** | [`TOAST.md`](./TOAST.md) | Sistema de notificações não intrusivas |
+
 ## 🛠️ Stack Tecnológica
 
 ### Frontend
@@ -187,6 +193,7 @@ Para dúvidas específicas sobre cada ferramenta, consulte a documentação corr
 - 🎨 **Formatação**: [`PRETTIER.md`](./PRETTIER.md)
 - 🎣 **Git Hooks**: [`HUSKY.md`](./HUSKY.md)
 - 📡 **API**: [`REACT_QUERY.md`](./REACT_QUERY.md)
+- 🎨 **Toast**: [`TOAST.md`](./TOAST.md)
 
 ---
 
