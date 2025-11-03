@@ -2,9 +2,21 @@
 
 import { HealthCheck } from '@/components/HealthCheck';
 import { useToast } from '@/providers/ToastProvider';
+import { useSweetAlert } from '@/hooks/useSweetAlert';
 
 export default function Home() {
   const { success, error, warning, info } = useToast();
+  const {
+    showSuccess,
+    showError,
+    showWarning,
+    showInfo,
+    showConfirm,
+    showDeleteConfirm,
+    showInput,
+    showLoading,
+    showToast,
+  } = useSweetAlert();
   return (
     <div className="p-8">
       <div className="max-w-6xl mx-auto">
@@ -51,6 +63,166 @@ export default function Home() {
               >
                 Info Toast
               </button>
+            </div>
+          </div>
+        </div>
+
+        {/* SweetAlert2 Demo */}
+        <div className="mb-8">
+          <div className="bg-white p-6 rounded-lg shadow-md border border-gray-200">
+            <h3 className="text-lg font-semibold text-gray-800 mb-4">
+              Demonstração de SweetAlert2
+            </h3>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+              <button
+                onClick={() =>
+                  showSuccess({
+                    title: 'Sucesso!',
+                    text: 'Dados salvos com sucesso!',
+                  })
+                }
+                className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors"
+              >
+                Success Alert
+              </button>
+
+              <button
+                onClick={() =>
+                  showError({
+                    title: 'Erro!',
+                    text: 'Falha ao conectar com o servidor!',
+                  })
+                }
+                className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
+              >
+                Error Alert
+              </button>
+
+              <button
+                onClick={() =>
+                  showWarning({
+                    title: 'Atenção!',
+                    text: 'Esta ação requer confirmação!',
+                  })
+                }
+                className="px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition-colors"
+              >
+                Warning Alert
+              </button>
+
+              <button
+                onClick={() =>
+                  showInfo({
+                    title: 'Informação',
+                    text: 'Sistema será atualizado às 02:00h',
+                  })
+                }
+                className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+              >
+                Info Alert
+              </button>
+
+              <button
+                onClick={async () => {
+                  const result = await showConfirm({
+                    title: 'Confirmar exclusão?',
+                    text: 'Esta ação não pode ser desfeita!',
+                  });
+                  if (result.isConfirmed) {
+                    showSuccess({
+                      title: 'Confirmado!',
+                      text: 'Ação executada!',
+                    });
+                  }
+                }}
+                className="px-4 py-2 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition-colors"
+              >
+                Confirm Dialog
+              </button>
+
+              <button
+                onClick={async () => {
+                  const result = await showDeleteConfirm('este registro');
+                  if (result.isConfirmed) {
+                    showSuccess({
+                      title: 'Deletado!',
+                      text: 'Registro removido com sucesso!',
+                    });
+                  }
+                }}
+                className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+              >
+                Delete Confirm
+              </button>
+
+              <button
+                onClick={async () => {
+                  const result = await showInput({
+                    title: 'Digite seu nome',
+                    inputPlaceholder: 'Nome completo...',
+                  });
+                  if (result.isConfirmed && result.value) {
+                    showSuccess({
+                      title: 'Nome salvo!',
+                      text: `Olá, ${result.value}!`,
+                    });
+                  }
+                }}
+                className="px-4 py-2 bg-indigo-500 text-white rounded-lg hover:bg-indigo-600 transition-colors"
+              >
+                Input Dialog
+              </button>
+
+              <button
+                onClick={() => {
+                  showLoading({
+                    title: 'Processando...',
+                    text: 'Aguarde um momento',
+                  });
+                  // Simular processo async
+                  setTimeout(() => {
+                    showSuccess({
+                      title: 'Concluído!',
+                      text: 'Processo finalizado!',
+                    });
+                  }, 3000);
+                }}
+                className="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors"
+              >
+                Loading Alert
+              </button>
+            </div>
+
+            <div className="mt-4 pt-4 border-t border-gray-200">
+              <h4 className="text-md font-medium text-gray-700 mb-2">
+                Toast Notifications:
+              </h4>
+              <div className="flex gap-2">
+                <button
+                  onClick={() =>
+                    showToast({ icon: 'success', title: 'Toast de sucesso!' })
+                  }
+                  className="px-3 py-1 text-sm bg-green-100 text-green-700 rounded-md hover:bg-green-200 transition-colors"
+                >
+                  Success Toast
+                </button>
+                <button
+                  onClick={() =>
+                    showToast({ icon: 'error', title: 'Toast de erro!' })
+                  }
+                  className="px-3 py-1 text-sm bg-red-100 text-red-700 rounded-md hover:bg-red-200 transition-colors"
+                >
+                  Error Toast
+                </button>
+                <button
+                  onClick={() =>
+                    showToast({ icon: 'info', title: 'Toast informativo!' })
+                  }
+                  className="px-3 py-1 text-sm bg-blue-100 text-blue-700 rounded-md hover:bg-blue-200 transition-colors"
+                >
+                  Info Toast
+                </button>
+              </div>
             </div>
           </div>
         </div>
