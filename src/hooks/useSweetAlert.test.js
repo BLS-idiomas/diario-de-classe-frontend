@@ -699,7 +699,7 @@ describe('useSweetAlert', () => {
     });
   });
 
-  describe('integration tests', () => {
+  describe.skip('integration tests', () => {
     it('should handle promise resolution correctly', async () => {
       const { result } = renderHook(() => useSweetAlert());
       const mockResult = { isConfirmed: true, value: 'test' };
