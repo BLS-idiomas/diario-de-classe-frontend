@@ -192,38 +192,6 @@ export default function Home() {
                 Loading Alert
               </button>
             </div>
-
-            <div className="mt-4 pt-4 border-t border-gray-200">
-              <h4 className="text-md font-medium text-gray-700 mb-2">
-                Toast Notifications:
-              </h4>
-              <div className="flex gap-2">
-                <button
-                  onClick={() =>
-                    showToast({ icon: 'success', title: 'Toast de sucesso!' })
-                  }
-                  className="px-3 py-1 text-sm bg-green-100 text-green-700 rounded-md hover:bg-green-200 transition-colors"
-                >
-                  Success Toast
-                </button>
-                <button
-                  onClick={() =>
-                    showToast({ icon: 'error', title: 'Toast de erro!' })
-                  }
-                  className="px-3 py-1 text-sm bg-red-100 text-red-700 rounded-md hover:bg-red-200 transition-colors"
-                >
-                  Error Toast
-                </button>
-                <button
-                  onClick={() =>
-                    showToast({ icon: 'info', title: 'Toast informativo!' })
-                  }
-                  className="px-3 py-1 text-sm bg-blue-100 text-blue-700 rounded-md hover:bg-blue-200 transition-colors"
-                >
-                  Info Toast
-                </button>
-              </div>
-            </div>
           </div>
         </div>
 
