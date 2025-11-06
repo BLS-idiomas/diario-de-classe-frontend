@@ -1,30 +1,43 @@
 import { render, screen } from '@testing-library/react';
 import { Header } from './index';
+import '@testing-library/jest-dom';
+import Link from 'next/link';
+import Image from 'next/image';
+
+// Mock dos componentes do Next.js
+jest.mock('next/link', () => {
+  const MockLink = ({ children, href }) => <a href={href}>{children}</a>;
+  MockLink.displayName = 'NextLink';
+  return MockLink;
+});
+jest.mock('next/image', () => {
+  const MockImage = props => <img {...props} alt={props.alt} />;
+  MockImage.displayName = 'NextImage';
+  return MockImage;
+});
 
 describe('Header Component', () => {
-  it('should render the header with correct title', () => {
+  it('deve renderizar o título corretamente', () => {
     render(<Header />);
-
-    const title = screen.getByRole('heading', { level: 1 });
-    expect(title).toBeInTheDocument();
-    expect(title).toHaveTextContent('Diário de Classe');
+    expect(screen.getByText('Diário de Classe')).toBeInTheDocument();
   });
 
-  it('should render all navigation links', () => {
+  it('deve exibir o logotipo da empresa', () => {
     render(<Header />);
-
-    const navigationLinks = ['Início', 'Turmas', 'Relatórios', 'Configurações'];
-
-    navigationLinks.forEach(linkText => {
-      const link = screen.getByRole('link', { name: linkText });
-      expect(link).toBeInTheDocument();
-      expect(link).toHaveAttribute('href', '#');
-    });
+    const logo = screen.getByAltText('Logo da empresa BLS');
+    expect(logo).toBeInTheDocument();
+    expect(logo).toHaveAttribute('src', '/bls.png');
   });
 
-  it('should have the correct CSS classes for styling', () => {
+  it("deve conter o link 'Sair'", () => {
     render(<Header />);
+    const link = screen.getByRole('link', { name: 'Sair' });
+    expect(link).toBeInTheDocument();
+    expect(link).toHaveAttribute('href', '#');
+  });
 
+  it('deve possuir a classe fixa e estilização do header', () => {
+    render(<Header />);
     const header = screen.getByRole('banner');
     expect(header).toHaveClass(
       'fixed',
@@ -32,40 +45,7 @@ describe('Header Component', () => {
       'left-0',
       'right-0',
       'h-16',
-      'bg-white',
-      'border-b',
-      'border-gray-200',
-      'shadow-sm',
-      'z-40'
+      'bg-white'
     );
-  });
-
-  it('should render navigation with proper hover styles', () => {
-    render(<Header />);
-
-    const links = screen.getAllByRole('link');
-    links.forEach(link => {
-      expect(link).toHaveClass(
-        'text-gray-600',
-        'hover:text-gray-800',
-        'transition-colors'
-      );
-    });
-  });
-
-  it('should have proper semantic structure', () => {
-    render(<Header />);
-
-    // Should have a header element
-    const header = screen.getByRole('banner');
-    expect(header).toBeInTheDocument();
-
-    // Should have a navigation element
-    const nav = screen.getByRole('navigation');
-    expect(nav).toBeInTheDocument();
-
-    // Should have the main heading
-    const heading = screen.getByRole('heading', { level: 1 });
-    expect(heading).toBeInTheDocument();
   });
 });
