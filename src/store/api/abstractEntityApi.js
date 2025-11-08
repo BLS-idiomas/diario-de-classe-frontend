@@ -10,23 +10,23 @@ export class AbstractEntityApi extends AuthenticatedApi {
     throw new Error('getEndpoint() must be implemented in subclass');
   }
 
-  async getAll() {
-    return this.api.get(`${this.baseEndpoint}`);
+  async getAll(params = {}) {
+    return this.get(`${this.baseEndpoint}`, params);
   }
 
   async getById(id) {
-    return this.api.get(`${this.baseEndpoint}/${id}`);
+    return this.get(`${this.baseEndpoint}/${id}`);
   }
 
   async create(data) {
-    return this.api.post(`${this.baseEndpoint}`, data);
+    return this.post(`${this.baseEndpoint}`, data);
   }
 
   async update(id, data) {
-    return this.api.put(`${this.baseEndpoint}/${id}`, data);
+    return this.put(`${this.baseEndpoint}/${id}`, data);
   }
 
-  async delete(id) {
-    return this.api.delete(`${this.baseEndpoint}/${id}`);
+  async remove(id) {
+    return this.delete(`${this.baseEndpoint}/${id}`);
   }
 }

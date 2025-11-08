@@ -111,7 +111,9 @@ describe('AbstractEntityApi', () => {
 
       const result = await testEntityApi.getAll();
 
-      expect(mockAxiosInstance.get).toHaveBeenCalledWith('/test-entities');
+      expect(mockAxiosInstance.get).toHaveBeenCalledWith('/test-entities', {
+        params: {},
+      });
       expect(result).toEqual(mockResponse);
     });
 
@@ -120,7 +122,9 @@ describe('AbstractEntityApi', () => {
       mockAxiosInstance.get.mockRejectedValue(mockError);
 
       await expect(testEntityApi.getAll()).rejects.toThrow('Network error');
-      expect(mockAxiosInstance.get).toHaveBeenCalledWith('/test-entities');
+      expect(mockAxiosInstance.get).toHaveBeenCalledWith('/test-entities', {
+        params: {},
+      });
     });
 
     it('should handle empty response', async () => {
@@ -129,7 +133,9 @@ describe('AbstractEntityApi', () => {
 
       const result = await testEntityApi.getAll();
 
-      expect(mockAxiosInstance.get).toHaveBeenCalledWith('/test-entities');
+      expect(mockAxiosInstance.get).toHaveBeenCalledWith('/test-entities', {
+        params: {},
+      });
       expect(result).toEqual(mockResponse);
     });
   });
@@ -145,7 +151,9 @@ describe('AbstractEntityApi', () => {
 
       const result = await testEntityApi.getById(mockId);
 
-      expect(mockAxiosInstance.get).toHaveBeenCalledWith('/test-entities/123');
+      expect(mockAxiosInstance.get).toHaveBeenCalledWith('/test-entities/123', {
+        params: {},
+      });
       expect(result).toEqual(mockResponse);
     });
 
@@ -160,7 +168,8 @@ describe('AbstractEntityApi', () => {
       const result = await testEntityApi.getById(mockId);
 
       expect(mockAxiosInstance.get).toHaveBeenCalledWith(
-        '/test-entities/abc-123'
+        '/test-entities/abc-123',
+        { params: {} }
       );
       expect(result).toEqual(mockResponse);
     });
@@ -173,7 +182,9 @@ describe('AbstractEntityApi', () => {
       await expect(testEntityApi.getById(999)).rejects.toThrow(
         'Entity not found'
       );
-      expect(mockAxiosInstance.get).toHaveBeenCalledWith('/test-entities/999');
+      expect(mockAxiosInstance.get).toHaveBeenCalledWith('/test-entities/999', {
+        params: {},
+      });
     });
 
     it('should handle null or undefined ID', async () => {
@@ -181,11 +192,15 @@ describe('AbstractEntityApi', () => {
       mockAxiosInstance.get.mockResolvedValue(mockResponse);
 
       await testEntityApi.getById(null);
-      expect(mockAxiosInstance.get).toHaveBeenCalledWith('/test-entities/null');
+      expect(mockAxiosInstance.get).toHaveBeenCalledWith(
+        '/test-entities/null',
+        { params: {} }
+      );
 
       await testEntityApi.getById(undefined);
       expect(mockAxiosInstance.get).toHaveBeenCalledWith(
-        '/test-entities/undefined'
+        '/test-entities/undefined',
+        { params: {} }
       );
     });
   });
@@ -326,14 +341,14 @@ describe('AbstractEntityApi', () => {
     });
   });
 
-  describe('delete', () => {
+  describe('remove', () => {
     it('should call DELETE request to endpoint with ID', async () => {
       const mockId = 123;
       const mockResponse = { data: { message: 'Entity deleted successfully' } };
 
       mockAxiosInstance.delete.mockResolvedValue(mockResponse);
 
-      const result = await testEntityApi.delete(mockId);
+      const result = await testEntityApi.remove(mockId);
 
       expect(mockAxiosInstance.delete).toHaveBeenCalledWith(
         '/test-entities/123'
@@ -341,13 +356,13 @@ describe('AbstractEntityApi', () => {
       expect(result).toEqual(mockResponse);
     });
 
-    it('should handle string IDs in delete', async () => {
+    it('should handle string IDs in remove', async () => {
       const mockId = 'uuid-to-delete';
       const mockResponse = { data: { message: 'Deleted' } };
 
       mockAxiosInstance.delete.mockResolvedValue(mockResponse);
 
-      const result = await testEntityApi.delete(mockId);
+      const result = await testEntityApi.remove(mockId);
 
       expect(mockAxiosInstance.delete).toHaveBeenCalledWith(
         '/test-entities/uuid-to-delete'
@@ -355,12 +370,12 @@ describe('AbstractEntityApi', () => {
       expect(result).toEqual(mockResponse);
     });
 
-    it('should handle not found error during delete', async () => {
+    it('should handle not found error during remove', async () => {
       const mockError = new Error('Entity not found for deletion');
       mockError.status = 404;
       mockAxiosInstance.delete.mockRejectedValue(mockError);
 
-      await expect(testEntityApi.delete(999)).rejects.toThrow(
+      await expect(testEntityApi.remove(999)).rejects.toThrow(
         'Entity not found for deletion'
       );
       expect(mockAxiosInstance.delete).toHaveBeenCalledWith(
@@ -373,7 +388,7 @@ describe('AbstractEntityApi', () => {
       mockError.status = 410;
       mockAxiosInstance.delete.mockRejectedValue(mockError);
 
-      await expect(testEntityApi.delete(123)).rejects.toThrow(
+      await expect(testEntityApi.remove(123)).rejects.toThrow(
         'Entity already deleted'
       );
       expect(mockAxiosInstance.delete).toHaveBeenCalledWith(
@@ -408,7 +423,7 @@ describe('AbstractEntityApi', () => {
       const created = await testEntityApi.create(createData);
       const retrieved = await testEntityApi.getById(1);
       const updated = await testEntityApi.update(1, updateData);
-      const deleted = await testEntityApi.delete(1);
+      const deleted = await testEntityApi.remove(1);
 
       // Verify all operations
       expect(created).toEqual(createResponse);
@@ -420,7 +435,9 @@ describe('AbstractEntityApi', () => {
         '/test-entities',
         createData
       );
-      expect(mockAxiosInstance.get).toHaveBeenCalledWith('/test-entities/1');
+      expect(mockAxiosInstance.get).toHaveBeenCalledWith('/test-entities/1', {
+        params: {},
+      });
       expect(mockAxiosInstance.put).toHaveBeenCalledWith(
         '/test-entities/1',
         updateData
@@ -451,11 +468,15 @@ describe('AbstractEntityApi', () => {
       await testEntityApi.getById(1);
       await testEntityApi.create({});
       await testEntityApi.update(1, {});
-      await testEntityApi.delete(1);
+      await testEntityApi.remove(1);
 
       // Verify all use the same base endpoint
-      expect(mockAxiosInstance.get).toHaveBeenCalledWith('/test-entities');
-      expect(mockAxiosInstance.get).toHaveBeenCalledWith('/test-entities/1');
+      expect(mockAxiosInstance.get).toHaveBeenCalledWith('/test-entities', {
+        params: {},
+      });
+      expect(mockAxiosInstance.get).toHaveBeenCalledWith('/test-entities/1', {
+        params: {},
+      });
       expect(mockAxiosInstance.post).toHaveBeenCalledWith('/test-entities', {});
       expect(mockAxiosInstance.put).toHaveBeenCalledWith(
         '/test-entities/1',
@@ -473,7 +494,8 @@ describe('AbstractEntityApi', () => {
       await testEntityApi.getById(specialId);
 
       expect(mockAxiosInstance.get).toHaveBeenCalledWith(
-        '/test-entities/test@example.com'
+        '/test-entities/test@example.com',
+        { params: {} }
       );
     });
 
@@ -482,7 +504,9 @@ describe('AbstractEntityApi', () => {
 
       await testEntityApi.getById(0);
 
-      expect(mockAxiosInstance.get).toHaveBeenCalledWith('/test-entities/0');
+      expect(mockAxiosInstance.get).toHaveBeenCalledWith('/test-entities/0', {
+        params: {},
+      });
     });
 
     it('should handle boolean values as IDs', async () => {
@@ -491,9 +515,13 @@ describe('AbstractEntityApi', () => {
       await testEntityApi.getById(true);
       await testEntityApi.getById(false);
 
-      expect(mockAxiosInstance.get).toHaveBeenCalledWith('/test-entities/true');
       expect(mockAxiosInstance.get).toHaveBeenCalledWith(
-        '/test-entities/false'
+        '/test-entities/true',
+        { params: {} }
+      );
+      expect(mockAxiosInstance.get).toHaveBeenCalledWith(
+        '/test-entities/false',
+        { params: {} }
       );
     });
 

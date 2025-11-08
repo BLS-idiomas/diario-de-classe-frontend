@@ -94,7 +94,9 @@ describe('AlunoApi', () => {
 
       const result = await alunoApi.getAll();
 
-      expect(mockAxiosInstance.get).toHaveBeenCalledWith('/alunos');
+      expect(mockAxiosInstance.get).toHaveBeenCalledWith('/alunos', {
+        params: {},
+      });
       expect(result).toEqual(mockAlunos);
     });
 
@@ -122,7 +124,9 @@ describe('AlunoApi', () => {
 
       const result = await alunoApi.getById(1);
 
-      expect(mockAxiosInstance.get).toHaveBeenCalledWith('/alunos/1');
+      expect(mockAxiosInstance.get).toHaveBeenCalledWith('/alunos/1', {
+        params: {},
+      });
       expect(result).toEqual(mockAluno);
     });
 
@@ -180,7 +184,7 @@ describe('AlunoApi', () => {
 
       mockAxiosInstance.delete.mockResolvedValue(mockResponse);
 
-      const result = await alunoApi.delete(1);
+      const result = await alunoApi.remove(1);
 
       expect(mockAxiosInstance.delete).toHaveBeenCalledWith('/alunos/1');
       expect(result).toEqual(mockResponse);
@@ -230,7 +234,9 @@ describe('AlunoApi', () => {
       await expect(alunoApi.getById(999)).rejects.toThrow(
         'Aluno não encontrado'
       );
-      expect(mockAxiosInstance.get).toHaveBeenCalledWith('/alunos/999');
+      expect(mockAxiosInstance.get).toHaveBeenCalledWith('/alunos/999', {
+        params: {},
+      });
     });
   });
 
@@ -358,7 +364,9 @@ describe('AlunoApi', () => {
       expect(result.data.every(aluno => aluno.turma === 'IB-2024-02')).toBe(
         true
       );
-      expect(mockAxiosInstance.get).toHaveBeenCalledWith('/alunos');
+      expect(mockAxiosInstance.get).toHaveBeenCalledWith('/alunos', {
+        params: {},
+      });
     });
   });
 });

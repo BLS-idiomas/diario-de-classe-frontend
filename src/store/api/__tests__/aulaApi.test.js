@@ -100,7 +100,9 @@ describe('AulaApi', () => {
 
       const result = await aulaApi.getAll();
 
-      expect(mockAxiosInstance.get).toHaveBeenCalledWith('/aulas');
+      expect(mockAxiosInstance.get).toHaveBeenCalledWith('/aulas', {
+        params: {},
+      });
       expect(result).toEqual(mockAulas);
     });
 
@@ -143,7 +145,9 @@ describe('AulaApi', () => {
 
       const result = await aulaApi.getById(1);
 
-      expect(mockAxiosInstance.get).toHaveBeenCalledWith('/aulas/1');
+      expect(mockAxiosInstance.get).toHaveBeenCalledWith('/aulas/1', {
+        params: {},
+      });
       expect(result).toEqual(mockAula);
       expect(result.data.conteudoProgramatico).toHaveLength(3);
     });
@@ -218,7 +222,7 @@ describe('AulaApi', () => {
 
       mockAxiosInstance.delete.mockResolvedValue(mockResponse);
 
-      const result = await aulaApi.delete(1);
+      const result = await aulaApi.remove(1);
 
       expect(mockAxiosInstance.delete).toHaveBeenCalledWith('/aulas/1');
       expect(result).toEqual(mockResponse);

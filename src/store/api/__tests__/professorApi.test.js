@@ -98,7 +98,9 @@ describe('ProfessorApi', () => {
 
       const result = await professorApi.getAll();
 
-      expect(mockAxiosInstance.get).toHaveBeenCalledWith('/professores');
+      expect(mockAxiosInstance.get).toHaveBeenCalledWith('/professores', {
+        params: {},
+      });
       expect(result).toEqual(mockProfessores);
     });
 
@@ -149,7 +151,9 @@ describe('ProfessorApi', () => {
 
       const result = await professorApi.getById(1);
 
-      expect(mockAxiosInstance.get).toHaveBeenCalledWith('/professores/1');
+      expect(mockAxiosInstance.get).toHaveBeenCalledWith('/professores/1', {
+        params: {},
+      });
       expect(result).toEqual(mockProfessor);
       expect(result.data.especialidades).toHaveLength(2);
       expect(result.data.certificacoes).toHaveLength(2);
@@ -237,7 +241,7 @@ describe('ProfessorApi', () => {
 
       mockAxiosInstance.delete.mockResolvedValue(mockResponse);
 
-      const result = await professorApi.delete(1);
+      const result = await professorApi.remove(1);
 
       expect(mockAxiosInstance.delete).toHaveBeenCalledWith('/professores/1');
       expect(result).toEqual(mockResponse);
@@ -473,7 +477,9 @@ describe('ProfessorApi', () => {
       await expect(professorApi.getById(999)).rejects.toThrow(
         'Professor não encontrado'
       );
-      expect(mockAxiosInstance.get).toHaveBeenCalledWith('/professores/999');
+      expect(mockAxiosInstance.get).toHaveBeenCalledWith('/professores/999', {
+        params: {},
+      });
     });
 
     it('should handle salary validation error', async () => {
@@ -610,7 +616,9 @@ describe('ProfessorApi', () => {
       expect(result.data.estatisticas.percentualFrequencia).toBe(98.4);
       expect(result.data.recomendacoes).toHaveLength(3);
       expect(result.data.desenvolvimentoProfissional.cursosRealizados).toBe(3);
-      expect(mockAxiosInstance.get).toHaveBeenCalledWith('/professores/1');
+      expect(mockAxiosInstance.get).toHaveBeenCalledWith('/professores/1', {
+        params: {},
+      });
     });
   });
 });
