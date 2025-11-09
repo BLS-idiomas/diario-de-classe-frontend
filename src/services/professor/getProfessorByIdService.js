@@ -3,18 +3,12 @@ import { ProfessorApi } from '@/store/api/professorApi';
 
 export class GetProfessorByIdService {
   constructor(entityApi, entityModel) {
-    this.api = entityApi;
-    this.Model = entityModel;
+    this.professorApi = entityApi;
+    this.Professor = entityModel;
   }
 
   async execute(id) {
-    const response = await this.api.getById(id);
-
-    if (response.data) {
-      response.data = new this.Model(response.data);
-    }
-
-    return response;
+    return await this.professorApi.getById(id);
   }
 
   static async handle(id) {

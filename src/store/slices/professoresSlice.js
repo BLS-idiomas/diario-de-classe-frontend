@@ -3,6 +3,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { ProfessorApi } from '../api/professorApi';
 import { GetProfessorListService } from '@/services/professor/getProfessorListService';
+import { GetProfessorByIdService } from '@/services/professor/getProfessorByIdService';
 
 const professorApi = new ProfessorApi();
 
@@ -14,6 +15,12 @@ export const getProfessores = createAsyncThunk(
     return res.data;
   }
 );
+
+// GET ONE
+export const getProfessor = createAsyncThunk('professores/getOne', async id => {
+  const res = await GetProfessorByIdService.handle(id);
+  return res.data;
+});
 
 // CREATE
 export const createProfessor = createAsyncThunk(
@@ -46,6 +53,7 @@ const professoresSlice = createSlice({
   name: 'professores',
   initialState: {
     list: [],
+    current: null,
     loading: false,
     errors: [],
     message: null,
@@ -57,6 +65,7 @@ const professoresSlice = createSlice({
       .addCase(getProfessores.pending, state => {
         state.loading = true;
         state.errors = [];
+        state.list = [];
         state.message = null;
       })
       .addCase(getProfessores.fulfilled, (state, action) => {
@@ -66,6 +75,26 @@ const professoresSlice = createSlice({
         state.message = action.payload.message;
       })
       .addCase(getProfessores.rejected, (state, action) => {
+        state.loading = false;
+        state.errors = action.error;
+        state.message = action.payload.message;
+      })
+      // getProfessor
+      .addCase(getProfessor.pending, state => {
+        state.loading = true;
+        state.errors = [];
+        state.message = null;
+        state.current = null;
+      })
+      .addCase(getProfessor.fulfilled, (state, action) => {
+        state.loading = false;
+        if (!action.payload.message) {
+          state.current = action.payload;
+        } else {
+          state.message = action.payload.message;
+        }
+      })
+      .addCase(getProfessor.rejected, (state, action) => {
         state.loading = false;
         state.errors = action.error;
         state.message = action.payload.message;
