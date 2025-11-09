@@ -51,7 +51,13 @@ export const createProfessor = createAsyncThunk(
         error.response?.data?.message ||
         error.message ||
         'Erro ao criar professor';
-      return rejectWithValue({ message: errorMessage });
+
+      const validationErrors = error.response?.data?.errors || [];
+
+      return rejectWithValue({
+        message: errorMessage,
+        errors: validationErrors,
+      });
     }
   }
 );
@@ -99,6 +105,12 @@ const professoresSlice = createSlice({
     errors: [],
     message: null,
     count: 0,
+  },
+  reducers: {
+    clearErrors: state => {
+      state.errors = [];
+      state.message = null;
+    },
   },
   extraReducers: builder => {
     builder
@@ -149,7 +161,7 @@ const professoresSlice = createSlice({
       })
       .addCase(createProfessor.rejected, (state, action) => {
         state.loading = false;
-        state.errors = action.error;
+        state.errors = action.payload?.errors || [];
         state.message = action.payload?.message || 'Erro ao criar professor';
       })
       // updateProfessor
