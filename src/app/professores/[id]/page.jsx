@@ -36,9 +36,17 @@ export default function Professor() {
         </Link>
       </div>
 
-      {loading && <p>Carregando...</p>}
+      {loading && <p className="text-blue-600">Carregando...</p>}
 
-      {message && <p>{message}</p>}
+      {message && (
+        <div
+          className={`p-4 rounded-md mb-4 ${
+            current ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+          }`}
+        >
+          {message}
+        </div>
+      )}
 
       {current && (
         <div>

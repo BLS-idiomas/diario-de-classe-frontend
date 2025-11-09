@@ -10,42 +10,83 @@ const professorApi = new ProfessorApi();
 // GET ALL
 export const getProfessores = createAsyncThunk(
   'professores/getAll',
-  async (searchParam = null) => {
-    const res = await GetProfessorListService.handle(searchParam);
-    return res.data;
+  async (searchParam = null, { rejectWithValue }) => {
+    try {
+      const res = await GetProfessorListService.handle(searchParam);
+      return res.data;
+    } catch (error) {
+      // Capturar a mensagem de erro da resposta da API
+      const errorMessage =
+        error.response?.data?.message || error.message || 'Erro desconhecido';
+      return rejectWithValue({ message: errorMessage });
+    }
   }
 );
 
 // GET ONE
-export const getProfessor = createAsyncThunk('professores/getOne', async id => {
-  const res = await GetProfessorByIdService.handle(id);
-  return res.data;
-});
+export const getProfessor = createAsyncThunk(
+  'professores/getOne',
+  async (id, { rejectWithValue }) => {
+    try {
+      const res = await GetProfessorByIdService.handle(id);
+      return res.data;
+    } catch (error) {
+      // Capturar a mensagem de erro da resposta da API
+      const errorMessage =
+        error.response?.data?.message || error.message || 'Erro desconhecido';
+      return rejectWithValue({ message: errorMessage });
+    }
+  }
+);
 
 // CREATE
 export const createProfessor = createAsyncThunk(
   'professores/create',
-  async data => {
-    const res = await professorApi.create(data);
-    return res.data;
+  async (data, { rejectWithValue }) => {
+    try {
+      const res = await professorApi.create(data);
+      return res.data;
+    } catch (error) {
+      const errorMessage =
+        error.response?.data?.message ||
+        error.message ||
+        'Erro ao criar professor';
+      return rejectWithValue({ message: errorMessage });
+    }
   }
 );
 
 // UPDATE
 export const updateProfessor = createAsyncThunk(
   'professores/update',
-  async ({ id, data }) => {
-    const res = await professorApi.update(id, data);
-    return res.data;
+  async ({ id, data }, { rejectWithValue }) => {
+    try {
+      const res = await professorApi.update(id, data);
+      return res.data;
+    } catch (error) {
+      const errorMessage =
+        error.response?.data?.message ||
+        error.message ||
+        'Erro ao atualizar professor';
+      return rejectWithValue({ message: errorMessage });
+    }
   }
 );
 
 // DELETE
 export const deleteProfessor = createAsyncThunk(
   'professores/delete',
-  async id => {
-    await professorApi.delete(id);
-    return id;
+  async (id, { rejectWithValue }) => {
+    try {
+      await professorApi.delete(id);
+      return id;
+    } catch (error) {
+      const errorMessage =
+        error.response?.data?.message ||
+        error.message ||
+        'Erro ao deletar professor';
+      return rejectWithValue({ message: errorMessage });
+    }
   }
 );
 
@@ -88,11 +129,7 @@ const professoresSlice = createSlice({
       })
       .addCase(getProfessor.fulfilled, (state, action) => {
         state.loading = false;
-        if (!action.payload.message) {
-          state.current = action.payload;
-        } else {
-          state.message = action.payload.message;
-        }
+        state.current = action.payload;
       })
       .addCase(getProfessor.rejected, (state, action) => {
         state.loading = false;
@@ -100,15 +137,57 @@ const professoresSlice = createSlice({
         state.message = action.payload.message;
       })
       // createProfessor
+      .addCase(createProfessor.pending, state => {
+        state.loading = true;
+        state.errors = [];
+        state.message = null;
+      })
       .addCase(createProfessor.fulfilled, (state, action) => {
+        state.loading = false;
         state.list.push(action.payload);
+        state.message = 'Professor criado com sucesso';
+      })
+      .addCase(createProfessor.rejected, (state, action) => {
+        state.loading = false;
+        state.errors = action.error;
+        state.message = action.payload?.message || 'Erro ao criar professor';
+      })
+      // updateProfessor
+      .addCase(updateProfessor.pending, state => {
+        state.loading = true;
+        state.errors = [];
+        state.message = null;
       })
       .addCase(updateProfessor.fulfilled, (state, action) => {
+        state.loading = false;
         const index = state.list.findIndex(p => p.id === action.payload.id);
-        state.list[index] = action.payload;
+        if (index !== -1) {
+          state.list[index] = action.payload;
+        }
+        state.current = action.payload;
+        state.message = 'Professor atualizado com sucesso';
+      })
+      .addCase(updateProfessor.rejected, (state, action) => {
+        state.loading = false;
+        state.errors = action.error;
+        state.message =
+          action.payload?.message || 'Erro ao atualizar professor';
+      })
+      // deleteProfessor
+      .addCase(deleteProfessor.pending, state => {
+        state.loading = true;
+        state.errors = [];
+        state.message = null;
       })
       .addCase(deleteProfessor.fulfilled, (state, action) => {
+        state.loading = false;
         state.list = state.list.filter(p => p.id !== action.payload);
+        state.message = 'Professor deletado com sucesso';
+      })
+      .addCase(deleteProfessor.rejected, (state, action) => {
+        state.loading = false;
+        state.errors = action.error;
+        state.message = action.payload?.message || 'Erro ao deletar professor';
       });
   },
 });
