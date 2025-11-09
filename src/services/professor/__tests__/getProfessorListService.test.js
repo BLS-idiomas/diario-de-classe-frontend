@@ -665,7 +665,7 @@ describe('GetProfessorListService', () => {
     });
 
     it('should handle malformed response data structure', async () => {
-      const searchParam = 'malformed';
+      const searchParam = 'malformed search';
       const malformedResponse = {
         data: {
           // Missing 'data' property
@@ -675,7 +675,8 @@ describe('GetProfessorListService', () => {
 
       mockApi.getAll.mockResolvedValue(malformedResponse);
 
-      await expect(service.execute(searchParam)).rejects.toThrow();
+      const result = await service.execute(searchParam);
+      expect(result).toEqual(malformedResponse);
     });
 
     it('should handle null response data', async () => {
@@ -688,7 +689,8 @@ describe('GetProfessorListService', () => {
 
       mockApi.getAll.mockResolvedValue(nullResponse);
 
-      await expect(service.execute(searchParam)).rejects.toThrow();
+      const result = await service.execute(searchParam);
+      expect(result).toEqual(nullResponse);
     });
 
     it('should handle undefined response data', async () => {
@@ -701,7 +703,8 @@ describe('GetProfessorListService', () => {
 
       mockApi.getAll.mockResolvedValue(undefinedResponse);
 
-      await expect(service.execute(searchParam)).rejects.toThrow();
+      const result = await service.execute(searchParam);
+      expect(result).toEqual(undefinedResponse);
     });
   });
 

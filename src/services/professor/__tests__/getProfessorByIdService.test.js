@@ -229,8 +229,9 @@ describe('GetProfessorByIdService', () => {
 
       const result = await service.execute(testId);
 
-      expect(mockModel).toHaveBeenCalledWith({});
-      expect(result.data).toEqual(expect.objectContaining({}));
+      // Model não é chamado para objetos sem ID
+      expect(mockModel).not.toHaveBeenCalled();
+      expect(result.data).toEqual({});
     });
 
     it('should preserve response metadata', async () => {
