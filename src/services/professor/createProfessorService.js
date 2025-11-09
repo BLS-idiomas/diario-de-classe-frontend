@@ -8,13 +8,7 @@ export class CreateProfessorService {
   }
 
   async execute(data) {
-    const response = await this.api.create(data);
-
-    if (response?.data?.id) {
-      response.data = new this.Model(response.data);
-    }
-
-    return response;
+    return await this.api.create(data);
   }
 
   static async handle(data) {

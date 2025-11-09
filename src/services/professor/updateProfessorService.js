@@ -8,13 +8,7 @@ export class UpdateProfessorService {
   }
 
   async execute(id, data) {
-    const response = await this.api.update(id, data);
-
-    if (response?.data?.id) {
-      response.data = new this.Model(response.data);
-    }
-
-    return response;
+    return await this.api.update(id, data);
   }
 
   static async handle(id, data) {

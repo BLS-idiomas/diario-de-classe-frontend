@@ -8,13 +8,7 @@ export class GetProfessorListService {
   }
 
   async execute(searchParam) {
-    const response = await this.api.getAll({ q: searchParam });
-
-    response.data.data = response.data.data.map(
-      professorData => new this.Model(professorData)
-    );
-
-    return response;
+    return await this.api.getAll({ q: searchParam });
   }
 
   static async handle(searchParam) {
