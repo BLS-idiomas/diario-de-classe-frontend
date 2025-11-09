@@ -1,20 +1,17 @@
-import { Professor } from '@/models/Professor';
 import { ProfessorApi } from '@/store/api/professorApi';
 
 export class UpdateProfessorService {
-  constructor(entityApi, entityModel) {
-    this.api = entityApi;
-    this.Model = entityModel;
+  constructor(professorApi) {
+    this.professorApi = professorApi;
   }
 
   async execute(id, data) {
-    return await this.api.update(id, data);
+    return await this.professorApi.update(id, data);
   }
 
   static async handle(id, data) {
     const professorApi = new ProfessorApi();
-    const professor = Professor;
-    const service = new UpdateProfessorService(professorApi, professor);
+    const service = new UpdateProfessorService(professorApi);
 
     return await service.execute(id, data);
   }

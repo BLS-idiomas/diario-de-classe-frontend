@@ -36,22 +36,19 @@ describe('CreateProfessorService', () => {
       isActive: data?.status === 'ativo',
     }));
 
-    service = new CreateProfessorService(mockApi, mockModel);
+    service = new CreateProfessorService(mockApi);
   });
 
   describe('constructor', () => {
     it('should initialize with provided api and model', () => {
-      expect(service.api).toBe(mockApi);
-      expect(service.Model).toBe(mockModel);
+      expect(service.professorApi).toBe(mockApi);
     });
 
     it('should store references correctly', () => {
       const customApi = { create: jest.fn() };
-      const customModel = jest.fn();
-      const customService = new CreateProfessorService(customApi, customModel);
+      const customService = new CreateProfessorService(customApi);
 
-      expect(customService.api).toBe(customApi);
-      expect(customService.Model).toBe(customModel);
+      expect(customService.professorApi).toBe(customApi);
     });
   });
 
@@ -80,22 +77,7 @@ describe('CreateProfessorService', () => {
       const result = await service.execute(professorData);
 
       expect(mockApi.create).toHaveBeenCalledWith(professorData);
-      expect(mockModel).toHaveBeenCalledWith(
-        expect.objectContaining({
-          id: 1,
-          nome: 'João',
-          sobrenome: 'Silva',
-          email: 'joao.silva@escola.com',
-          telefone: '(11) 99999-9999',
-          status: 'ativo',
-          especialidades: ['Matemática', 'Física'],
-          createdAt: '2023-11-08T10:00:00Z',
-          updatedAt: '2023-11-08T10:00:00Z',
-        })
-      );
-      expect(result.data.id).toBe(1);
-      expect(result.data.nome).toBe('João');
-      expect(result.data.sobrenome).toBe('Silva');
+      expect(result.data).toEqual(mockResponse.data);
     });
 
     it('should handle response without id', async () => {
@@ -212,11 +194,6 @@ describe('CreateProfessorService', () => {
       const result = await service.execute(emptyData);
 
       expect(mockApi.create).toHaveBeenCalledWith(emptyData);
-      expect(mockModel).toHaveBeenCalledWith(
-        expect.objectContaining({
-          id: 1,
-        })
-      );
       expect(result.data.id).toBe(1);
     });
 
@@ -233,12 +210,6 @@ describe('CreateProfessorService', () => {
       const result = await service.execute(null);
 
       expect(mockApi.create).toHaveBeenCalledWith(null);
-      expect(mockModel).toHaveBeenCalledWith(
-        expect.objectContaining({
-          id: 1,
-          message: 'Created with null data',
-        })
-      );
       expect(result.data.id).toBe(1);
       expect(result.data.message).toBe('Created with null data');
     });
@@ -287,23 +258,7 @@ describe('CreateProfessorService', () => {
       const result = await service.execute(complexProfessorData);
 
       expect(mockApi.create).toHaveBeenCalledWith(complexProfessorData);
-      expect(mockModel).toHaveBeenCalledWith(
-        expect.objectContaining({
-          id: 1,
-          nome: 'Roberto',
-          sobrenome: 'Almeida',
-          email: 'roberto.almeida@escola.com',
-          telefone: '(11) 88888-8888',
-          status: 'ativo',
-          endereco: complexProfessorData.endereco,
-          especialidades: ['Química', 'Biologia'],
-          certificacoes: complexProfessorData.certificacoes,
-          experienciaProfissional: complexProfessorData.experienciaProfissional,
-          createdAt: '2023-11-08T10:00:00Z',
-        })
-      );
-      expect(result.data.endereco).toEqual(complexProfessorData.endereco);
-      expect(result.data.certificacoes).toHaveLength(2);
+      expect(result.data).toEqual(mockResponse.data);
     });
   });
 
@@ -473,20 +428,7 @@ describe('CreateProfessorService', () => {
       const result = await service.execute(fullProfessorData);
 
       expect(mockApi.create).toHaveBeenCalledWith(fullProfessorData);
-      expect(mockModel).toHaveBeenCalledWith(
-        expect.objectContaining({
-          id: 100,
-          nome: 'Integration',
-          sobrenome: 'Test',
-          email: 'integration.test@escola.com',
-        })
-      );
-      expect(result.data.id).toBe(100);
-      expect(result.data.endereco.cidade).toBe('São Paulo');
-      expect(result.data.formacaoAcademica.graduacao).toBe(
-        'Licenciatura em Matemática'
-      );
-      expect(result.data.especialidades).toHaveLength(2);
+      expect(result.data).toEqual(mockResponse.data);
       expect(result.status).toBe(201);
     });
 
@@ -564,11 +506,6 @@ describe('CreateProfessorService', () => {
       const result = await service.execute(professorData);
 
       expect(mockApi.create).toHaveBeenCalledWith(professorData);
-      expect(mockModel).toHaveBeenCalledWith(
-        expect.objectContaining({
-          id: 999,
-        })
-      );
       expect(result.data.id).toBe(999);
     });
 

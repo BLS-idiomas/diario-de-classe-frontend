@@ -34,28 +34,24 @@ describe('GetProfessorListService', () => {
     // Mock do Professor como classe
     Professor.mockImplementation(data => mockModel(data));
 
-    service = new GetProfessorListService(mockApi, mockModel);
+    service = new GetProfessorListService(mockApi);
   });
 
   describe('constructor', () => {
     it('should initialize with provided entityApi and entityModel', () => {
-      expect(service.api).toBe(mockApi);
-      expect(service.Model).toBe(mockModel);
+      expect(service.professorApi).toBe(mockApi);
     });
 
     it('should store api instance correctly', () => {
       const customApi = { getAll: jest.fn() };
-      const customModel = jest.fn();
-      const customService = new GetProfessorListService(customApi, customModel);
+      const customService = new GetProfessorListService(customApi);
 
-      expect(customService.api).toBe(customApi);
-      expect(customService.Model).toBe(customModel);
+      expect(customService.professorApi).toBe(customApi);
     });
 
     it('should accept null or undefined dependencies', () => {
-      const serviceWithNulls = new GetProfessorListService(null, null);
-      expect(serviceWithNulls.api).toBeNull();
-      expect(serviceWithNulls.Model).toBeNull();
+      const serviceWithNulls = new GetProfessorListService(null);
+      expect(serviceWithNulls.professorApi).toBeNull();
     });
   });
 
@@ -101,17 +97,9 @@ describe('GetProfessorListService', () => {
 
       const result = await service.execute(searchParam);
 
-      expect(mockModel).toHaveBeenCalledTimes(2);
-      expect(mockModel).toHaveBeenCalledWith(professorData1);
-      expect(mockModel).toHaveBeenCalledWith(professorData2);
       expect(result.data.data).toHaveLength(2);
-      expect(result.data.data[0]).toEqual(
-        expect.objectContaining({
-          id: 1,
-          name: 'Maria Silva',
-          email: 'maria@email.com',
-        })
-      );
+      expect(result.data.data[0]).toEqual(professorData1);
+      expect(result.data.data[1]).toEqual(professorData2);
     });
 
     it('should handle empty search parameter', async () => {
@@ -205,14 +193,7 @@ describe('GetProfessorListService', () => {
 
       const result = await service.execute(searchParam);
 
-      expect(mockModel).toHaveBeenCalledWith(complexProfessorData);
-      expect(result.data.data[0]).toEqual(
-        expect.objectContaining({
-          id: 1,
-          name: 'Ana Costa',
-          email: 'ana@email.com',
-        })
-      );
+      expect(result.data.data[0]).toEqual(complexProfessorData);
     });
 
     it('should preserve response metadata while transforming data', async () => {
@@ -262,8 +243,8 @@ describe('GetProfessorListService', () => {
       const endTime = Date.now();
 
       expect(endTime - startTime).toBeLessThan(100); // Should complete quickly
-      expect(mockModel).toHaveBeenCalledTimes(100);
       expect(result.data.data).toHaveLength(100);
+      expect(result.data.data).toEqual(largeProfessorsList);
     });
 
     it('should propagate API errors', async () => {
@@ -310,17 +291,8 @@ describe('GetProfessorListService', () => {
 
       mockApi.getAll.mockResolvedValue(mockResponse);
 
-      // Mock first call to succeed, second to fail
-      mockModel
-        .mockImplementationOnce(data => ({ ...data, transformed: true }))
-        .mockImplementationOnce(() => {
-          throw new Error('Model validation failed');
-        });
-
-      await expect(service.execute(searchParam)).rejects.toThrow(
-        'Model validation failed'
-      );
-      expect(mockModel).toHaveBeenCalledTimes(2);
+      const result = await service.execute(searchParam);
+      expect(result.data.data).toEqual([validProfessor, invalidProfessor]);
     });
 
     it('should handle special characters in search parameter', async () => {
@@ -506,7 +478,6 @@ describe('GetProfessorListService', () => {
 
       const result = await service.execute(searchParam);
 
-      expect(mockModel).toHaveBeenCalledTimes(2);
       expect(result.data.data).toHaveLength(2);
       expect(result.data.total).toBe(25);
       expect(result.data.totalPages).toBe(3);
@@ -537,11 +508,8 @@ describe('GetProfessorListService', () => {
 
       const result = await service.execute(searchParam);
 
-      expect(mockModel).toHaveBeenCalledTimes(3);
       expect(result.data.data).toHaveLength(3);
-      mixedProfessors.forEach((professor, index) => {
-        expect(mockModel).toHaveBeenNthCalledWith(index + 1, professor);
-      });
+      expect(result.data.data).toEqual(mixedProfessors);
     });
 
     it('should handle service composition with filters', async () => {
@@ -604,14 +572,7 @@ describe('GetProfessorListService', () => {
 
       const result = await service.execute(searchParam);
 
-      expect(result.data.data[0]).toEqual(
-        expect.objectContaining({
-          id: 1,
-          name: 'Consistency Test Professor',
-          originalField: 'should be preserved',
-          transformed: true,
-        })
-      );
+      expect(result.data.data[0]).toEqual(originalData[0]);
     });
   });
 
@@ -769,7 +730,6 @@ describe('GetProfessorListService', () => {
 
       expect(endTime - startTime).toBeLessThan(1000); // Should complete within 1 second
       expect(result.data.data).toHaveLength(1000);
-      expect(mockModel).toHaveBeenCalledTimes(1000);
     });
 
     it('should maintain performance with repeated calls', async () => {
@@ -793,7 +753,6 @@ describe('GetProfessorListService', () => {
 
       expect(endTime - startTime).toBeLessThan(200); // Should complete quickly
       expect(mockApi.getAll).toHaveBeenCalledTimes(10);
-      expect(mockModel).toHaveBeenCalledTimes(10);
     });
   });
 });

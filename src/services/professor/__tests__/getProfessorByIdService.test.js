@@ -34,28 +34,24 @@ describe('GetProfessorByIdService', () => {
     // Mock do Professor como classe
     Professor.mockImplementation(data => mockModel(data));
 
-    service = new GetProfessorByIdService(mockApi, mockModel);
+    service = new GetProfessorByIdService(mockApi);
   });
 
   describe('constructor', () => {
     it('should initialize with provided entityApi and entityModel', () => {
-      expect(service.api).toBe(mockApi);
-      expect(service.Model).toBe(mockModel);
+      expect(service.professorApi).toBe(mockApi);
     });
 
     it('should store api instance correctly', () => {
       const customApi = { getById: jest.fn() };
-      const customModel = jest.fn();
-      const customService = new GetProfessorByIdService(customApi, customModel);
+      const customService = new GetProfessorByIdService(customApi);
 
-      expect(customService.api).toBe(customApi);
-      expect(customService.Model).toBe(customModel);
+      expect(customService.professorApi).toBe(customApi);
     });
 
     it('should accept null or undefined dependencies', () => {
-      const serviceWithNulls = new GetProfessorByIdService(null, null);
-      expect(serviceWithNulls.api).toBeNull();
-      expect(serviceWithNulls.Model).toBeNull();
+      const serviceWithNulls = new GetProfessorByIdService(null);
+      expect(serviceWithNulls.professorApi).toBeNull();
     });
   });
 
@@ -92,14 +88,7 @@ describe('GetProfessorByIdService', () => {
 
       const result = await service.execute(testId);
 
-      expect(mockModel).toHaveBeenCalledWith(responseData);
-      expect(result.data).toEqual(
-        expect.objectContaining({
-          id: testId,
-          name: 'Maria Santos',
-          email: 'maria@email.com',
-        })
-      );
+      expect(result.data).toEqual(responseData);
     });
 
     it('should return original response when data is null', async () => {
@@ -165,14 +154,7 @@ describe('GetProfessorByIdService', () => {
 
       const result = await service.execute(testId);
 
-      expect(mockModel).toHaveBeenCalledWith(complexData);
-      expect(result.data).toEqual(
-        expect.objectContaining({
-          id: testId,
-          name: 'Ana Costa',
-          email: 'ana@email.com',
-        })
-      );
+      expect(result.data).toEqual(complexData);
     });
 
     it('should propagate API errors', async () => {
@@ -210,15 +192,9 @@ describe('GetProfessorByIdService', () => {
       };
 
       mockApi.getById.mockResolvedValue(mockResponse);
-      mockModel.mockImplementation(() => {
-        throw new Error('Model validation failed');
-      });
-
-      await expect(service.execute(testId)).rejects.toThrow(
-        'Model validation failed'
-      );
+      const result = await service.execute(testId);
       expect(mockApi.getById).toHaveBeenCalledWith(testId);
-      expect(mockModel).toHaveBeenCalledWith(mockResponse.data);
+      expect(result.data).toEqual(mockResponse.data);
     });
 
     it('should handle empty response data object', async () => {
@@ -229,8 +205,6 @@ describe('GetProfessorByIdService', () => {
 
       const result = await service.execute(testId);
 
-      // Model não é chamado para objetos sem ID
-      expect(mockModel).not.toHaveBeenCalled();
       expect(result.data).toEqual({});
     });
 
@@ -366,14 +340,7 @@ describe('GetProfessorByIdService', () => {
 
       const result = await service.execute(testId);
 
-      expect(mockModel).toHaveBeenCalledWith(professorData);
-      expect(result.data).toEqual(
-        expect.objectContaining({
-          id: testId,
-          name: 'Dr. Carlos Mendes',
-          email: 'carlos.mendes@universidade.edu.br',
-        })
-      );
+      expect(result.data).toEqual(professorData);
     });
 
     it('should handle service composition patterns', async () => {
@@ -412,14 +379,7 @@ describe('GetProfessorByIdService', () => {
 
       const result = await service.execute(testId);
 
-      expect(result.data).toEqual(
-        expect.objectContaining({
-          id: testId,
-          name: 'Data Integrity Test',
-          sensitive: 'should be preserved',
-          transformed: true,
-        })
-      );
+      expect(result.data).toEqual(originalData);
     });
   });
 

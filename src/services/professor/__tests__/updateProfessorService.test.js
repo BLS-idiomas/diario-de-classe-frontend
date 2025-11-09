@@ -34,28 +34,24 @@ describe('UpdateProfessorService', () => {
     // Mock do Professor como classe
     Professor.mockImplementation(data => mockModel(data));
 
-    service = new UpdateProfessorService(mockApi, mockModel);
+    service = new UpdateProfessorService(mockApi);
   });
 
   describe('constructor', () => {
     it('should initialize with provided entityApi and entityModel', () => {
-      expect(service.api).toBe(mockApi);
-      expect(service.Model).toBe(mockModel);
+      expect(service.professorApi).toBe(mockApi);
     });
 
     it('should store api instance correctly', () => {
       const customApi = { update: jest.fn() };
-      const customModel = jest.fn();
-      const customService = new UpdateProfessorService(customApi, customModel);
+      const customService = new UpdateProfessorService(customApi);
 
-      expect(customService.api).toBe(customApi);
-      expect(customService.Model).toBe(customModel);
+      expect(customService.professorApi).toBe(customApi);
     });
 
     it('should accept null or undefined dependencies', () => {
-      const serviceWithNulls = new UpdateProfessorService(null, null);
-      expect(serviceWithNulls.api).toBeNull();
-      expect(serviceWithNulls.Model).toBeNull();
+      const serviceWithNulls = new UpdateProfessorService(null);
+      expect(serviceWithNulls.professorApi).toBeNull();
     });
   });
 
@@ -101,14 +97,7 @@ describe('UpdateProfessorService', () => {
 
       const result = await service.execute(testId, updateData);
 
-      expect(mockModel).toHaveBeenCalledWith(responseData);
-      expect(result.data).toEqual(
-        expect.objectContaining({
-          id: testId,
-          name: 'Maria Santos',
-          email: 'maria@email.com',
-        })
-      );
+      expect(result.data).toEqual(responseData);
     });
 
     it('should not transform response when data is null', async () => {
@@ -201,14 +190,7 @@ describe('UpdateProfessorService', () => {
       const result = await service.execute(testId, complexUpdateData);
 
       expect(mockApi.update).toHaveBeenCalledWith(testId, complexUpdateData);
-      expect(mockModel).toHaveBeenCalledWith(mockResponse.data);
-      expect(result.data).toEqual(
-        expect.objectContaining({
-          id: testId,
-          name: 'Ana Costa',
-          email: 'ana@email.com',
-        })
-      );
+      expect(result.data).toEqual(mockResponse.data);
     });
 
     it('should handle partial updates', async () => {
@@ -327,15 +309,9 @@ describe('UpdateProfessorService', () => {
       };
 
       mockApi.update.mockResolvedValue(mockResponse);
-      mockModel.mockImplementation(() => {
-        throw new Error('Model validation failed');
-      });
-
-      await expect(service.execute(testId, updateData)).rejects.toThrow(
-        'Model validation failed'
-      );
+      const result = await service.execute(testId, updateData);
       expect(mockApi.update).toHaveBeenCalledWith(testId, updateData);
-      expect(mockModel).toHaveBeenCalledWith(mockResponse.data);
+      expect(result.data).toEqual(mockResponse.data);
     });
 
     it('should preserve response metadata', async () => {
@@ -554,14 +530,7 @@ describe('UpdateProfessorService', () => {
 
       const result = await service.execute(testId, updateData);
 
-      expect(mockModel).toHaveBeenCalledWith(mockResponse.data);
-      expect(result.data).toEqual(
-        expect.objectContaining({
-          id: testId,
-          name: 'Dr. Carlos Mendes',
-          email: 'carlos.mendes@universidade.edu.br',
-        })
-      );
+      expect(result.data).toEqual(mockResponse.data);
     });
 
     it('should handle service composition patterns', async () => {
@@ -600,14 +569,7 @@ describe('UpdateProfessorService', () => {
 
       const result = await service.execute(testId, updateData);
 
-      expect(result.data).toEqual(
-        expect.objectContaining({
-          id: testId,
-          name: 'Data Integrity Test',
-          sensitive: 'should be preserved',
-          transformed: true,
-        })
-      );
+      expect(result.data).toEqual(mockResponse.data);
     });
 
     it('should handle optimistic updates scenario', async () => {
@@ -806,7 +768,6 @@ describe('UpdateProfessorService', () => {
 
       expect(endTime - startTime).toBeLessThan(200); // Should complete quickly
       expect(mockApi.update).toHaveBeenCalledTimes(10);
-      expect(mockModel).toHaveBeenCalledTimes(10);
     });
   });
 });

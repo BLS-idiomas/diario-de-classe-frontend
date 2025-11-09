@@ -1,20 +1,17 @@
-import { Professor } from '@/models/Professor';
 import { ProfessorApi } from '@/store/api/professorApi';
 
 export class CreateProfessorService {
-  constructor(entityApi, entityModel) {
-    this.api = entityApi;
-    this.Model = entityModel;
+  constructor(professorApi) {
+    this.professorApi = professorApi;
   }
 
   async execute(data) {
-    return await this.api.create(data);
+    return await this.professorApi.create(data);
   }
 
   static async handle(data) {
     const professorApi = new ProfessorApi();
-    const professor = Professor;
-    const service = new CreateProfessorService(professorApi, professor);
+    const service = new CreateProfessorService(professorApi);
 
     return await service.execute(data);
   }
