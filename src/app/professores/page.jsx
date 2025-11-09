@@ -1,12 +1,12 @@
 'use client';
 
 import { useEffect } from 'react';
+import Link from 'next/link';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   getProfessores,
   deleteProfessor,
-} from '../../store/slices/professoresSlice';
-import Link from 'next/link';
+} from '@/store/slices/professoresSlice';
 
 export default function Professores() {
   const dispatch = useDispatch();
@@ -17,7 +17,7 @@ export default function Professores() {
   }, [dispatch]);
 
   return (
-    <div style={{ padding: '20px' }}>
+    <div className="p-5">
       <h1>Lista de professores</h1>
 
       <table className="table-auto">
