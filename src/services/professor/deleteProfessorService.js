@@ -1,20 +1,17 @@
-import { Professor } from '@/models/Professor';
 import { ProfessorApi } from '@/store/api/professorApi';
 
 export class DeleteProfessorService {
-  constructor(entityApi, entityModel) {
-    this.api = entityApi;
-    this.Model = entityModel;
+  constructor(professorApi) {
+    this.professorApi = professorApi;
   }
 
   async execute(id) {
-    return await this.api.delete(id);
+    return await this.professorApi.delete(id);
   }
 
   static async handle(id) {
     const professorApi = new ProfessorApi();
-    const professor = Professor;
-    const service = new DeleteProfessorService(professorApi, professor);
+    const service = new DeleteProfessorService(professorApi);
 
     return await service.execute(id);
   }
