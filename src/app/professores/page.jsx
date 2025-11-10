@@ -1,20 +1,11 @@
 'use client';
 
-import { useEffect } from 'react';
 import Link from 'next/link';
-import { useDispatch, useSelector } from 'react-redux';
-import {
-  getProfessores,
-  deleteProfessor,
-} from '@/store/slices/professoresSlice';
+import { useProfessores } from '@/hooks/professores/useProfessores';
 
 export default function Professores() {
-  const dispatch = useDispatch();
-  const { list, loading } = useSelector(state => state.professores);
-
-  useEffect(() => {
-    dispatch(getProfessores());
-  }, [dispatch]);
+  const { professores, isLoading, isSuccess, isEmpty, handleDeleteProfessor } =
+    useProfessores();
 
   return (
     <div className="p-5">
@@ -44,16 +35,16 @@ export default function Professores() {
         </thead>
 
         <tbody>
-          {loading && <p>Carregando...</p>}
+          {isLoading && <p>Carregando...</p>}
 
-          {!loading && list.length === 0 && (
+          {isEmpty && (
             <tr>
               <td colSpan="8">Nenhum professor encontrado.</td>
             </tr>
           )}
 
-          {!loading &&
-            list.map(professor => (
+          {isSuccess &&
+            professores.map(professor => (
               <tr key={professor.id}>
                 <td>{professor.id}</td>
                 <td>{professor.nome}</td>
@@ -77,7 +68,7 @@ export default function Professores() {
                       Editar
                     </Link>
                     <button
-                      onClick={() => dispatch(deleteProfessor(professor.id))}
+                      onClick={() => handleDeleteProfessor(professor.id)}
                       className="px-3 py-1 text-sm bg-red-500 text-white rounded hover:bg-red-600 transition-colors cursor-pointer"
                     >
                       Apagar
