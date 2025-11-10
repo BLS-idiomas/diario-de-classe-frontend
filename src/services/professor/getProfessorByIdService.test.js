@@ -1,9 +1,7 @@
-import { GetProfessorByIdService } from '../getProfessorByIdService';
-import { Professor } from '@/models/Professor';
+import { GetProfessorByIdService } from './getProfessorByIdService';
 import { ProfessorApi } from '@/store/api/professorApi';
 
 // Mock das dependências
-jest.mock('@/models/Professor');
 jest.mock('@/store/api/professorApi');
 
 describe('GetProfessorByIdService', () => {
@@ -31,8 +29,8 @@ describe('GetProfessorByIdService', () => {
     // Mock do constructor do ProfessorApi
     ProfessorApi.mockImplementation(() => mockApi);
 
-    // Mock do Professor como classe
-    Professor.mockImplementation(data => mockModel(data));
+    // Clear all mocks
+    jest.clearAllMocks();
 
     service = new GetProfessorByIdService(mockApi);
   });

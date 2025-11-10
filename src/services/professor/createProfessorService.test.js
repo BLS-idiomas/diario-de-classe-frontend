@@ -1,24 +1,11 @@
-import { CreateProfessorService } from '../createProfessorService';
-
-// Mock do Professor model
-jest.mock('@/models/Professor', () => ({
-  Professor: jest.fn().mockImplementation(data => ({
-    ...data,
-    fullName: `${data?.nome || 'undefined'} ${data?.sobrenome || 'undefined'}`,
-    isActive: data?.status === 'ativo',
-  })),
-}));
+import { CreateProfessorService } from './createProfessorService';
+import { ProfessorApi } from '@/store/api/professorApi';
 
 // Mock da ProfessorApi
-jest.mock('@/store/api/professorApi', () => ({
-  ProfessorApi: jest.fn().mockImplementation(() => ({
-    create: jest.fn(),
-  })),
-}));
+jest.mock('@/store/api/professorApi');
 
 describe('CreateProfessorService', () => {
   let mockApi;
-  let mockModel;
   let service;
 
   beforeEach(() => {
@@ -29,18 +16,14 @@ describe('CreateProfessorService', () => {
       create: jest.fn(),
     };
 
-    // Mock do Model
-    mockModel = jest.fn().mockImplementation(data => ({
-      ...data,
-      fullName: `${data?.nome || 'undefined'} ${data?.sobrenome || 'undefined'}`,
-      isActive: data?.status === 'ativo',
-    }));
+    // Mock do constructor do ProfessorApi
+    ProfessorApi.mockImplementation(() => mockApi);
 
     service = new CreateProfessorService(mockApi);
   });
 
   describe('constructor', () => {
-    it('should initialize with provided api and model', () => {
+    it('should initialize with provided professorApi', () => {
       expect(service.professorApi).toBe(mockApi);
     });
 
@@ -77,7 +60,7 @@ describe('CreateProfessorService', () => {
       const result = await service.execute(professorData);
 
       expect(mockApi.create).toHaveBeenCalledWith(professorData);
-      expect(result.data).toEqual(mockResponse.data);
+      expect(result).toEqual(mockResponse);
     });
 
     it('should handle response without id', async () => {
@@ -99,7 +82,6 @@ describe('CreateProfessorService', () => {
       const result = await service.execute(professorData);
 
       expect(mockApi.create).toHaveBeenCalledWith(professorData);
-      expect(mockModel).not.toHaveBeenCalled();
       expect(result).toEqual(mockResponse);
     });
 
@@ -120,7 +102,6 @@ describe('CreateProfessorService', () => {
       const result = await service.execute(professorData);
 
       expect(mockApi.create).toHaveBeenCalledWith(professorData);
-      expect(mockModel).not.toHaveBeenCalled();
       expect(result).toEqual(mockResponse);
     });
 
@@ -141,7 +122,6 @@ describe('CreateProfessorService', () => {
       const result = await service.execute(professorData);
 
       expect(mockApi.create).toHaveBeenCalledWith(professorData);
-      expect(mockModel).not.toHaveBeenCalled();
       expect(result).toEqual(mockResponse);
     });
 
@@ -160,7 +140,6 @@ describe('CreateProfessorService', () => {
         'Validation failed'
       );
       expect(mockApi.create).toHaveBeenCalledWith(professorData);
-      expect(mockModel).not.toHaveBeenCalled();
     });
 
     it('should handle network errors', async () => {
@@ -194,7 +173,7 @@ describe('CreateProfessorService', () => {
       const result = await service.execute(emptyData);
 
       expect(mockApi.create).toHaveBeenCalledWith(emptyData);
-      expect(result.data.id).toBe(1);
+      expect(result).toEqual(mockResponse);
     });
 
     it('should handle null input data', async () => {
@@ -210,8 +189,7 @@ describe('CreateProfessorService', () => {
       const result = await service.execute(null);
 
       expect(mockApi.create).toHaveBeenCalledWith(null);
-      expect(result.data.id).toBe(1);
-      expect(result.data.message).toBe('Created with null data');
+      expect(result).toEqual(mockResponse);
     });
 
     it('should handle complex professor data with nested objects', async () => {
@@ -258,17 +236,14 @@ describe('CreateProfessorService', () => {
       const result = await service.execute(complexProfessorData);
 
       expect(mockApi.create).toHaveBeenCalledWith(complexProfessorData);
-      expect(result.data).toEqual(mockResponse.data);
+      expect(result).toEqual(mockResponse);
     });
   });
 
   describe('static handle method', () => {
     beforeEach(() => {
       // Reset mocks dos módulos
-      const { ProfessorApi } = require('@/store/api/professorApi');
-      const { Professor } = require('@/models/Professor');
       ProfessorApi.mockClear();
-      Professor.mockClear();
     });
 
     it('should create service instance and execute with default dependencies', async () => {
@@ -287,19 +262,13 @@ describe('CreateProfessorService', () => {
         },
       };
 
-      // Mock da API
-      const mockCreate = jest.fn().mockResolvedValue(mockResponse);
-      const { ProfessorApi } = require('@/store/api/professorApi');
-      ProfessorApi.mockImplementation(() => ({
-        create: mockCreate,
-      }));
+      mockApi.create.mockResolvedValue(mockResponse);
 
       const result = await CreateProfessorService.handle(professorData);
 
       expect(ProfessorApi).toHaveBeenCalledTimes(1);
-      expect(mockCreate).toHaveBeenCalledWith(professorData);
-      expect(result.data.id).toBe(1);
-      expect(result.data.nome).toBe('Static');
+      expect(mockApi.create).toHaveBeenCalledWith(professorData);
+      expect(result).toEqual(mockResponse);
     });
 
     it('should handle errors in static method', async () => {
@@ -310,18 +279,14 @@ describe('CreateProfessorService', () => {
       };
 
       const mockError = new Error('Static method error');
-      const mockCreate = jest.fn().mockRejectedValue(mockError);
-      const { ProfessorApi } = require('@/store/api/professorApi');
-      ProfessorApi.mockImplementation(() => ({
-        create: mockCreate,
-      }));
+      mockApi.create.mockRejectedValue(mockError);
 
       await expect(
         CreateProfessorService.handle(professorData)
       ).rejects.toThrow('Static method error');
 
       expect(ProfessorApi).toHaveBeenCalledTimes(1);
-      expect(mockCreate).toHaveBeenCalledWith(professorData);
+      expect(mockApi.create).toHaveBeenCalledWith(professorData);
     });
 
     it('should work with different professor data formats in static method', async () => {
@@ -342,17 +307,11 @@ describe('CreateProfessorService', () => {
         },
       };
 
-      const mockCreate = jest.fn().mockResolvedValue(mockResponse);
-      const { ProfessorApi } = require('@/store/api/professorApi');
-      ProfessorApi.mockImplementation(() => ({
-        create: mockCreate,
-      }));
+      mockApi.create.mockResolvedValue(mockResponse);
 
       const result = await CreateProfessorService.handle(professorData);
 
-      expect(result.data.disciplinas).toEqual(['Português', 'Literatura']);
-      expect(result.data.salario).toBe(5000.0);
-      expect(result.data.dataAdmissao).toBe('2023-01-15');
+      expect(result).toEqual(mockResponse);
     });
 
     it('should handle null data in static method', async () => {
@@ -363,16 +322,12 @@ describe('CreateProfessorService', () => {
         },
       };
 
-      const mockCreate = jest.fn().mockResolvedValue(mockResponse);
-      const { ProfessorApi } = require('@/store/api/professorApi');
-      ProfessorApi.mockImplementation(() => ({
-        create: mockCreate,
-      }));
+      mockApi.create.mockResolvedValue(mockResponse);
 
       const result = await CreateProfessorService.handle(null);
 
-      expect(mockCreate).toHaveBeenCalledWith(null);
-      expect(result.data.id).toBe(3);
+      expect(mockApi.create).toHaveBeenCalledWith(null);
+      expect(result).toEqual(mockResponse);
     });
   });
 
@@ -428,8 +383,7 @@ describe('CreateProfessorService', () => {
       const result = await service.execute(fullProfessorData);
 
       expect(mockApi.create).toHaveBeenCalledWith(fullProfessorData);
-      expect(result.data).toEqual(mockResponse.data);
-      expect(result.status).toBe(201);
+      expect(result).toEqual(mockResponse);
     });
 
     it('should maintain data integrity throughout the process', async () => {
@@ -455,15 +409,7 @@ describe('CreateProfessorService', () => {
 
       const result = await service.execute(originalData);
 
-      // Verify original data is preserved
-      expect(result.data.nome).toBe(originalData.nome);
-      expect(result.data.sobrenome).toBe(originalData.sobrenome);
-      expect(result.data.email).toBe(originalData.email);
-      expect(result.data.metadata).toEqual(originalData.metadata);
-
-      // Verify additional data from response is included
-      expect(result.data.id).toBe(200);
-      expect(result.data.processedAt).toBe('2023-11-08T10:00:00Z');
+      expect(result).toEqual(mockResponse);
     });
   });
 
@@ -484,7 +430,6 @@ describe('CreateProfessorService', () => {
       const result = await service.execute(professorData);
 
       expect(mockApi.create).toHaveBeenCalledWith(professorData);
-      expect(mockModel).not.toHaveBeenCalled();
       expect(result).toEqual(malformedResponse);
     });
 
@@ -506,7 +451,7 @@ describe('CreateProfessorService', () => {
       const result = await service.execute(professorData);
 
       expect(mockApi.create).toHaveBeenCalledWith(professorData);
-      expect(result.data.id).toBe(999);
+      expect(result).toEqual(minimalResponse);
     });
 
     it('should handle undefined response', async () => {
@@ -521,7 +466,6 @@ describe('CreateProfessorService', () => {
       const result = await service.execute(professorData);
 
       expect(mockApi.create).toHaveBeenCalledWith(professorData);
-      expect(mockModel).not.toHaveBeenCalled();
       expect(result).toBeUndefined();
     });
   });
