@@ -1,12 +1,14 @@
 import { useEffect, useState, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useRouter } from 'next/navigation';
-import { updateProfessor, getProfessor } from '@/store/slices/professoresSlice';
 import { STATUS } from '@/constants';
+import { useToast } from '@/providers/ToastProvider';
+import { updateProfessor, getProfessor } from '@/store/slices/professoresSlice';
 
 export function useEditarProfessor(professorId) {
   const dispatch = useDispatch();
   const router = useRouter();
+  const { success } = useToast();
   const { status, message, errors, current } = useSelector(
     state => state.professores
   );
@@ -66,6 +68,7 @@ export function useEditarProfessor(professorId) {
 
       if (updateProfessor.fulfilled.match(result)) {
         // Sucesso - redirecionar para lista
+        success('Operação realizada com sucesso!');
         router.push('/professores');
       }
     } catch (error) {

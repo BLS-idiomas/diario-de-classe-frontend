@@ -1,12 +1,14 @@
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useRouter } from 'next/navigation';
-import { createProfessor } from '@/store/slices/professoresSlice';
 import { STATUS } from '@/constants';
+import { createProfessor } from '@/store/slices/professoresSlice';
+import { useToast } from '@/providers/ToastProvider';
 
 export function useNovoProfessor() {
   const dispatch = useDispatch();
   const router = useRouter();
+  const { success } = useToast();
   const { status, message, errors } = useSelector(state => state.professores);
 
   const [formData, setFormData] = useState({
@@ -37,6 +39,7 @@ export function useNovoProfessor() {
 
       if (createProfessor.fulfilled.match(result)) {
         // Sucesso - redirecionar para lista
+        success('Operação realizada com sucesso!');
         router.push('/professores');
       }
     } catch (error) {
