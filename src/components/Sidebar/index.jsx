@@ -10,10 +10,8 @@ import {
   User,
 } from 'lucide-react';
 import { SidebarItem } from '../SidebarItem';
-import { useEffect, useState } from 'react';
-import { isMobileFunction } from '@/utils/isMobileFunction';
 
-export const Sidebar = ({ sidebarExpanded, toggleSidebar }) => {
+export const Sidebar = ({ sidebarExpanded, toggleSidebar, sidebarClass }) => {
   const strokeWidth = 1;
   const sidebarItems = [
     {
@@ -53,24 +51,10 @@ export const Sidebar = ({ sidebarExpanded, toggleSidebar }) => {
       icon: <Info strokeWidth={strokeWidth} />,
     },
   ];
-  const [expandedClass, setExpandedClass] = useState('w-18');
-  useEffect(() => {
-    const isMobile = isMobileFunction();
-    let className = '';
-    if (sidebarExpanded === false) {
-      className = 'w-18';
-    } else if (isMobile === true) {
-      className = 'absolute w-full';
-    } else {
-      className = 'w-[180px]';
-    }
-    // TODO: Refatorar essa gambiarra
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setExpandedClass(className);
-  }, [sidebarExpanded]);
+
   return (
     <aside
-      className={`fixed left-0 top-16 bottom-0 bg-gray-50 border-r border-gray-200 transition-all duration-300 ease-in-out z-30 ${expandedClass}`}
+      className={`fixed left-0 top-16 bottom-0 bg-gray-50 border-r border-gray-200 transition-all duration-300 ease-in-out z-30 ${sidebarClass}`}
     >
       <div className="flex flex-col h-full">
         {/* Conteúdo da Sidebar */}
