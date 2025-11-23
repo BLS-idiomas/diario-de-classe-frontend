@@ -115,7 +115,7 @@ export default function NovoProfessor() {
               htmlFor="telefone"
               className="block text-sm font-medium text-gray-700 mb-2"
             >
-              Telefone
+              Telefone *
             </label>
             <input
               type="tel"
