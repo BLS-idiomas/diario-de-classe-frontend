@@ -5,7 +5,7 @@ import { useProfessores } from '@/hooks/professores/useProfessores';
 import { useDeletarProfessor } from '@/hooks/professores/useDeletarProfessor';
 import { Eye, Pencil, Trash2 } from 'lucide-react';
 import { useFormater } from '@/hooks/useFormater';
-import Table from '@/components/Table';
+import { Table } from '@/components';
 
 export default function Professores() {
   const { professores, isLoading, isSuccess, isEmpty, columns } =

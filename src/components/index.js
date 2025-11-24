@@ -4,3 +4,4 @@ export * from './Layout';
 export * from './Sidebar';
 export * from './SidebarItem';
 export * from './Toast';
+export * from './Table';

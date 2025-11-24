@@ -1,6 +1,7 @@
+'use client';
 import DataTable from 'react-data-table-component';
 
-export default function Table({ columns, data, isLoading, notFoundMessage }) {
+export function Table({ columns, data, isLoading, notFoundMessage }) {
   return (
     <DataTable
       columns={columns}
