@@ -3,83 +3,72 @@
 import Link from 'next/link';
 import { useProfessores } from '@/hooks/professores/useProfessores';
 import { useDeletarProfessor } from '@/hooks/professores/useDeletarProfessor';
+import { Eye, Pencil, Trash2 } from 'lucide-react';
+import { useFormater } from '@/hooks/useFormater';
+import { Table } from '@/components';
 
 export default function Professores() {
-  const { professores, isLoading, isSuccess, isEmpty } = useProfessores();
+  const { professores, isLoading, isSuccess, isEmpty, columns } =
+    useProfessores();
   const { handleDeleteProfessor } = useDeletarProfessor();
+  const { telefoneFormatter, dataFormatter } = useFormater();
+  const strokeWidth = 1;
+  const size = 16;
+  const px = 2;
+
+  const data = professores.map((professor, index) => ({
+    id: index + 1,
+    name: professor.nome,
+    sobrenome: professor.sobrenome,
+    telefone: telefoneFormatter(professor.telefone),
+    email: professor.email,
+    role: professor.permissao,
+    dataCriacao: dataFormatter(professor.dataCriacao),
+    acoes: (
+      <div className="flex gap-2">
+        <Link
+          href={`/professores/${professor.id}`}
+          className={`px-${px} py-1 text-sm bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors cursor-pointer`}
+        >
+          <Eye strokeWidth={strokeWidth} size={size} />
+        </Link>
+
+        <Link
+          href={`/professores/${professor.id}/editar`}
+          className={`px-${px} py-1 text-sm bg-gray-500 text-white rounded hover:bg-gray-600 transition-colors cursor-pointer`}
+        >
+          <Pencil strokeWidth={strokeWidth} size={size} />
+        </Link>
+
+        <button
+          onClick={() => handleDeleteProfessor(professor.id)}
+          className={`px-${px} py-1 text-sm bg-red-500 text-white rounded hover:bg-red-600 transition-colors cursor-pointer`}
+        >
+          <Trash2 strokeWidth={strokeWidth} size={size} />
+        </button>
+      </div>
+    ),
+  }));
 
   return (
-    <div className="p-5">
-      <h1>Lista de professores</h1>
+    <div className="p-6 mx-auto bg-white shadow rounded-lg">
+      <h2 className="text-xl font-bold mb-4">Lista de Professores</h2>
 
-      <div>
+      <div className="pb-3">
         <Link
           href="/professores/novo"
-          className="px-3 py-1 text-sm bg-green-500 text-white rounded hover:bg-green-600 transition-colors cursor-pointer"
+          className="px-3 py-1 text-sm bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors cursor-pointer"
         >
           Novo Professor
         </Link>
       </div>
 
-      <table className="table-auto">
-        <thead>
-          <tr>
-            <th>Id</th>
-            <th>Nome</th>
-            <th>Sobrenome</th>
-            <th>E-mail</th>
-            <th>Telefone</th>
-            <th>Permissão</th>
-            <th>Data de criação</th>
-            <th>Ações</th>
-          </tr>
-        </thead>
-
-        <tbody>
-          {isLoading && <p>Carregando...</p>}
-
-          {isEmpty && (
-            <tr>
-              <td colSpan="8">Nenhum professor encontrado.</td>
-            </tr>
-          )}
-
-          {isSuccess &&
-            professores.map(professor => (
-              <tr key={professor.id}>
-                <td>{professor.id}</td>
-                <td>{professor.nome}</td>
-                <td>{professor.sobrenome}</td>
-                <td>{professor.email}</td>
-                <td>{professor.telefone || '-'}</td>
-                <td>{professor.permissao}</td>
-                <td>{professor.dataCriacao}</td>
-                <td>
-                  <div className="flex gap-2">
-                    <Link
-                      href={`/professores/${professor.id}`}
-                      className="px-3 py-1 text-sm bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors cursor-pointer"
-                    >
-                      Ver
-                    </Link>
-                    <Link
-                      href={`/professores/${professor.id}/editar`}
-                      className="px-3 py-1 text-sm bg-gray-500 text-white rounded hover:bg-gray-600 transition-colors cursor-pointer"
-                    >
-                      Editar
-                    </Link>
-                    <button
-                      onClick={() => handleDeleteProfessor(professor.id)}
-                      className="px-3 py-1 text-sm bg-red-500 text-white rounded hover:bg-red-600 transition-colors cursor-pointer"
-                    >
-                      Apagar
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            ))}
-        </tbody>
-      </table>
+      <Table
+        columns={columns}
+        data={data}
+        isLoading={isLoading}
+        notFoundMessage="Nenhum professor encontrado."
+      />
     </div>
   );
 }

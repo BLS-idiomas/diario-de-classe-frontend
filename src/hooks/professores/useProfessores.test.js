@@ -68,6 +68,7 @@ describe('useProfessores', () => {
       isLoading: true,
       isSuccess: false,
       isEmpty: false,
+      columns: expect.any(Array),
     });
   });
 
@@ -124,6 +125,7 @@ describe('useProfessores', () => {
       isLoading: false,
       isSuccess: true,
       isEmpty: false,
+      columns: expect.any(Array),
     });
   });
 

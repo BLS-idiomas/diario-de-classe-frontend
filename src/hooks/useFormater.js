@@ -1,0 +1,27 @@
+export function useFormater() {
+  const telefoneFormatter = telefone => {
+    if (!telefone) return '-';
+
+    telefone = telefone.replace(/\D/g, '');
+
+    const ddd = `(${telefone.slice(0, 2)})`;
+    const parte1 =
+      telefone.length === 11 ? telefone.slice(2, 7) : telefone.slice(2, 6);
+
+    const parte2 =
+      telefone.length === 11 ? telefone.slice(7) : telefone.slice(6);
+
+    return `${ddd} ${parte1}-${parte2}`;
+  };
+
+  const dataFormatter = dataCriacao => {
+    if (!dataCriacao) return '-';
+    const data = new Date(dataCriacao);
+    const dia = String(data.getDate()).padStart(2, '0');
+    const mes = String(data.getMonth() + 1).padStart(2, '0');
+    const ano = data.getFullYear();
+    return `${dia}/${mes}/${ano}`;
+  };
+
+  return { telefoneFormatter, dataFormatter };
+}
