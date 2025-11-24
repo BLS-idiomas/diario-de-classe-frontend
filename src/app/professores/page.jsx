@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useProfessores } from '@/hooks/professores/useProfessores';
 import { useDeletarProfessor } from '@/hooks/professores/useDeletarProfessor';
 import { Eye, Pencil, Trash2 } from 'lucide-react';
-import { useFormater } from '@/hooks/professores/useFormater';
+import { useFormater } from '@/hooks/useFormater';
 import Table from '@/components/Table';
 
 export default function Professores() {
