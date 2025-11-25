@@ -26,7 +26,7 @@ export class BaseApi {
     return await this.api.put(endpoint, data);
   }
 
-  async delete(endpoint) {
+  async destroy(endpoint) {
     return await this.api.delete(endpoint);
   }
 }

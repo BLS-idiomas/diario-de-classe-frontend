@@ -26,7 +26,7 @@ export class AbstractEntityApi extends AuthenticatedApi {
     return this.put(`${this.baseEndpoint}/${id}`, data);
   }
 
-  async remove(id) {
-    return this.delete(`${this.baseEndpoint}/${id}`);
+  async delete(id) {
+    return this.destroy(`${this.baseEndpoint}/${id}`);
   }
 }

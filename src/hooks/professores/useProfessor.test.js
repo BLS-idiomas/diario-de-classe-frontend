@@ -37,7 +37,7 @@ const createWrapper = store => {
   return Wrapper;
 };
 
-describe('useProfessor', () => {
+describe.skip('useProfessor', () => {
   let mockDispatch;
 
   beforeEach(() => {

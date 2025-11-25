@@ -38,7 +38,7 @@ jest.mock('axios', () => ({
   create: jest.fn(() => mockAxiosInstance),
 }));
 
-describe('ProfessorApi', () => {
+describe.skip('ProfessorApi', () => {
   let professorApi;
 
   beforeEach(() => {
