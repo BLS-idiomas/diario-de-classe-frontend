@@ -1,13 +1,11 @@
 'use client';
 
-import { useMemo } from 'react';
 import Link from 'next/link';
-import { Eye, Pencil, Trash2 } from 'lucide-react';
 import { useProfessores } from '@/hooks/professores/useProfessores';
 import { useDeletarProfessor } from '@/hooks/professores/useDeletarProfessor';
 import { useFormater } from '@/hooks/useFormater';
 import { useProfessoresList } from '@/hooks/professores/useProfessoresList';
-import { Table } from '@/components';
+import { ButtonGroup, Container, PageTitle, Table } from '@/components';
 
 export default function Professores() {
   const { professores, isLoading } = useProfessores();
@@ -21,17 +19,17 @@ export default function Professores() {
   });
 
   return (
-    <div className="p-6 mx-auto bg-white shadow rounded-lg">
-      <h2 className="text-xl font-bold mb-4">Lista de Professores</h2>
+    <Container>
+      <PageTitle>Lista de Professores</PageTitle>
 
-      <div className="pb-3">
+      <ButtonGroup>
         <Link
           href="/professores/novo"
           className="px-3 py-1 text-sm bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors cursor-pointer"
         >
           Novo Professor
         </Link>
-      </div>
+      </ButtonGroup>
 
       <Table
         columns={columns}
@@ -39,6 +37,6 @@ export default function Professores() {
         isLoading={isLoading}
         notFoundMessage="Nenhum professor encontrado."
       />
-    </div>
+    </Container>
   );
 }
