@@ -13,7 +13,7 @@ export default function Professores() {
   const { handleDeleteProfessor } = useDeletarProfessor();
   const { telefoneFormatter, dataFormatter } = useFormater();
   const strokeWidth = 1;
-  const size = 16;
+  const size = 20;
   const px = 2;
 
   const data = professores.map((professor, index) => ({

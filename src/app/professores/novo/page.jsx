@@ -64,6 +64,8 @@ export default function NovoProfessor() {
               type="text"
               id="nome"
               name="nome"
+              maxLength={200}
+              minLength={3}
               value={formData.nome}
               onChange={handleChange}
               className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500`}
@@ -83,6 +85,7 @@ export default function NovoProfessor() {
               type="text"
               id="sobrenome"
               name="sobrenome"
+              maxLength={200}
               value={formData.sobrenome}
               onChange={handleChange}
               className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500`}
@@ -102,6 +105,7 @@ export default function NovoProfessor() {
               type="email"
               id="email"
               name="email"
+              maxLength={200}
               value={formData.email}
               onChange={handleChange}
               className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500`}
@@ -140,6 +144,7 @@ export default function NovoProfessor() {
               type="password"
               id="senha"
               name="senha"
+              minLength={6}
               value={formData.senha}
               onChange={handleChange}
               className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500`}
