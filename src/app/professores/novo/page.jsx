@@ -2,6 +2,8 @@
 
 import Link from 'next/link';
 import { useNovoProfessor } from '@/hooks/professores/useNovoProfessor';
+import { ButtonGroup, Container, PageTitle } from '@/components';
+import { isAdmin } from '@/utils/isAdmin';
 
 export default function NovoProfessor() {
   const {
@@ -10,33 +12,36 @@ export default function NovoProfessor() {
     errors,
     isLoading,
     isSubmitting,
+    isError,
+    isSenhaError,
     handleChange,
     handleSubmit,
   } = useNovoProfessor();
 
   return (
-    <div className="p-10 max-w-2xl mx-auto">
+    <Container>
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-800 mb-2">
-          Novo Professor
-        </h1>
+        <PageTitle>Novo Professor</PageTitle>
+
         <p className="text-gray-600">
           Preencha os dados para criar um novo professor
         </p>
       </div>
 
-      <div className="mb-4">
+      <ButtonGroup>
         <Link
           href="/professores"
           className="px-4 py-2 text-sm bg-gray-500 text-white rounded hover:bg-gray-600 transition-colors"
         >
           ← Voltar para lista
         </Link>
-      </div>
+      </ButtonGroup>
 
-      {errors && errors.length > 0 && (
+      {isError && (
         <div className="bg-red-50 border border-red-200 rounded-md p-4 mb-6">
-          <h3 className="text-red-800 font-medium mb-2">{message}:</h3>
+          <h3 className="text-red-800 font-medium mb-2">
+            {message || (isSenhaError ? 'As senhas não coincidem' : '')}:
+          </h3>
           <ul className="list-disc list-inside space-y-1">
             {errors.map((error, index) => (
               <li key={index} className="text-sm text-red-700">
@@ -86,6 +91,7 @@ export default function NovoProfessor() {
               id="sobrenome"
               name="sobrenome"
               maxLength={200}
+              minLength={3}
               value={formData.sobrenome}
               onChange={handleChange}
               className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500`}
@@ -125,6 +131,7 @@ export default function NovoProfessor() {
               type="tel"
               id="telefone"
               name="telefone"
+              maxLength={11}
               value={formData.telefone}
               onChange={handleChange}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -172,28 +179,30 @@ export default function NovoProfessor() {
           </div>
         </div>
 
-        {/* Permissão - campo que ocupa toda a largura */}
-        <div className="mt-6">
-          <label
-            htmlFor="permissao"
-            className="block text-sm font-medium text-gray-700 mb-2"
-          >
-            Permissão *
-          </label>
-          <select
-            id="permissao"
-            name="permissao"
-            value={formData.permissao}
-            onChange={handleChange}
-            className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500`}
-          >
-            <option value="">Selecione uma permissão</option>
-            <option value="professor">Professor</option>
-            <option value="coordenador">Coordenador</option>
-            <option value="diretor">Diretor</option>
-            <option value="admin">Administrador</option>
-          </select>
-        </div>
+        {/* Permissão — apenas administradores podem ver */}
+        {isAdmin() && (
+          <div className="mt-6">
+            <label
+              htmlFor="permissao"
+              className="block text-sm font-medium text-gray-700 mb-2"
+            >
+              Permissão *
+            </label>
+
+            <select
+              id="permissao"
+              name="permissao"
+              value={formData.permissao}
+              onChange={handleChange}
+              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="professor">Professor</option>
+              <option value="coordenador">Coordenador</option>
+              <option value="diretor">Diretor</option>
+              <option value="admin">Administrador</option>
+            </select>
+          </div>
+        )}
 
         {/* Botões */}
         <div className="flex gap-4 mt-8">
@@ -206,7 +215,7 @@ export default function NovoProfessor() {
                 : 'bg-blue-500 hover:bg-blue-600'
             }`}
           >
-            {isLoading ? 'Criando...' : 'Criar Professor'}
+            {isLoading ? 'Criando...' : 'Salvar'}
           </button>
 
           <Link
@@ -217,6 +226,6 @@ export default function NovoProfessor() {
           </Link>
         </div>
       </form>
-    </div>
+    </Container>
   );
 }

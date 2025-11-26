@@ -1,15 +1,18 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useRouter } from 'next/navigation';
 import { STATUS } from '@/constants';
 import { createProfessor } from '@/store/slices/professoresSlice';
 import { useToast } from '@/providers/ToastProvider';
+import { isAdmin } from '@/utils/isAdmin';
 
 export function useNovoProfessor() {
   const dispatch = useDispatch();
   const router = useRouter();
   const { success } = useToast();
   const { status, message, errors } = useSelector(state => state.professores);
+
+  const [isSenhaError, setIsSenhaError] = useState(false);
 
   const [formData, setFormData] = useState({
     nome: '',
@@ -20,6 +23,9 @@ export function useNovoProfessor() {
     repetirSenha: '',
     permissao: 'professor',
   });
+
+  // Compute isError directly without setState in effect
+  const isError = (errors && errors.length > 0) || !!message || isSenhaError;
 
   const handleChange = e => {
     const { name, value } = e.target;
@@ -32,13 +38,18 @@ export function useNovoProfessor() {
   const handleSubmit = async e => {
     e.preventDefault();
 
+    // impedindo continuar caso as senhas não batam
+    if (formData.senha !== formData.repetirSenha) {
+      setErroSenha(true);
+      return;
+    }
+
     try {
       const { repetirSenha, ...dataToSend } = formData;
 
       const result = await dispatch(createProfessor(dataToSend));
 
       if (createProfessor.fulfilled.match(result)) {
-        // Sucesso - redirecionar para lista
         success('Operação realizada com sucesso!');
         router.push('/professores');
       }
@@ -49,7 +60,7 @@ export function useNovoProfessor() {
 
   // Estados computados para facilitar o uso
   const isLoading = status === STATUS.LOADING;
-  const isSubmitting = status === STATUS.IDLE || status === STATUS.LOADING;
+  const isSubmitting = status === STATUS.LOADING;
 
   return {
     formData,
@@ -57,6 +68,9 @@ export function useNovoProfessor() {
     errors,
     isLoading,
     isSubmitting,
+    isSenhaError,
+    isError,
+    isAdmin,
     handleChange,
     handleSubmit,
   };
