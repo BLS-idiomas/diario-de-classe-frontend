@@ -1,8 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import { Header } from './index';
 import '@testing-library/jest-dom';
-import Link from 'next/link';
-import Image from 'next/image';
 
 // Mock dos componentes do Next.js
 jest.mock('next/link', () => {

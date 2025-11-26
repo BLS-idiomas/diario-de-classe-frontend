@@ -1,36 +1,38 @@
+/** @jest-environment jsdom */
 import { isMobileFunction } from './isMobileFunction';
 
 describe('isMobileFunction', () => {
+  let originalWindow;
+
+  beforeEach(() => {
+    originalWindow = global.window;
+  });
+
   afterEach(() => {
-    // Limpa mocks do window
-    if (typeof window !== 'undefined') {
-      window.innerWidth = 1024;
+    // Restaurar objeto original do window
+    if (typeof originalWindow === 'undefined') {
+      try {
+        delete global.window;
+      } catch (e) {
+        global.window = undefined;
+      }
+    } else {
+      global.window = originalWindow;
     }
     jest.restoreAllMocks();
   });
 
   it('should return true if window.innerWidth < 640', () => {
-    global.window = Object.create(window);
-    Object.defineProperty(window, 'innerWidth', {
-      value: 500,
-      writable: true,
-    });
-    expect(isMobileFunction()).toBe(true);
+    const fakeWindow = { innerWidth: 500 };
+    expect(isMobileFunction(fakeWindow)).toBe(true);
   });
 
   it('should return false if window.innerWidth >= 640', () => {
-    global.window = Object.create(window);
-    Object.defineProperty(window, 'innerWidth', {
-      value: 800,
-      writable: true,
-    });
-    expect(isMobileFunction()).toBe(false);
+    const fakeWindow = { innerWidth: 800 };
+    expect(isMobileFunction(fakeWindow)).toBe(false);
   });
 
   it('should return false if window is undefined', () => {
-    const originalWindow = global.window;
-    delete global.window;
-    expect(isMobileFunction()).toBe(false);
-    global.window = originalWindow;
+    expect(isMobileFunction(undefined)).toBe(false);
   });
 });

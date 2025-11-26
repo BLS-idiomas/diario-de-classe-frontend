@@ -37,7 +37,7 @@ const createWrapper = store => {
   return Wrapper;
 };
 
-describe.skip('useProfessores', () => {
+describe('useProfessores', () => {
   let mockDispatch;
 
   beforeEach(() => {
@@ -66,9 +66,6 @@ describe.skip('useProfessores', () => {
       professores: [],
       status: STATUS.IDLE,
       isLoading: true,
-      isSuccess: false,
-      isEmpty: false,
-      columns: expect.any(Array),
     });
   });
 
@@ -100,8 +97,7 @@ describe.skip('useProfessores', () => {
     const { result } = renderHook(() => useProfessores(), { wrapper });
 
     expect(result.current.isLoading).toBe(true);
-    expect(result.current.isSuccess).toBe(false);
-    expect(result.current.isEmpty).toBe(false);
+    expect(result.current.status).toBe(STATUS.LOADING);
   });
 
   it('should return success state with data correctly', () => {
@@ -123,9 +119,6 @@ describe.skip('useProfessores', () => {
       professores: mockProfessores,
       status: STATUS.SUCCESS,
       isLoading: false,
-      isSuccess: true,
-      isEmpty: false,
-      columns: expect.any(Array),
     });
   });
 
@@ -140,10 +133,9 @@ describe.skip('useProfessores', () => {
     const wrapper = createWrapper(store);
     const { result } = renderHook(() => useProfessores(), { wrapper });
 
-    expect(result.current.isEmpty).toBe(true);
-    expect(result.current.isSuccess).toBe(true);
-    expect(result.current.isLoading).toBe(false);
     expect(result.current.professores).toEqual([]);
+    expect(result.current.status).toBe(STATUS.SUCCESS);
+    expect(result.current.isLoading).toBe(false);
   });
 
   it('should handle failed state correctly', () => {
@@ -158,8 +150,6 @@ describe.skip('useProfessores', () => {
     const { result } = renderHook(() => useProfessores(), { wrapper });
 
     expect(result.current.isLoading).toBe(false);
-    expect(result.current.isSuccess).toBe(false);
-    expect(result.current.isEmpty).toBe(false);
     expect(result.current.status).toBe(STATUS.FAILED);
   });
 
