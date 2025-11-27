@@ -8,6 +8,7 @@ import { CreateProfessorService } from '@/services/professor/createProfessorServ
 import { UpdateProfessorService } from '@/services/professor/updateProfessorService';
 import { DeleteProfessorService } from '@/services/professor/deleteProfessorService';
 import { GetAulasByProfessorService } from '@/services/professor/getAulasByProfessorService';
+import { GetAlunosByProfessorService } from '@/services/professor/getAlunosByProfessorService';
 
 // GET ALL
 export const getProfessores = createAsyncThunk(
@@ -104,12 +105,28 @@ export const deleteProfessor = createAsyncThunk(
   }
 );
 
-// GET ALUNOS
+// GET AULAS
 export const getAulasProfessor = createAsyncThunk(
   'professores/getOne/aulas',
   async (id, { rejectWithValue }) => {
     try {
       const res = await GetAulasByProfessorService.handle(id);
+      return res.data;
+    } catch (error) {
+      // Capturar a mensagem de erro da resposta da API
+      const errorMessage =
+        error.response?.data?.message || error.message || 'Erro desconhecido';
+      return rejectWithValue({ message: errorMessage });
+    }
+  }
+);
+
+// GET ALUNOS
+export const getAlunosProfessor = createAsyncThunk(
+  'professores/getOne/alunos',
+  async (id, { rejectWithValue }) => {
+    try {
+      const res = await GetAlunosByProfessorService.handle(id);
       return res.data;
     } catch (error) {
       // Capturar a mensagem de erro da resposta da API
@@ -262,6 +279,27 @@ const professoresSlice = createSlice({
         state.aulas = action.payload;
       })
       .addCase(getAulasProfessor.rejected, (state, action) => {
+        state.status = STATUS.FAILED;
+        state.loading = false;
+        state.errors = action.error;
+        state.message = action.payload.message;
+      })
+      // getAlunosProfessor
+      .addCase(getAlunosProfessor.pending, state => {
+        state.status = STATUS.LOADING;
+        state.loading = true;
+        state.errors = [];
+        state.message = null;
+        state.current = null;
+        state.alunos = [];
+        state.action = 'getAlunosProfessor';
+      })
+      .addCase(getAlunosProfessor.fulfilled, (state, action) => {
+        state.status = STATUS.SUCCESS;
+        state.loading = false;
+        state.alunos = action.payload;
+      })
+      .addCase(getAlunosProfessor.rejected, (state, action) => {
         state.status = STATUS.FAILED;
         state.loading = false;
         state.errors = action.error;
