@@ -7,9 +7,11 @@ import {
   ButtonGroup,
   Container,
   Form,
+  InputField,
   PageContent,
   PageSubTitle,
   PageTitle,
+  SelectField,
 } from '@/components';
 
 export default function NovoProfessor() {
@@ -59,151 +61,93 @@ export default function NovoProfessor() {
       <Form onSubmit={handleSubmit}>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Nome */}
-          <div>
-            <label
-              htmlFor="nome"
-              className="block text-sm font-medium text-gray-700 mb-2"
-            >
-              Nome *
-            </label>
-            <input
-              type="text"
-              id="nome"
-              name="nome"
-              maxLength={200}
-              minLength={3}
-              value={formData.nome}
-              onChange={handleChange}
-              className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500`}
-              placeholder="Digite o nome"
-            />
-          </div>
+          <InputField
+            required
+            htmlFor="nome"
+            label="Nome"
+            placeholder="Digite o nome"
+            maxLength={200}
+            minLength={3}
+            onChange={handleChange}
+            value={formData.nome}
+          />
 
           {/* Sobrenome */}
-          <div>
-            <label
-              htmlFor="sobrenome"
-              className="block text-sm font-medium text-gray-700 mb-2"
-            >
-              Sobrenome *
-            </label>
-            <input
-              type="text"
-              id="sobrenome"
-              name="sobrenome"
-              maxLength={200}
-              minLength={3}
-              value={formData.sobrenome}
-              onChange={handleChange}
-              className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500`}
-              placeholder="Digite o sobrenome"
-            />
-          </div>
+          <InputField
+            required
+            htmlFor="sobrenome"
+            label="Sobrenome"
+            placeholder="Digite o sobrenome"
+            maxLength={200}
+            minLength={3}
+            onChange={handleChange}
+            value={formData.sobrenome}
+          />
 
           {/* Email */}
-          <div>
-            <label
-              htmlFor="email"
-              className="block text-sm font-medium text-gray-700 mb-2"
-            >
-              Email *
-            </label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              maxLength={200}
-              value={formData.email}
-              onChange={handleChange}
-              className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500`}
-              placeholder="Digite o email"
-            />
-          </div>
+          <InputField
+            required
+            htmlFor="email"
+            label="Email"
+            placeholder="Digite o email"
+            maxLength={200}
+            minLength={3}
+            onChange={handleChange}
+            value={formData.email}
+          />
 
           {/* Telefone */}
-          <div>
-            <label
-              htmlFor="telefone"
-              className="block text-sm font-medium text-gray-700 mb-2"
-            >
-              Telefone
-            </label>
-            <input
-              type="tel"
-              id="telefone"
-              name="telefone"
-              maxLength={11}
-              value={formData.telefone}
-              onChange={handleChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="(11) 99999-9999"
-            />
-          </div>
+          <InputField
+            htmlFor="telefone"
+            label="Telefone"
+            placeholder="(11) 99999-9999"
+            maxLength={11}
+            onChange={handleChange}
+            value={formData.telefone}
+          />
 
           {/* Senha */}
-          <div>
-            <label
-              htmlFor="senha"
-              className="block text-sm font-medium text-gray-700 mb-2"
-            >
-              Senha *
-            </label>
-            <input
-              type="password"
-              id="senha"
-              name="senha"
-              minLength={6}
-              value={formData.senha}
-              onChange={handleChange}
-              className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500`}
-              placeholder="Digite a senha"
-            />
-          </div>
+          <InputField
+            required
+            type="password"
+            htmlFor="senha"
+            label="Senha"
+            placeholder="Digite a senha"
+            minLength={6}
+            maxLength={100}
+            onChange={handleChange}
+            value={formData.senha}
+          />
 
           {/* Repetir Senha */}
-          <div>
-            <label
-              htmlFor="repetirSenha"
-              className="block text-sm font-medium text-gray-700 mb-2"
-            >
-              Repetir Senha *
-            </label>
-            <input
-              type="password"
-              id="repetirSenha"
-              name="repetirSenha"
-              value={formData.repetirSenha}
-              onChange={handleChange}
-              className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500`}
-              placeholder="Confirme a senha"
-            />
-          </div>
-        </div>
+          <InputField
+            required
+            type="password"
+            htmlFor="repetirSenha"
+            label="Repetir Senha"
+            placeholder="Confirme a senha"
+            minLength={6}
+            maxLength={100}
+            onChange={handleChange}
+            value={formData.repetirSenha}
+          />
 
-        {/* Permissão — apenas administradores podem ver */}
-        {isAdmin() && (
-          <div className="mt-6">
-            <label
+          {/* Permissão — apenas administradores podem ver */}
+          {isAdmin() && (
+            <SelectField
+              required
               htmlFor="permissao"
-              className="block text-sm font-medium text-gray-700 mb-2"
-            >
-              Permissão *
-            </label>
-
-            <select
-              id="permissao"
-              name="permissao"
-              value={formData.permissao}
+              label="Permissão"
+              placeholder="Selecione a Permissão"
               onChange={handleChange}
-              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-              <option value="professor">Professor</option>
-              <option value="coordenador">Coordenador</option>
-              <option value="diretor">Diretor</option>
-              <option value="admin">Administrador</option>
-            </select>
-          </div>
-        )}
+              value={formData.permissao}
+              options={[
+                { value: 'professor', label: 'Professor' },
+                { value: 'admin', label: 'Administrador' },
+              ]}
+            />
+          )}
+        </div>
 
         {/* Botões */}
         <div className="flex gap-4 mt-8">
