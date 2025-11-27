@@ -104,7 +104,6 @@ export const ProfessorForm = ({
             required
             htmlFor="permissao"
             label="Permissão"
-            placeholder="Selecione a Permissão"
             onChange={handleChange}
             value={formData.permissao}
             options={[

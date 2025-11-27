@@ -88,7 +88,6 @@ export const TextAreaField = ({
   className,
   props,
 }) => {
-  label = required ? `${label} *` : label;
   className ||= classNameDefault;
   return (
     <BaseField
@@ -125,7 +124,6 @@ export const SelectField = ({
   options,
   props,
 }) => {
-  label = required ? `${label} *` : label;
   className ||= classNameDefault;
   return (
     <BaseField
