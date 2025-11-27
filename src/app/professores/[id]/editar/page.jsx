@@ -1,8 +1,11 @@
 'use client';
 
 import { useParams } from 'next/navigation';
+import { useEffect } from 'react';
 import Link from 'next/link';
 import { useEditarProfessor } from '@/hooks/professores/useEditarProfessor';
+import { useProfessorForm } from '@/hooks/professores/useProfessorForm';
+import { isAdmin } from '@/utils/isAdmin';
 import {
   ButtonGroup,
   Container,
@@ -11,17 +14,19 @@ import {
   PageTitle,
   ProfessorForm,
 } from '@/components';
-import { useProfessorForm } from '@/hooks/professores/useProfessorForm';
-import { isAdmin } from '@/utils/isAdmin';
 
 export default function EditarProfessor() {
   const params = useParams();
-
   const { message, errors, isLoading, isSubmitting, submit, current } =
     useEditarProfessor(params.id);
-  const { formData, isSenhaError, handleChange, handleSubmit } =
+  const { formData, isSenhaError, handleChange, handleSubmit, setFormData } =
     useProfessorForm({ submit, professor: current, id: params.id });
 
+  useEffect(() => {
+    if (current) {
+      setFormData(current);
+    }
+  }, [current, setFormData]);
   return (
     <Container>
       <PageContent>
@@ -46,6 +51,7 @@ export default function EditarProfessor() {
         isLoading={isLoading}
         message={message}
         errors={errors}
+        isUpdate
       />
     </Container>
   );

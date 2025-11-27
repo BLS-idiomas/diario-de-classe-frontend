@@ -42,5 +42,6 @@ export function useProfessorForm({ id = null, professor = null, submit }) {
     handleSubmit,
     handleChange,
     formData,
+    setFormData,
   };
 }

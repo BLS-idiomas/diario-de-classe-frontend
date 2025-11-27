@@ -17,6 +17,7 @@ export const ProfessorForm = ({
   isAdmin,
   isSubmitting,
   isLoading,
+  isUpdate = false,
 }) => {
   return (
     <Form handleSubmit={handleSubmit}>
@@ -74,7 +75,7 @@ export const ProfessorForm = ({
 
         {/* Senha */}
         <InputField
-          required
+          required={!isUpdate}
           type="password"
           htmlFor="senha"
           label="Senha"
@@ -87,7 +88,7 @@ export const ProfessorForm = ({
 
         {/* Repetir Senha */}
         <InputField
-          required
+          required={!isUpdate}
           type="password"
           htmlFor="repetirSenha"
           label="Repetir Senha"
