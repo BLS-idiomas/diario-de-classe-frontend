@@ -7,6 +7,7 @@ import { GetProfessorByIdService } from '@/services/professor/getProfessorByIdSe
 import { CreateProfessorService } from '@/services/professor/createProfessorService';
 import { UpdateProfessorService } from '@/services/professor/updateProfessorService';
 import { DeleteProfessorService } from '@/services/professor/deleteProfessorService';
+import { GetAulasByProfessorService } from '@/services/professor/getAulasByProfessorService';
 
 // GET ALL
 export const getProfessores = createAsyncThunk(
@@ -103,10 +104,27 @@ export const deleteProfessor = createAsyncThunk(
   }
 );
 
+// GET ALUNOS
+export const getAulasProfessor = createAsyncThunk(
+  'professores/getOne/aulas',
+  async (id, { rejectWithValue }) => {
+    try {
+      const res = await GetAulasByProfessorService.handle(id);
+      return res.data;
+    } catch (error) {
+      // Capturar a mensagem de erro da resposta da API
+      const errorMessage =
+        error.response?.data?.message || error.message || 'Erro desconhecido';
+      return rejectWithValue({ message: errorMessage });
+    }
+  }
+);
 const professoresSlice = createSlice({
   name: 'professores',
   initialState: {
     list: [],
+    aulas: [],
+    alunos: [],
     current: null,
     loading: false,
     status: STATUS.IDLE,
@@ -227,6 +245,27 @@ const professoresSlice = createSlice({
         state.loading = false;
         state.errors = action.payload?.errors || [];
         state.message = action.payload?.message || 'Erro ao deletar professor';
+      })
+      // getAulasProfessor
+      .addCase(getAulasProfessor.pending, state => {
+        state.status = STATUS.LOADING;
+        state.loading = true;
+        state.errors = [];
+        state.message = null;
+        state.current = null;
+        state.aulas = [];
+        state.action = 'getAulasProfessor';
+      })
+      .addCase(getAulasProfessor.fulfilled, (state, action) => {
+        state.status = STATUS.SUCCESS;
+        state.loading = false;
+        state.aulas = action.payload;
+      })
+      .addCase(getAulasProfessor.rejected, (state, action) => {
+        state.status = STATUS.FAILED;
+        state.loading = false;
+        state.errors = action.error;
+        state.message = action.payload.message;
       });
   },
 });
