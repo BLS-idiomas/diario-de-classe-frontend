@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useRouter } from 'next/navigation';
 import { STATUS } from '@/constants';
@@ -18,36 +18,7 @@ export function useNovoProfessor() {
     state => state.professores
   );
 
-  const [isSenhaError, setIsSenhaError] = useState(false);
-
-  const [formData, setFormData] = useState({
-    nome: '',
-    sobrenome: '',
-    email: '',
-    telefone: '',
-    senha: '',
-    repetirSenha: '',
-    permissao: 'professor',
-  });
-
-  const handleChange = e => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
-  const handleSubmit = async e => {
-    e.preventDefault();
-
-    // impedindo continuar caso as senhas não batam
-    if (formData.senha !== formData.repetirSenha) {
-      setIsSenhaError(true);
-      return;
-    }
-    setIsSenhaError(false);
-    const { repetirSenha, ...dataToSend } = formData;
+  const submit = dataToSend => {
     dispatch(createProfessor(dataToSend));
   };
 
@@ -73,10 +44,7 @@ export function useNovoProfessor() {
     errors,
     isLoading,
     isSubmitting,
-    isSenhaError,
     isAdmin,
-    handleSubmit,
-    handleChange,
-    formData,
+    submit,
   };
 }

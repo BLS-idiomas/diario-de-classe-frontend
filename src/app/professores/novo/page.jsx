@@ -16,18 +16,13 @@ import {
   PageTitle,
   SelectField,
 } from '@/components';
+import { useProfessorForm } from '@/hooks/professores/useProfessorForm';
 
 export default function NovoProfessor() {
-  const {
-    formData,
-    message,
-    errors,
-    isLoading,
-    isSubmitting,
-    isSenhaError,
-    handleChange,
-    handleSubmit,
-  } = useNovoProfessor();
+  const { message, errors, isLoading, isSubmitting, submit } =
+    useNovoProfessor();
+  const { formData, isSenhaError, handleChange, handleSubmit } =
+    useProfessorForm({ submit });
 
   return (
     <Container>
