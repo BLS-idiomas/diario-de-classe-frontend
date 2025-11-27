@@ -8,6 +8,7 @@ import {
   ButtonsFields,
   Container,
   Form,
+  FormError,
   FormGroup,
   InputField,
   PageContent,
@@ -45,22 +46,13 @@ export default function NovoProfessor() {
         </Link>
       </ButtonGroup>
 
-      {isError && (
-        <div className="bg-red-50 border border-red-200 rounded-md p-4 mb-6">
-          <h3 className="text-red-800 font-medium mb-2">
-            {message || (isSenhaError ? 'As senhas não coincidem' : '')}:
-          </h3>
-          <ul className="list-disc list-inside space-y-1">
-            {errors.map((error, index) => (
-              <li key={index} className="text-sm text-red-700">
-                {error}
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
-
       <Form handleSubmit={handleSubmit}>
+        <FormError
+          isError={isError}
+          title={message || (isSenhaError ? 'As senhas não coincidem' : '')}
+          errors={errors}
+        />
+
         <FormGroup>
           {/* Nome */}
           <InputField
