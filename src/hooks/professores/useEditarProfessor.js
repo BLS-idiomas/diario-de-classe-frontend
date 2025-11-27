@@ -13,6 +13,7 @@ export function useEditarProfessor(professorId) {
   const { status, message, errors, current } = useSelector(
     state => state.professores
   );
+  const [submitted, setSubmitting] = useState(false);
 
   useEffect(() => {
     dispatch(clearStatus());
@@ -25,16 +26,17 @@ export function useEditarProfessor(professorId) {
   }, [dispatch, professorId]);
 
   useEffect(() => {
-    if (status === STATUS.SUCCESS && current) {
+    if (status === STATUS.SUCCESS && current && submitted) {
       dispatch(clearCurrent());
       dispatch(clearStatus());
       success('Operação realizada com sucesso!');
       router.push('/professores');
     }
-  }, [status, router, success, current, dispatch]);
+  }, [status, router, success, current, dispatch, submitted]);
 
   const submit = ({ id, dataToSend }) => {
     dispatch(updateProfessor({ id: id, data: dataToSend }));
+    setSubmitting(true);
   };
 
   // Estados computados para facilitar o uso
