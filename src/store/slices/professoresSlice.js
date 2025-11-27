@@ -225,6 +225,8 @@ const professoresSlice = createSlice({
   },
 });
 
-export const { clearErrors, clearStatus, clearCurrent } =
-  professoresSlice.actions;
+export const clearErrors = professoresSlice.actions.clearErrors;
+// Removed duplicate export
 export default professoresSlice.reducer;
+export const clearStatus = professoresSlice.actions.clearStatus;
+export const clearCurrent = professoresSlice.actions.clearCurrent;

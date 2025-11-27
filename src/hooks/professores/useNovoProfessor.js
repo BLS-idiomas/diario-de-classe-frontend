@@ -8,7 +8,6 @@ import {
   createProfessor,
 } from '@/store/slices/professoresSlice';
 import { useToast } from '@/providers/ToastProvider';
-import { isAdmin } from '@/utils/isAdmin';
 
 export function useNovoProfessor() {
   const dispatch = useDispatch();
@@ -18,7 +17,7 @@ export function useNovoProfessor() {
     state => state.professores
   );
 
-  const submit = dataToSend => {
+  const submit = ({ dataToSend }) => {
     dispatch(createProfessor(dataToSend));
   };
 
@@ -44,7 +43,6 @@ export function useNovoProfessor() {
     errors,
     isLoading,
     isSubmitting,
-    isAdmin,
     submit,
   };
 }

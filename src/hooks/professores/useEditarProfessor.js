@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import { STATUS } from '@/constants';
 import { useToast } from '@/providers/ToastProvider';
 import { updateProfessor, getProfessor } from '@/store/slices/professoresSlice';
+import { clearStatus, clearCurrent } from '@/store/slices/professoresSlice';
 
 export function useEditarProfessor(professorId) {
   const dispatch = useDispatch();
@@ -13,34 +14,9 @@ export function useEditarProfessor(professorId) {
     state => state.professores
   );
 
-  const initialFormData = useMemo(() => {
-    if (current && current.id) {
-      return {
-        nome: current.nome || '',
-        sobrenome: current.sobrenome || '',
-        email: current.email || '',
-        telefone: current.telefone || '',
-        senha: '',
-        repetirSenha: '',
-        permissao: current.permissao || 'professor',
-      };
-    }
-    return {
-      nome: '',
-      sobrenome: '',
-      email: '',
-      telefone: '',
-      senha: '',
-      repetirSenha: '',
-      permissao: 'professor',
-    };
-  }, [current]);
-
-  const [formData, setFormData] = useState(initialFormData);
-
   useEffect(() => {
-    setFormData(initialFormData);
-  }, [initialFormData]);
+    dispatch(clearStatus());
+  }, [dispatch]);
 
   useEffect(() => {
     if (professorId) {
@@ -48,32 +24,17 @@ export function useEditarProfessor(professorId) {
     }
   }, [dispatch, professorId]);
 
-  const handleChange = e => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
-  const handleSubmit = async e => {
-    e.preventDefault();
-
-    try {
-      const { repetirSenha, ...dataToSend } = formData;
-
-      const result = await dispatch(
-        updateProfessor({ id: professorId, data: dataToSend })
-      );
-
-      if (updateProfessor.fulfilled.match(result)) {
-        // Sucesso - redirecionar para lista
-        success('Operação realizada com sucesso!');
-        router.push('/professores');
-      }
-    } catch (error) {
-      console.error('Erro ao editar professor:', error);
+  useEffect(() => {
+    if (status === STATUS.SUCCESS && current) {
+      dispatch(clearCurrent());
+      dispatch(clearStatus());
+      success('Operação realizada com sucesso!');
+      router.push('/professores');
     }
+  }, [status, router, success, current, dispatch]);
+
+  const submit = ({ id, dataToSend }) => {
+    dispatch(updateProfessor({ id: id, data: dataToSend }));
   };
 
   // Estados computados para facilitar o uso
@@ -81,14 +42,11 @@ export function useEditarProfessor(professorId) {
   const isSubmitting = status === STATUS.IDLE || status === STATUS.LOADING;
 
   return {
-    formData,
-    status,
     message,
     errors,
-    current,
     isLoading,
     isSubmitting,
-    handleChange,
-    handleSubmit,
+    current,
+    submit,
   };
 }

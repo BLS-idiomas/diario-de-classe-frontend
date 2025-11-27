@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-export function useProfessorForm({ professor = null, submit }) {
+export function useProfessorForm({ id = null, professor = null, submit }) {
   const [isSenhaError, setIsSenhaError] = useState(false);
 
   const [formData, setFormData] = useState(
@@ -34,7 +34,7 @@ export function useProfessorForm({ professor = null, submit }) {
     setIsSenhaError(false);
     const { repetirSenha, ...dataToSend } = formData;
 
-    submit(dataToSend);
+    submit({ id, dataToSend });
   };
 
   return {

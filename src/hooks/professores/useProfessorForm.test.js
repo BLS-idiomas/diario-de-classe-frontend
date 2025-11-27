@@ -81,12 +81,15 @@ describe('useProfessorForm', () => {
     });
     expect(result.current.isSenhaError).toBe(false);
     expect(submit).toHaveBeenCalledWith({
-      nome: 'Carlos',
-      sobrenome: '',
-      email: '',
-      telefone: '',
-      senha: '123',
-      permissao: 'professor',
+      id: null,
+      dataToSend: {
+        nome: 'Carlos',
+        sobrenome: '',
+        email: '',
+        telefone: '',
+        senha: '123',
+        permissao: 'professor',
+      },
     });
   });
 });
