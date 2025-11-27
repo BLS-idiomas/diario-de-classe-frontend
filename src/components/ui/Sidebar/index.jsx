@@ -1,56 +1,10 @@
 'use client';
-import {
-  Book,
-  ChevronLeft,
-  ChevronRight,
-  GraduationCap,
-  Home,
-  Info,
-  NotebookTabs,
-  User,
-} from 'lucide-react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { SidebarItem } from '../SidebarItem';
+import { useSidebar } from './useSidebar';
 
 export const Sidebar = ({ sidebarExpanded, toggleSidebar, sidebarClass }) => {
-  const strokeWidth = 1;
-  const sidebarItems = [
-    {
-      active: true,
-      href: '/',
-      label: 'Home',
-      icon: <Home strokeWidth={strokeWidth} />,
-    },
-    {
-      active: false,
-      href: '/alunos',
-      label: 'Alunos',
-      icon: <GraduationCap strokeWidth={strokeWidth} />,
-    },
-    {
-      active: false,
-      href: '/professores',
-      label: 'Professores',
-      icon: <User strokeWidth={strokeWidth} />,
-    },
-    {
-      active: false,
-      href: '/aulas',
-      label: 'Aulas',
-      icon: <Book strokeWidth={strokeWidth} />,
-    },
-    {
-      active: false,
-      href: '/relatorios',
-      label: 'Relatórios',
-      icon: <NotebookTabs strokeWidth={strokeWidth} />,
-    },
-    {
-      active: false,
-      href: '/exemple',
-      label: 'Exemplos',
-      icon: <Info strokeWidth={strokeWidth} />,
-    },
-  ];
+  const { strokeWidth, sidebarItems, isActive } = useSidebar();
 
   return (
     <aside
@@ -66,7 +20,7 @@ export const Sidebar = ({ sidebarExpanded, toggleSidebar, sidebarClass }) => {
                 href={item.href}
                 label={item.label}
                 sidebarExpanded={sidebarExpanded}
-                active={item.active}
+                active={isActive(item.href)}
               >
                 {item.icon}
               </SidebarItem>
