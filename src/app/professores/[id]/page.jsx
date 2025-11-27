@@ -64,7 +64,7 @@ export default function Professor() {
       )}
 
       {isSuccess && professor && (
-        <div>
+        <div className="mt-5">
           <p>Id: {professor.id}</p>
           <p>Nome: {professor.nome}</p>
           <p>Sobrenome: {professor.sobrenome}</p>
@@ -73,6 +73,23 @@ export default function Professor() {
           <p>Permissão: {professor.permissao}</p>
           <p>Data de criação: {professor.dataCriacao}</p>
           <p>Data de atualização: {professor.dataAtualizacao}</p>
+
+          <div className="mt-4">
+            {professor.disponibilidades &&
+              professor.disponibilidades.length > 0 &&
+              professor.disponibilidades.map(disponibilidade => (
+                <div key={disponibilidade.id} className="mb-6">
+                  <strong>DIA DA SEMANA:</strong> {disponibilidade.diaSemana}
+                  <p>Id: {disponibilidade.id}</p>
+                  <p>horaInicial: {disponibilidade.horaInicial}</p>
+                  <p>horaFinal: {disponibilidade.horaFinal}</p>
+                  <p>ativo: {disponibilidade.ativo}</p>
+                  <p>userId: {disponibilidade.userId}</p>
+                  <p>dataCriacao: {disponibilidade.dataCriacao}</p>
+                  <p>dataAtualizacao: {disponibilidade.dataAtualizacao}</p>
+                </div>
+              ))}
+          </div>
         </div>
       )}
     </div>

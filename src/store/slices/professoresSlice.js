@@ -110,6 +110,7 @@ const professoresSlice = createSlice({
     current: null,
     loading: false,
     status: STATUS.IDLE,
+    action: null,
     errors: [],
     message: null,
     count: 0,
@@ -135,6 +136,7 @@ const professoresSlice = createSlice({
         state.errors = [];
         state.list = [];
         state.message = null;
+        state.action = 'getProfessores';
       })
       .addCase(getProfessores.fulfilled, (state, action) => {
         state.status = STATUS.SUCCESS;
@@ -156,6 +158,7 @@ const professoresSlice = createSlice({
         state.errors = [];
         state.message = null;
         state.current = null;
+        state.action = 'getProfessor';
       })
       .addCase(getProfessor.fulfilled, (state, action) => {
         state.status = STATUS.SUCCESS;
@@ -174,6 +177,7 @@ const professoresSlice = createSlice({
         state.loading = true;
         state.errors = [];
         state.message = null;
+        state.action = 'createProfessor';
       })
       .addCase(createProfessor.fulfilled, (state, action) => {
         state.status = STATUS.SUCCESS;
@@ -192,6 +196,7 @@ const professoresSlice = createSlice({
         state.loading = true;
         state.errors = [];
         state.message = null;
+        state.action = 'updateProfessor';
       })
       .addCase(updateProfessor.fulfilled, (state, action) => {
         state.status = STATUS.SUCCESS;
@@ -211,6 +216,7 @@ const professoresSlice = createSlice({
         state.loading = true;
         state.errors = [];
         state.message = null;
+        state.action = 'deleteProfessor';
       })
       .addCase(deleteProfessor.fulfilled, (state, action) => {
         state.status = STATUS.SUCCESS;
@@ -226,7 +232,6 @@ const professoresSlice = createSlice({
 });
 
 export const clearErrors = professoresSlice.actions.clearErrors;
-// Removed duplicate export
-export default professoresSlice.reducer;
 export const clearStatus = professoresSlice.actions.clearStatus;
 export const clearCurrent = professoresSlice.actions.clearCurrent;
+export default professoresSlice.reducer;
