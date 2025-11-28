@@ -1,3 +1,3 @@
 export function isAdmin(user) {
-  return true;
+  return Boolean(user) && user.permissao === 'admin';
 }
