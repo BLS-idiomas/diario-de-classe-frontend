@@ -138,7 +138,7 @@ export const getAlunosProfessor = createAsyncThunk(
   }
 );
 
-// UPDATE
+// UPDATE DISPONIBILIDADE
 export const updateDisponibilidadeProfessor = createAsyncThunk(
   'professores/update/disponibilidade',
   async ({ id, data }, { rejectWithValue }) => {
