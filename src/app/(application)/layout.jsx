@@ -1,10 +1,10 @@
 'use client';
 
 import { useState } from 'react';
-import { Header, Sidebar, Footer } from '../..';
 import { isMobileFunction } from '@/utils/isMobileFunction';
+import { Header, Sidebar, Footer } from '@/components';
 
-export const Layout = ({ children }) => {
+export default function ApplicationLayout({ children }) {
   const [sidebarExpanded, setSidebarExpanded] = useState({
     mainClass: 'ml-18',
     sidebarClass: 'w-18',
@@ -31,6 +31,7 @@ export const Layout = ({ children }) => {
       isExpanded: !sidebarExpanded.isExpanded,
     });
   };
+
   return (
     <div className="min-h-screen bg-white">
       <Header />
@@ -49,4 +50,4 @@ export const Layout = ({ children }) => {
       <Footer />
     </div>
   );
-};
+}
