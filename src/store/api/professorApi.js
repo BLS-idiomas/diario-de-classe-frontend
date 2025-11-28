@@ -16,4 +16,8 @@ export class ProfessorApi extends AbstractEntityApi {
   async getAlunosByProfessor(id) {
     return this.get(`${this.baseEndpoint}/${id}/alunos`);
   }
+
+  async updateDisponibilidade(id, data) {
+    return this.put(`${this.baseEndpoint}/${id}/disponibilidade`, data);
+  }
 }

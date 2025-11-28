@@ -9,6 +9,7 @@ import { UpdateProfessorService } from '@/services/professor/updateProfessorServ
 import { DeleteProfessorService } from '@/services/professor/deleteProfessorService';
 import { GetAulasByProfessorService } from '@/services/professor/getAulasByProfessorService';
 import { GetAlunosByProfessorService } from '@/services/professor/getAlunosByProfessorService';
+import { UpdateDisponibilidadeProfessorService } from '@/services/professor/updateDisponibilidadeProfessorService';
 
 // GET ALL
 export const getProfessores = createAsyncThunk(
@@ -136,6 +137,30 @@ export const getAlunosProfessor = createAsyncThunk(
     }
   }
 );
+
+// UPDATE
+export const updateDisponibilidadeProfessor = createAsyncThunk(
+  'professores/update',
+  async ({ id, data }, { rejectWithValue }) => {
+    try {
+      const res = await UpdateDisponibilidadeProfessorService.handle(id, data);
+      return res.data;
+    } catch (error) {
+      const errorMessage =
+        error.response?.data?.message ||
+        error.message ||
+        'Erro ao atualizar professor';
+
+      const validationErrors = error.response?.data?.errors || [];
+
+      return rejectWithValue({
+        message: errorMessage,
+        errors: validationErrors,
+      });
+    }
+  }
+);
+
 const professoresSlice = createSlice({
   name: 'professores',
   initialState: {
@@ -304,6 +329,27 @@ const professoresSlice = createSlice({
         state.loading = false;
         state.errors = action.error;
         state.message = action.payload.message;
+      })
+      // updateDisponibilidadeProfessor
+      .addCase(updateDisponibilidadeProfessor.pending, state => {
+        state.status = STATUS.LOADING;
+        state.loading = true;
+        state.errors = [];
+        state.message = null;
+        state.action = 'updateDisponibilidadeProfessor';
+      })
+      .addCase(updateDisponibilidadeProfessor.fulfilled, (state, action) => {
+        state.status = STATUS.SUCCESS;
+        state.loading = false;
+        state.current.disponibilidades = action.payload;
+      })
+      .addCase(updateDisponibilidadeProfessor.rejected, (state, action) => {
+        state.status = STATUS.FAILED;
+        state.loading = false;
+        state.errors = action.payload?.errors || [];
+        state.message =
+          action.payload?.message ||
+          'Erro ao atualizar disponibilidade do professor';
       });
   },
 });
