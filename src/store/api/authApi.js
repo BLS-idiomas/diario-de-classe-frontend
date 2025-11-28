@@ -5,10 +5,6 @@ export class AuthApi extends BaseApi {
     super();
   }
 
-  addToken(token) {
-    this.api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-  }
-
   async login(credentials) {
     return await this.api.post('/auth/login', credentials);
   }
