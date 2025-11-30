@@ -1,20 +1,27 @@
-import { render, screen } from '@testing-library/react';
+import { render, fireEvent, screen } from '@testing-library/react';
 import { Header } from './index';
 import '@testing-library/jest-dom';
 
-// Mock dos componentes do Next.js
-jest.mock('next/link', () => {
-  const MockLink = ({ children, href }) => <a href={href}>{children}</a>;
-  MockLink.displayName = 'NextLink';
-  return MockLink;
-});
 jest.mock('next/image', () => {
-  const MockImage = props => <img {...props} alt={props.alt} />;
-  MockImage.displayName = 'NextImage';
+  const MockImage = ({ alt, ...props }) => <img alt={alt} {...props} />;
+  MockImage.displayName = 'MockNextImage';
   return MockImage;
 });
+jest.mock('@/hooks/auth/useLogout', () => ({ useLogout: jest.fn() }));
 
 describe('Header Component', () => {
+  let logoutUserMock;
+  beforeEach(() => {
+    logoutUserMock = jest.fn();
+    require('@/hooks/auth/useLogout').useLogout.mockReturnValue({
+      logoutUser: logoutUserMock,
+    });
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
   it('deve renderizar o título corretamente', () => {
     render(<Header />);
     expect(screen.getByText('Diário de Classe')).toBeInTheDocument();
@@ -27,11 +34,17 @@ describe('Header Component', () => {
     expect(logo).toHaveAttribute('src', '/bls.png');
   });
 
-  it("deve conter o link 'Sair'", () => {
+  it("deve conter o botão 'Sair'", () => {
     render(<Header />);
-    const link = screen.getByRole('link', { name: 'Sair' });
-    expect(link).toBeInTheDocument();
-    expect(link).toHaveAttribute('href', '#');
+    const button = screen.getByRole('button', { name: 'Sair' });
+    expect(button).toBeInTheDocument();
+  });
+
+  it('deve chamar logoutUser ao clicar no botão Sair', () => {
+    render(<Header />);
+    const button = screen.getByRole('button', { name: 'Sair' });
+    fireEvent.click(button);
+    expect(logoutUserMock).toHaveBeenCalled();
   });
 
   it('deve possuir a classe fixa e estilização do header', () => {
