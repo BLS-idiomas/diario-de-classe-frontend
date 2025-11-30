@@ -7,7 +7,10 @@ export class AuthenticatedApi extends BaseApi {
   }
 
   addTokenInterceptor() {
-    this.token = localStorage.getItem('token');
+    const dataString = localStorage.getItem('token');
+    const data = dataString ? JSON.parse(dataString) : null;
+    this.token = data?.accessToken;
+
     this.api.interceptors.request.use(config => {
       const token = this.token;
       if (token) {

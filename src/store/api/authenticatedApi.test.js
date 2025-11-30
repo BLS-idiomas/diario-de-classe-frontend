@@ -53,7 +53,10 @@ describe('AuthenticatedApi', () => {
   });
 
   it('deve adicionar Authorization se houver token', () => {
-    global.localStorage.setItem('token', 'abc123');
+    global.localStorage.setItem(
+      'token',
+      JSON.stringify({ accessToken: 'abc123' })
+    );
     const { AuthenticatedApi } = require('./authenticatedApi');
     apiInstance = new AuthenticatedApi();
     const config = { headers: {} };
@@ -69,11 +72,14 @@ describe('AuthenticatedApi', () => {
     const config = { headers: {} };
     const result = interceptorFn(config);
     expect(result.headers.Authorization).toBeUndefined();
-    expect(apiInstance.token).toBeNull();
+    expect(apiInstance.token).toBeUndefined();
   });
 
   it('isAuthenticated retorna true se houver token', () => {
-    global.localStorage.setItem('token', 'tokenzinho');
+    global.localStorage.setItem(
+      'token',
+      JSON.stringify({ accessToken: 'tokenzinho' })
+    );
     const { AuthenticatedApi } = require('./authenticatedApi');
     apiInstance = new AuthenticatedApi();
     expect(apiInstance.token).toBe('tokenzinho');
@@ -84,7 +90,7 @@ describe('AuthenticatedApi', () => {
     global.localStorage.removeItem('token'); // Garante remoção
     const { AuthenticatedApi } = require('./authenticatedApi');
     apiInstance = new AuthenticatedApi();
-    expect(apiInstance.token).toBeNull();
+    expect(apiInstance.token).toBeUndefined();
     expect(apiInstance.isAuthenticated()).toBe(false);
   });
 });
