@@ -17,10 +17,10 @@ export default function AuthLayout({ children }) {
         router.push('/');
         return;
       }
-      console.warn('Não logado');
     }
     checkAuth();
-  }, [currentUser, isAuthenticated, success, router]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-100">
