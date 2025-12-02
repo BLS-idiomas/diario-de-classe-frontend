@@ -10,10 +10,14 @@ export function useEditarProfessor(professorId) {
   const dispatch = useDispatch();
   const router = useRouter();
   const { success } = useToast();
-  const { status, message, errors, current, action } = useSelector(
+  const { status, message, errors, current, action, statusError } = useSelector(
     state => state.professores
   );
   const isLoading = status === STATUS.LOADING;
+
+  const submit = ({ id, dataToSend }) => {
+    dispatch(updateProfessor({ id: id, data: dataToSend }));
+  };
 
   useEffect(() => {
     dispatch(clearStatus());
@@ -34,11 +38,8 @@ export function useEditarProfessor(professorId) {
     }
   }, [status, router, success, current, action, dispatch]);
 
-  const submit = ({ id, dataToSend }) => {
-    dispatch(updateProfessor({ id: id, data: dataToSend }));
-  };
-
   return {
+    statusError,
     message,
     errors,
     isLoading,

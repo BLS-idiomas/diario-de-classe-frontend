@@ -1,8 +1,11 @@
 'use client';
 
-import { useParams } from 'next/navigation';
+import { useEffect } from 'react';
 import Link from 'next/link';
+import { notFound, useParams } from 'next/navigation';
 import { useEditarProfessor } from '@/hooks/professores/useEditarProfessor';
+import { useProfessorForm } from '@/hooks/professores/useProfessorForm';
+import { STATUS_ERROR } from '@/constants/statusError';
 import {
   ButtonGroup,
   PageContent,
@@ -10,15 +13,13 @@ import {
   PageTitle,
   ProfessorForm,
   Container,
+  Loading,
 } from '@/components';
-import { useProfessorForm } from '@/hooks/professores/useProfessorForm';
-import { useEffect } from 'react';
 
 export default function EditarProfessor() {
   const params = useParams();
-  const { message, errors, isLoading, current, submit } = useEditarProfessor(
-    params.id
-  );
+  const { message, errors, isLoading, current, statusError, submit } =
+    useEditarProfessor(params.id);
   const { formData, isSenhaError, handleChange, handleSubmit, setFormData } =
     useProfessorForm({ submit, isEdit: true, id: params.id });
 
@@ -31,6 +32,19 @@ export default function EditarProfessor() {
       });
     }
   }, [current, setFormData]);
+
+  useEffect(() => {
+    if (
+      statusError === STATUS_ERROR.BAD_REQUEST ||
+      statusError === STATUS_ERROR.NOT_FOUND
+    ) {
+      return notFound();
+    }
+  }, [statusError]);
+
+  if (isLoading && !current) {
+    return <Loading />;
+  }
 
   return (
     <Container>

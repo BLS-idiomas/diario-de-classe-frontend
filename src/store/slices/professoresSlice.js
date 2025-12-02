@@ -246,6 +246,7 @@ const professoresSlice = createSlice({
         state.status = STATUS.FAILED;
         state.errors = action.error;
         state.message = action.payload.message;
+        state.statusError = action.payload.statusError;
       })
       // createProfessor
       .addCase(createProfessor.pending, state => {

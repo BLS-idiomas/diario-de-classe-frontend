@@ -1,6 +1,11 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { Sidebar } from './index';
 
+// Mock providers and hooks used by Sidebar
+jest.mock('@/providers/UserAuthProvider', () => ({
+  useUserAuth: () => ({ isAdmin: () => true }),
+}));
+
 // Mock do useSidebar para controlar o retorno dos itens e funções
 jest.mock('./useSidebar', () => ({
   useSidebar: () => ({
@@ -10,11 +15,13 @@ jest.mock('./useSidebar', () => ({
         href: '/home',
         label: 'Home',
         icon: <span data-testid="icon-home">icon</span>,
+        show: true,
       },
       {
         href: '/alunos',
         label: 'Alunos',
         icon: <span data-testid="icon-alunos">icon</span>,
+        show: true,
       },
     ],
     isActive: href => href === '/home',

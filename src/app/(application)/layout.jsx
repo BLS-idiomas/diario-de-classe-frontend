@@ -8,7 +8,7 @@ export default function ApplicationLayout({ children }) {
     useApplicationLayout();
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-gray-50">
       <Header />
       <div className="flex pt-16 min-h-screen">
         <Sidebar
