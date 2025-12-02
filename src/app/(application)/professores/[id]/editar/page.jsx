@@ -40,7 +40,7 @@ export default function EditarProfessor() {
         <PageSubTitle>Atualize os dados do professor</PageSubTitle>
       </PageContent>
       <ButtonGroup>
-        <Link href="/professores" className="btn btn-secondary">
+        <Link href={`/professores/${params.id}`} className="btn btn-secondary">
           ← Voltar
         </Link>
       </ButtonGroup>
