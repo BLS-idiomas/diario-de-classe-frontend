@@ -29,7 +29,6 @@ export default function Professor() {
     ) {
       return notFound();
     }
-    console.log('statusError', statusError);
   }, [statusError]);
 
   if (isLoading || !professor) {
