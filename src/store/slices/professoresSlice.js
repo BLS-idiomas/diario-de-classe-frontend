@@ -258,6 +258,9 @@ const professoresSlice = createSlice({
       .addCase(createProfessor.fulfilled, (state, action) => {
         state.status = STATUS.SUCCESS;
         state.current = action.payload;
+        if (!Array.isArray(state.list)) state.list = [];
+        state.list.push(action.payload);
+        state.count = (state.count || 0) + 1;
       })
       .addCase(createProfessor.rejected, (state, action) => {
         state.status = STATUS.FAILED;
@@ -276,6 +279,11 @@ const professoresSlice = createSlice({
       .addCase(updateProfessor.fulfilled, (state, action) => {
         state.status = STATUS.SUCCESS;
         state.current = action.payload;
+        if (Array.isArray(state.list)) {
+          state.list = state.list.map(item =>
+            item && item.id === action.payload.id ? action.payload : item
+          );
+        }
       })
       .addCase(updateProfessor.rejected, (state, action) => {
         state.status = STATUS.FAILED;
@@ -294,6 +302,17 @@ const professoresSlice = createSlice({
       })
       .addCase(deleteProfessor.fulfilled, (state, action) => {
         state.status = STATUS.SUCCESS;
+        // Remove o professor da lista e atualiza o contador
+        const deletedId = action.payload;
+        if (Array.isArray(state.list)) {
+          state.list = state.list.filter(item => item && item.id !== deletedId);
+        }
+        if (typeof state.count === 'number' && state.count > 0) {
+          state.count = state.count - 1;
+        }
+        if (state.current && state.current.id === deletedId) {
+          state.current = null;
+        }
       })
       .addCase(deleteProfessor.rejected, (state, action) => {
         state.status = STATUS.FAILED;

@@ -57,7 +57,7 @@ export function useProfessoresList({
     const iconParams = { strokeWidth: 1, size: 16 };
 
     return professores.map((prof, index) => ({
-      id: index,
+      id: parseInt(index) + 1,
       name: prof.nome,
       sobrenome: prof.sobrenome,
       telefone: telefoneFormatter(prof.telefone),
