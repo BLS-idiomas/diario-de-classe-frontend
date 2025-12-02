@@ -157,10 +157,12 @@ describe('useEditarProfessor', () => {
 
     const wrapper = createWrapper(store);
     renderHook(() => useEditarProfessor(null), { wrapper });
-    // clearStatus is always dispatched on mount
-    expect(mockDispatch).toHaveBeenCalledWith({
-      type: 'professores/clearStatus',
-    });
+    // Verify that getProfessor was not dispatched
+    const calls = mockDispatch.mock.calls;
+    const hasGetProfessorCall = calls.some(
+      call => call[0]?.type === 'professores/getProfessor'
+    );
+    expect(hasGetProfessorCall).toBe(false);
   });
 
   it('should update form data when handleChange is called', () => {

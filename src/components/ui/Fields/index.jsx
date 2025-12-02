@@ -49,6 +49,8 @@ export const InputField = ({
   inputGroupClass,
   labelClass,
   className,
+  maxLength,
+  minLength,
   props,
 }) => {
   type ||= 'text';
@@ -62,7 +64,6 @@ export const InputField = ({
       labelClass={labelClass}
     >
       <input
-        {...props}
         type={type}
         id={htmlFor}
         name={htmlFor}
@@ -71,6 +72,9 @@ export const InputField = ({
         onChange={onChange}
         className={className}
         placeholder={placeholder}
+        maxLength={maxLength}
+        minLength={minLength}
+        {...props}
       />
     </BaseField>
   );
