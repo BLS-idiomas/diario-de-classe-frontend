@@ -6,6 +6,7 @@ import {
   InputField,
   SelectField,
 } from '@/components';
+import { PERMISSAO } from '@/constants';
 
 export const ProfessorForm = ({
   handleSubmit,
@@ -105,8 +106,8 @@ export const ProfessorForm = ({
           onChange={handleChange}
           value={formData.permissao}
           options={[
-            { value: 'professor', label: 'Professor' },
-            { value: 'admin', label: 'Administrador' },
+            { value: PERMISSAO.MEMBER, label: 'Professor' },
+            { value: PERMISSAO.ADMIN, label: 'Administrador' },
           ]}
         />
       </FormGroup>

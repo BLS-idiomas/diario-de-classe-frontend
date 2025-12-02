@@ -13,7 +13,7 @@ export function useNovoProfessor() {
   const dispatch = useDispatch();
   const router = useRouter();
   const { success } = useToast();
-  const { status, message, errors, current } = useSelector(
+  const { status, message, errors, current, action } = useSelector(
     state => state.professores
   );
 
@@ -26,13 +26,13 @@ export function useNovoProfessor() {
   }, [dispatch]);
 
   useEffect(() => {
-    if (status === STATUS.SUCCESS && current) {
+    if (status === STATUS.SUCCESS && current && action === 'createProfessor') {
       dispatch(clearCurrent());
       dispatch(clearStatus());
       success('Professor criado com sucesso!');
       router.push('/professores');
     }
-  }, [status, router, success, current, dispatch]);
+  }, [status, router, success, current, action, dispatch]);
 
   // Estados computados para facilitar o uso
   const isLoading = status === STATUS.LOADING;

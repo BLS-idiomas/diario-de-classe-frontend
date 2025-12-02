@@ -1,3 +1,4 @@
+import { PERMISSAO } from '@/constants';
 import { useState } from 'react';
 
 export function useProfessorForm({ id = null, professor = null, submit }) {
@@ -11,7 +12,7 @@ export function useProfessorForm({ id = null, professor = null, submit }) {
       telefone: '',
       senha: '',
       repetirSenha: '',
-      permissao: 'professor',
+      permissao: PERMISSAO.MEMBER,
     }
   );
 

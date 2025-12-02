@@ -9,9 +9,12 @@ import { useToast } from '@/providers/ToastProvider';
 
 // Mock dos módulos
 jest.mock('@/store/slices/professoresSlice', () => ({
-  createProfessor: jest.fn(),
-  clearStatus: jest.fn(),
-  clearCurrent: jest.fn(),
+  createProfessor: jest.fn(data => ({
+    type: 'createProfessor',
+    payload: data,
+  })),
+  clearStatus: jest.fn(() => ({ type: 'clearStatus' })),
+  clearCurrent: jest.fn(() => ({ type: 'clearCurrent' })),
 }));
 
 jest.mock('@/constants', () => ({
@@ -94,7 +97,8 @@ describe('useNovoProfessor', () => {
     const { result } = renderHook(() => useNovoProfessor(), { wrapper });
 
     act(() => {
-      result.current.submit({ nome: 'João' });
+      // submit expects an object with dataToSend
+      result.current.submit({ dataToSend: { nome: 'João' } });
     });
 
     // Verifica se o dispatch foi chamado com createProfessor
@@ -126,6 +130,7 @@ describe('useNovoProfessor', () => {
       message: 'Professor criado com sucesso',
       errors: {},
       current: { id: 1, nome: 'João' },
+      action: 'createProfessor',
     };
     const store = createMockStore(successState);
     store.dispatch = mockDispatch;
@@ -144,6 +149,7 @@ describe('useNovoProfessor', () => {
       message: 'Professor criado com sucesso',
       errors: {},
       current: { id: 1, nome: 'João' },
+      action: 'createProfessor',
     };
     const store = createMockStore(successState);
     store.dispatch = mockDispatch;
@@ -151,7 +157,11 @@ describe('useNovoProfessor', () => {
     const wrapper = createWrapper(store);
     renderHook(() => useNovoProfessor(), { wrapper });
 
-    expect(mockSuccess).toHaveBeenCalledWith('Professor criado com sucesso!');
-    expect(mockPush).toHaveBeenCalledWith('/professores');
+    // Effects may run asynchronously; wait for side-effects
+    const { waitFor } = require('@testing-library/react');
+    return waitFor(() => {
+      expect(mockSuccess).toHaveBeenCalledWith('Professor criado com sucesso!');
+      expect(mockPush).toHaveBeenCalledWith('/professores');
+    });
   });
 });

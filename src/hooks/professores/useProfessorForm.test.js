@@ -1,5 +1,6 @@
 import { renderHook, act } from '@testing-library/react';
 import { useProfessorForm } from './useProfessorForm';
+import { PERMISSAO } from '@/constants';
 
 describe('useProfessorForm', () => {
   it('should initialize with default values if no professor is provided', () => {
@@ -13,7 +14,7 @@ describe('useProfessorForm', () => {
       telefone: '',
       senha: '',
       repetirSenha: '',
-      permissao: 'professor',
+      permissao: PERMISSAO.MEMBER,
     });
     expect(result.current.isSenhaError).toBe(false);
   });
@@ -88,7 +89,7 @@ describe('useProfessorForm', () => {
         email: '',
         telefone: '',
         senha: '123',
-        permissao: 'professor',
+        permissao: PERMISSAO.MEMBER,
       },
     });
   });
