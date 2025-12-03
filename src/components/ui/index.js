@@ -15,3 +15,4 @@ export * from './ButtonsFields';
 export * from './FormGroup';
 export * from './FormError';
 export * from './Loading';
+export * from './Section';
