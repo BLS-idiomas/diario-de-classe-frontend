@@ -40,6 +40,7 @@ export function useAlunosList({
     },
   ];
   const data = useMemo(() => {
+    if (!alunos) return [];
     return alunos.map((aluno, index) => ({
       id: parseInt(index) + 1,
       name: aluno.nome,

@@ -61,27 +61,6 @@ export default function Professor() {
         >
           Editar
         </Link>
-
-        <Link
-          href={`/professores/${params.id}/disponibilidade`}
-          className="btn btn-primary"
-        >
-          Disponibilidade
-        </Link>
-
-        <Link
-          href={`/professores/${params.id}/alunos`}
-          className="btn btn-primary"
-        >
-          Alunos
-        </Link>
-
-        <Link
-          href={`/professores/${params.id}/aulas`}
-          className="btn btn-primary"
-        >
-          Aulas
-        </Link>
       </ButtonGroup>
 
       <div className="mt-4 space-y-8">
