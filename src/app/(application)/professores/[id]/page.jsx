@@ -13,7 +13,10 @@ import {
   PageSubTitle,
   ButtonGroup,
   Loading,
+  Section,
+  Table,
 } from '@/components';
+import { useAlunosList } from '@/hooks/alunos/useAlunosList';
 
 export default function Professor() {
   const params = useParams();
@@ -22,6 +25,11 @@ export default function Professor() {
   );
   const { telefoneFormatter, dataFormatter } = useFormater();
 
+  const { columns: columnsAlunos, data: dataAlunos } = useAlunosList({
+    alunos,
+    telefoneFormatter,
+    dataFormatter,
+  });
   useEffect(() => {
     if (
       statusError === STATUS_ERROR.BAD_REQUEST ||
@@ -77,7 +85,7 @@ export default function Professor() {
       </ButtonGroup>
 
       <div className="mt-4 space-y-8">
-        <section className="bg-white rounded-md p-4 shadow-sm">
+        <Section>
           <div>
             {/* Header: avatar + name/email */}
             <div className="flex items-center gap-4 mb-3">
@@ -150,10 +158,10 @@ export default function Professor() {
               )}
             </div>
           </div>
-        </section>
+        </Section>
 
         {/* Disponibilidades */}
-        <section className="bg-gray-50 rounded-md p-4">
+        <Section>
           <h3 className="text-lg font-semibold mb-3">Disponibilidades</h3>
           {professor.disponibilidades &&
           professor.disponibilidades.length > 0 ? (
@@ -175,7 +183,18 @@ export default function Professor() {
           ) : (
             <p className="text-gray-500">Sem disponibilidades cadastradas.</p>
           )}
-        </section>
+        </Section>
+
+        {/*Alunos*/}
+        <Section>
+          <h3 className="text-lg font-semibold mb-3">Alunos</h3>
+          <Table
+            columns={columnsAlunos}
+            data={dataAlunos}
+            isLoading={isLoading}
+            notFoundMessage="Nenhum aluno encontrado."
+          />
+        </Section>
       </div>
     </Container>
   );
