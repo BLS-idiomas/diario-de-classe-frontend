@@ -1,5 +1,5 @@
 import { render, screen, fireEvent } from '@testing-library/react';
-import { PasswordField } from './index';
+import { PasswordField } from './PasswordField';
 
 // Mock lucide-react icons
 jest.mock('lucide-react', () => ({
