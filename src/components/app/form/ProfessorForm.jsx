@@ -1,3 +1,4 @@
+import { PERMISSAO } from '@/constants';
 import {
   ButtonsFields,
   Form,
@@ -7,7 +8,6 @@ import {
   PasswordField,
   SelectField,
 } from '@/components';
-import { PERMISSAO } from '@/constants';
 
 export const ProfessorForm = ({
   handleSubmit,

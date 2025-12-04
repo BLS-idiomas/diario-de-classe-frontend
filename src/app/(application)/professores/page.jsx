@@ -1,12 +1,12 @@
 'use client';
 
 import Link from 'next/link';
+import { useUserAuth } from '@/providers/UserAuthProvider';
 import { useProfessores } from '@/hooks/professores/useProfessores';
 import { useDeletarProfessor } from '@/hooks/professores/useDeletarProfessor';
 import { useFormater } from '@/hooks/useFormater';
 import { useProfessoresList } from '@/hooks/professores/useProfessoresList';
 import { ButtonGroup, Container, PageTitle, Table } from '@/components';
-import { useUserAuth } from '@/providers/UserAuthProvider';
 
 export default function Professores() {
   const { currentUser } = useUserAuth();
