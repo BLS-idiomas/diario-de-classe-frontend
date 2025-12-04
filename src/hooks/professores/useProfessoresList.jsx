@@ -55,8 +55,9 @@ export function useProfessoresList({
   ];
 
   const data = useMemo(() => {
-    const iconParams = { strokeWidth: 1, size: 16 };
+    if (!professores) return [];
 
+    const iconParams = { strokeWidth: 1, size: 16 };
     return professores.map((prof, index) => ({
       id: parseInt(index) + 1,
       name: prof.nome,

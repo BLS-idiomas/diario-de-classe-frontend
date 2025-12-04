@@ -29,7 +29,9 @@ export default function Professor() {
     alunos,
     telefoneFormatter,
     dataFormatter,
+    readOnly: true,
   });
+
   useEffect(() => {
     if (
       statusError === STATUS_ERROR.BAD_REQUEST ||
