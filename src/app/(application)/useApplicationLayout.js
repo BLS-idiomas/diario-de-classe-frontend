@@ -22,7 +22,11 @@ export function useApplicationLayout() {
   });
 
   const professoresState = useSelector(state => state.professores);
-  const states = useMemo(() => [professoresState], [professoresState]);
+  const alunosState = useSelector(state => state.alunos);
+  const states = useMemo(
+    () => [professoresState, alunosState],
+    [professoresState, alunosState]
+  );
 
   const toggleSidebar = () => {
     const isMobile = isMobileFunction();
