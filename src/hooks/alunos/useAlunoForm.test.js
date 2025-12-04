@@ -9,6 +9,8 @@ describe('useAlunoForm', () => {
       sobrenome: '',
       email: '',
       telefone: '',
+      criador: '',
+      material: '',
     });
   });
 
@@ -22,6 +24,8 @@ describe('useAlunoForm', () => {
       sobrenome: '',
       email: '',
       telefone: '',
+      criador: '',
+      material: '',
     });
   });
 
@@ -53,6 +57,12 @@ describe('useAlunoForm', () => {
       result.current.handleChange({
         target: { name: 'telefone', value: '11999999999' },
       });
+      result.current.handleChange({
+        target: { name: 'criador', value: 'Admin' },
+      });
+      result.current.handleChange({
+        target: { name: 'material', value: 'Livro A1' },
+      });
     });
 
     expect(result.current.formData).toEqual({
@@ -60,6 +70,8 @@ describe('useAlunoForm', () => {
       sobrenome: 'Silva',
       email: 'joao@test.com',
       telefone: '11999999999',
+      criador: 'Admin',
+      material: 'Livro A1',
     });
   });
 
@@ -90,6 +102,8 @@ describe('useAlunoForm', () => {
         sobrenome: '',
         email: 'maria@test.com',
         telefone: '',
+        criador: '',
+        material: '',
       },
     });
   });
@@ -119,6 +133,8 @@ describe('useAlunoForm', () => {
         sobrenome: '',
         email: '',
         telefone: '',
+        criador: '',
+        material: '',
       },
     });
   });
@@ -131,6 +147,8 @@ describe('useAlunoForm', () => {
       sobrenome: 'Santos',
       email: 'ana@test.com',
       telefone: '11988888888',
+      criador: 'Professor',
+      material: 'Livro B1',
     };
 
     act(() => {
@@ -149,6 +167,8 @@ describe('useAlunoForm', () => {
         sobrenome: 'Oliveira',
         email: 'pedro@test.com',
         telefone: '11977777777',
+        criador: 'Coordenador',
+        material: 'Livro C1',
       });
     });
 
@@ -164,6 +184,8 @@ describe('useAlunoForm', () => {
       sobrenome: 'Oliveira',
       email: 'pedro@test.com',
       telefone: '11977777777',
+      criador: 'Coordenador',
+      material: 'Livro C1',
     });
   });
 
@@ -184,6 +206,8 @@ describe('useAlunoForm', () => {
         sobrenome: '',
         email: '',
         telefone: '',
+        criador: '',
+        material: '',
       },
     });
   });
@@ -215,5 +239,97 @@ describe('useAlunoForm', () => {
       handleChange: expect.any(Function),
       setFormData: expect.any(Function),
     });
+  });
+
+  it('should update criador field correctly', () => {
+    const { result } = renderHook(() => useAlunoForm({ submit: jest.fn() }));
+
+    act(() => {
+      result.current.handleChange({
+        target: { name: 'criador', value: 'Admin User' },
+      });
+    });
+
+    expect(result.current.formData.criador).toBe('Admin User');
+    expect(result.current.formData.nome).toBe('');
+  });
+
+  it('should update material field correctly', () => {
+    const { result } = renderHook(() => useAlunoForm({ submit: jest.fn() }));
+
+    act(() => {
+      result.current.handleChange({
+        target: { name: 'material', value: 'English Book Level 2' },
+      });
+    });
+
+    expect(result.current.formData.material).toBe('English Book Level 2');
+    expect(result.current.formData.nome).toBe('');
+  });
+
+  it('should handle all six fields in form submission', () => {
+    const mockSubmit = jest.fn();
+    const { result } = renderHook(() =>
+      useAlunoForm({ id: 789, submit: mockSubmit })
+    );
+
+    act(() => {
+      result.current.handleChange({
+        target: { name: 'nome', value: 'Laura' },
+      });
+      result.current.handleChange({
+        target: { name: 'sobrenome', value: 'Costa' },
+      });
+      result.current.handleChange({
+        target: { name: 'email', value: 'laura@test.com' },
+      });
+      result.current.handleChange({
+        target: { name: 'telefone', value: '11966666666' },
+      });
+      result.current.handleChange({
+        target: { name: 'criador', value: 'Sistema' },
+      });
+      result.current.handleChange({
+        target: { name: 'material', value: 'Advanced Course' },
+      });
+    });
+
+    const mockEvent = { preventDefault: jest.fn() };
+
+    act(() => {
+      result.current.handleSubmit(mockEvent);
+    });
+
+    expect(mockSubmit).toHaveBeenCalledWith({
+      id: 789,
+      dataToSend: {
+        nome: 'Laura',
+        sobrenome: 'Costa',
+        email: 'laura@test.com',
+        telefone: '11966666666',
+        criador: 'Sistema',
+        material: 'Advanced Course',
+      },
+    });
+  });
+
+  it('should preserve criador and material when updating other fields', () => {
+    const { result } = renderHook(() => useAlunoForm({ submit: jest.fn() }));
+
+    act(() => {
+      result.current.handleChange({
+        target: { name: 'criador', value: 'Admin' },
+      });
+      result.current.handleChange({
+        target: { name: 'material', value: 'Book A' },
+      });
+      result.current.handleChange({
+        target: { name: 'nome', value: 'Roberto' },
+      });
+    });
+
+    expect(result.current.formData.criador).toBe('Admin');
+    expect(result.current.formData.material).toBe('Book A');
+    expect(result.current.formData.nome).toBe('Roberto');
   });
 });

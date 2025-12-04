@@ -6,6 +6,8 @@ export function useAlunoForm({ id = null, submit }) {
     sobrenome: '',
     email: '',
     telefone: '',
+    criador: '',
+    material: '',
   });
 
   const handleChange = e => {
