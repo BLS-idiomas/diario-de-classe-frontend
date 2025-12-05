@@ -30,7 +30,7 @@ export function useSidebar(isAdmin) {
       href: '/alunos',
       label: 'Alunos',
       icon: <GraduationCap strokeWidth={strokeWidth} />,
-      show: false,
+      show: true,
     },
     {
       href: '/aulas',

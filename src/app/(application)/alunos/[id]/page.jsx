@@ -25,12 +25,13 @@ export default function Aluno() {
 
   useEffect(() => {
     if (
-      statusError === STATUS_ERROR.BAD_REQUEST ||
-      statusError === STATUS_ERROR.NOT_FOUND
+      !aluno &&
+      (statusError === STATUS_ERROR.BAD_REQUEST ||
+        statusError === STATUS_ERROR.NOT_FOUND)
     ) {
       return notFound();
     }
-  }, [statusError]);
+  }, [statusError, aluno]);
 
   if (isLoading || !aluno) {
     return <Loading />;

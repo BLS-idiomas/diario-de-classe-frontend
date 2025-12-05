@@ -18,5 +18,19 @@ export default function NovoAluno() {
     submit,
   });
 
-  return <h1>Novo Aluno Page</h1>;
+  return (
+    <Container>
+      <PageContent>
+        <PageTitle>Novo aluno</PageTitle>
+
+        <PageSubTitle>Preencha os dados para criar um novo aluno</PageSubTitle>
+      </PageContent>
+
+      <ButtonGroup>
+        <Link href="/alunos" className="btn btn-secondary">
+          ← Voltar
+        </Link>
+      </ButtonGroup>
+    </Container>
+  );
 }

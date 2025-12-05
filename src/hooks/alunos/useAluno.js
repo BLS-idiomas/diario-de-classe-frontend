@@ -19,11 +19,16 @@ export function useAluno(id) {
   useEffect(() => {
     if (id) {
       dispatch(getAluno(id));
+    }
+  }, [dispatch, id]);
+
+  useEffect(() => {
+    if (id && current) {
       dispatch(getAulasAluno(id));
       dispatch(getDiasAulasAluno(id));
       dispatch(getContratoAluno(id));
     }
-  }, [dispatch, id]);
+  }, [dispatch, id, current]);
 
   return {
     aluno: current,
