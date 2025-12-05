@@ -21,6 +21,7 @@ describe('useApplicationLayout', () => {
     isMobileFunctionMock,
     useSelectorMock,
     removeAuthenticateMock;
+  const mockRefreshToken = 'test-refresh-token-123';
 
   beforeEach(() => {
     routerMock = { push: jest.fn() };
@@ -29,11 +30,14 @@ describe('useApplicationLayout', () => {
     isMobileFunctionMock = jest.fn();
     removeAuthenticateMock = jest.fn();
     useSelectorMock = require('react-redux').useSelector;
-    useSelectorMock.mockImplementation(fn => fn({ professores: {} }));
+    useSelectorMock.mockImplementation(fn =>
+      fn({ professores: {}, alunos: {} })
+    );
     require('next/navigation').useRouter.mockReturnValue(routerMock);
     require('@/providers/UserAuthProvider').useUserAuth.mockReturnValue({
       isAuthenticated: isAuthenticatedMock,
       removeAuthenticate: removeAuthenticateMock,
+      refreshToken: mockRefreshToken,
     });
     require('@/providers/ToastProvider').useToast.mockReturnValue({
       error: errorMock,
@@ -93,15 +97,80 @@ describe('useApplicationLayout', () => {
     expect(result.current.sidebarExpanded.isExpanded).toBe(true);
   });
 
-  it('deve chamar dispatch(logout), removeAuthenticate, error e router.push se statusError for 401', () => {
+  it('deve chamar dispatch(logout), removeAuthenticate, error e router.push se statusError de professores for 401', () => {
     const { logout } = require('@/store/slices/authSlice');
     useSelectorMock.mockImplementation(fn =>
-      fn({ professores: { statusError: '401' } })
+      fn({ professores: { statusError: '401' }, alunos: {} })
     );
     renderHook(() => useApplicationLayout());
-    expect(dispatchMock).toHaveBeenCalledWith(logout());
+    expect(dispatchMock).toHaveBeenCalledWith(logout(mockRefreshToken));
     expect(removeAuthenticateMock).toHaveBeenCalled();
     expect(errorMock).toHaveBeenCalledWith('Sua sessão expirou.');
     expect(routerMock.push).toHaveBeenCalledWith('/login');
+  });
+
+  it('deve chamar dispatch(logout), removeAuthenticate, error e router.push se statusError de alunos for 401', () => {
+    const { logout } = require('@/store/slices/authSlice');
+    useSelectorMock.mockImplementation(fn =>
+      fn({ professores: {}, alunos: { statusError: '401' } })
+    );
+    renderHook(() => useApplicationLayout());
+    expect(dispatchMock).toHaveBeenCalledWith(logout(mockRefreshToken));
+    expect(removeAuthenticateMock).toHaveBeenCalled();
+    expect(errorMock).toHaveBeenCalledWith('Sua sessão expirou.');
+    expect(routerMock.push).toHaveBeenCalledWith('/login');
+  });
+
+  it('deve chamar dispatch(logout) apenas uma vez se múltiplos estados tiverem 401', () => {
+    const { logout } = require('@/store/slices/authSlice');
+    useSelectorMock.mockImplementation(fn =>
+      fn({
+        professores: { statusError: '401' },
+        alunos: { statusError: '401' },
+      })
+    );
+    renderHook(() => useApplicationLayout());
+    expect(dispatchMock).toHaveBeenCalledTimes(1);
+    expect(dispatchMock).toHaveBeenCalledWith(logout(mockRefreshToken));
+    expect(removeAuthenticateMock).toHaveBeenCalledTimes(1);
+    expect(errorMock).toHaveBeenCalledTimes(1);
+    expect(routerMock.push).toHaveBeenCalledTimes(1);
+  });
+
+  it('não deve chamar logout se statusError não for 401', () => {
+    const { logout } = require('@/store/slices/authSlice');
+    useSelectorMock.mockImplementation(fn =>
+      fn({
+        professores: { statusError: '404' },
+        alunos: { statusError: '500' },
+      })
+    );
+    renderHook(() => useApplicationLayout());
+    expect(dispatchMock).not.toHaveBeenCalled();
+    expect(removeAuthenticateMock).not.toHaveBeenCalled();
+  });
+
+  it('deve monitorar mudanças nos estados de professores e alunos', async () => {
+    const { logout } = require('@/store/slices/authSlice');
+
+    // Inicialmente sem erro
+    useSelectorMock.mockImplementation(fn =>
+      fn({ professores: {}, alunos: {} })
+    );
+
+    const { rerender } = renderHook(() => useApplicationLayout());
+
+    expect(dispatchMock).not.toHaveBeenCalled();
+
+    // Atualiza para ter erro 401
+    useSelectorMock.mockImplementation(fn =>
+      fn({ professores: { statusError: '401' }, alunos: {} })
+    );
+
+    rerender();
+
+    await waitFor(() => {
+      expect(dispatchMock).toHaveBeenCalledWith(logout(mockRefreshToken));
+    });
   });
 });

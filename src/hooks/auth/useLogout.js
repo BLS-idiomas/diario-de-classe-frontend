@@ -8,11 +8,11 @@ import { logout, clearStatus } from '@/store/slices/authSlice';
 export function useLogout() {
   const dispatch = useDispatch();
   const router = useRouter();
-  const { removeAuthenticate } = useUserAuth();
+  const { removeAuthenticate, refreshToken } = useUserAuth();
   const { info } = useToast();
 
   const logoutUser = () => {
-    dispatch(logout());
+    dispatch(logout(refreshToken));
     removeAuthenticate();
     info('Você saiu.');
     router.push('/login');

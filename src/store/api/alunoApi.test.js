@@ -43,4 +43,22 @@ describe('AlunoApi', () => {
     await api.delete(789);
     expect(api.destroy).toHaveBeenCalledWith('/alunos/789');
   });
+
+  it('should call getAulasByAluno with correct endpoint', async () => {
+    api.get = jest.fn();
+    await api.getAulasByAluno(1);
+    expect(api.get).toHaveBeenCalledWith('/alunos/1/aulas');
+  });
+
+  it('should call getDiasAulasByAluno with correct endpoint', async () => {
+    api.get = jest.fn();
+    await api.getDiasAulasByAluno(2);
+    expect(api.get).toHaveBeenCalledWith('/alunos/2/dias-aulas');
+  });
+
+  it('should call getContratoByAluno with correct endpoint', async () => {
+    api.get = jest.fn();
+    await api.getContratoByAluno(3);
+    expect(api.get).toHaveBeenCalledWith('/alunos/3/contrato');
+  });
 });

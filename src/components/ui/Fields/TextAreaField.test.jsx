@@ -1,5 +1,5 @@
 import { render } from '@testing-library/react';
-import { TextAreaField } from './index';
+import { TextAreaField } from './TextAreaField';
 
 describe('TextAreaField', () => {
   it('renders label and textarea with correct props', () => {

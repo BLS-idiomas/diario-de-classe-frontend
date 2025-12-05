@@ -30,6 +30,7 @@ export default function Professor() {
     alunos,
     telefoneFormatter,
     dataFormatter,
+    readOnly: true,
   });
 
   const { columns: columnsAulas, data: dataAulas } = useAulasList({

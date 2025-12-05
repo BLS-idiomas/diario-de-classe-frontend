@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { Eye, Pencil, Trash2 } from 'lucide-react';
 
 export function useProfessoresList({
+  currentUser,
   professores,
   telefoneFormatter,
   dataFormatter,
@@ -54,8 +55,9 @@ export function useProfessoresList({
   ];
 
   const data = useMemo(() => {
-    const iconParams = { strokeWidth: 1, size: 16 };
+    if (!professores) return [];
 
+    const iconParams = { strokeWidth: 1, size: 16 };
     return professores.map((prof, index) => ({
       id: parseInt(index) + 1,
       name: prof.nome,
@@ -80,16 +82,24 @@ export function useProfessoresList({
             <Pencil {...iconParams} stroke="gray" />
           </Link>
 
-          <button
-            onClick={() => handleDeleteProfessor(prof.id)}
-            className="btn-outline btn-outline-danger"
-          >
-            <Trash2 {...iconParams} stroke="red" />
-          </button>
+          {currentUser?.id !== prof.id && (
+            <button
+              onClick={() => handleDeleteProfessor(prof.id)}
+              className="btn-outline btn-outline-danger"
+            >
+              <Trash2 {...iconParams} stroke="red" />
+            </button>
+          )}
         </div>
       ),
     }));
-  }, [professores, telefoneFormatter, dataFormatter, handleDeleteProfessor]);
+  }, [
+    currentUser,
+    professores,
+    telefoneFormatter,
+    dataFormatter,
+    handleDeleteProfessor,
+  ]);
 
   return {
     columns,

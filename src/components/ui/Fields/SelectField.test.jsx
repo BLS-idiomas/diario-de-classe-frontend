@@ -1,5 +1,5 @@
 import { render } from '@testing-library/react';
-import { SelectField } from './index';
+import { SelectField } from './SelectField';
 
 describe('SelectField', () => {
   it('renders label and select with options and placeholder', () => {

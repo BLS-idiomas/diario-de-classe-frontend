@@ -16,6 +16,7 @@ jest.mock('@/store/slices/authSlice', () => ({
 
 describe('useLogout', () => {
   let dispatchMock, routerMock, infoMock, removeAuthenticateMock;
+  const mockRefreshToken = 'test-refresh-token-123';
 
   beforeEach(() => {
     dispatchMock = jest.fn();
@@ -26,7 +27,10 @@ describe('useLogout', () => {
     useDispatch.mockReturnValue(dispatchMock);
     useRouter.mockReturnValue(routerMock);
     useToast.mockReturnValue({ info: infoMock });
-    useUserAuth.mockReturnValue({ removeAuthenticate: removeAuthenticateMock });
+    useUserAuth.mockReturnValue({
+      removeAuthenticate: removeAuthenticateMock,
+      refreshToken: mockRefreshToken,
+    });
   });
 
   afterEach(() => {
@@ -39,10 +43,30 @@ describe('useLogout', () => {
     expect(dispatchMock).toHaveBeenCalledWith(clearStatus());
   });
 
-  it('should logout user and redirect', () => {
+  it('should logout user with refreshToken and redirect', () => {
     const { result } = renderHook(() => useLogout());
+    const { logout } = require('@/store/slices/authSlice');
+
     result.current.logoutUser();
-    expect(dispatchMock).toHaveBeenCalled();
+
+    expect(dispatchMock).toHaveBeenCalledWith(logout(mockRefreshToken));
+    expect(removeAuthenticateMock).toHaveBeenCalled();
+    expect(infoMock).toHaveBeenCalledWith('Você saiu.');
+    expect(routerMock.push).toHaveBeenCalledWith('/login');
+  });
+
+  it('should handle logout without refreshToken', () => {
+    useUserAuth.mockReturnValue({
+      removeAuthenticate: removeAuthenticateMock,
+      refreshToken: undefined,
+    });
+
+    const { result } = renderHook(() => useLogout());
+    const { logout } = require('@/store/slices/authSlice');
+
+    result.current.logoutUser();
+
+    expect(dispatchMock).toHaveBeenCalledWith(logout(undefined));
     expect(removeAuthenticateMock).toHaveBeenCalled();
     expect(infoMock).toHaveBeenCalledWith('Você saiu.');
     expect(routerMock.push).toHaveBeenCalledWith('/login');

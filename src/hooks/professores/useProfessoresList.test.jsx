@@ -35,12 +35,14 @@ describe('useProfessoresList', () => {
       },
     ];
 
+    const currentUser = { id: 999, nome: 'Admin User' };
     const telefoneFormatter = jest.fn(t => `tel-${t}`);
     const dataFormatter = jest.fn(d => `data-${d}`);
     const handleDeleteProfessor = jest.fn();
 
     const { getByTestId } = render(
       <TestComponent
+        currentUser={currentUser}
         professores={professores}
         telefoneFormatter={telefoneFormatter}
         dataFormatter={dataFormatter}
@@ -66,5 +68,72 @@ describe('useProfessoresList', () => {
     // click
     button.dispatchEvent(new MouseEvent('click', { bubbles: true }));
     expect(handleDeleteProfessor).toHaveBeenCalledWith(10);
+  });
+
+  it('hides delete button when currentUser.id matches professor.id', () => {
+    const professores = [
+      {
+        id: 10,
+        nome: 'João',
+        sobrenome: 'Silva',
+        telefone: '11987654321',
+        email: 'joao@test.com',
+        permissao: 'admin',
+        dataCriacao: '2024-05-10T12:00:00Z',
+      },
+    ];
+
+    const currentUser = { id: 10, nome: 'João' }; // Same ID as professor
+    const telefoneFormatter = jest.fn(t => `tel-${t}`);
+    const dataFormatter = jest.fn(d => `data-${d}`);
+    const handleDeleteProfessor = jest.fn();
+
+    const { getByTestId } = render(
+      <TestComponent
+        currentUser={currentUser}
+        professores={professores}
+        telefoneFormatter={telefoneFormatter}
+        dataFormatter={dataFormatter}
+        handleDeleteProfessor={handleDeleteProfessor}
+      />
+    );
+
+    // Delete button should not be present
+    const acoes = getByTestId('row-0-acoes');
+    const button = acoes.querySelector('button');
+    expect(button).toBeNull();
+  });
+
+  it('shows delete button when currentUser is null', () => {
+    const professores = [
+      {
+        id: 10,
+        nome: 'João',
+        sobrenome: 'Silva',
+        telefone: '11987654321',
+        email: 'joao@test.com',
+        permissao: 'admin',
+        dataCriacao: '2024-05-10T12:00:00Z',
+      },
+    ];
+
+    const telefoneFormatter = jest.fn(t => `tel-${t}`);
+    const dataFormatter = jest.fn(d => `data-${d}`);
+    const handleDeleteProfessor = jest.fn();
+
+    const { getByTestId } = render(
+      <TestComponent
+        currentUser={null}
+        professores={professores}
+        telefoneFormatter={telefoneFormatter}
+        dataFormatter={dataFormatter}
+        handleDeleteProfessor={handleDeleteProfessor}
+      />
+    );
+
+    // Delete button should be present when currentUser is null
+    const acoes = getByTestId('row-0-acoes');
+    const button = acoes.querySelector('button');
+    expect(button).not.toBeNull();
   });
 });

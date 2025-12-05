@@ -11,7 +11,7 @@ import { logout } from '@/store/slices/authSlice';
 export function useApplicationLayout() {
   const router = useRouter();
   const dispatch = useDispatch();
-  const { isAuthenticated, removeAuthenticate } = useUserAuth();
+  const { isAuthenticated, removeAuthenticate, refreshToken } = useUserAuth();
   const { error } = useToast();
   const [isLoading, setIsLoading] = useState(true);
   const [isUnauthorized, setIsUnauthorized] = useState(false);
@@ -22,7 +22,11 @@ export function useApplicationLayout() {
   });
 
   const professoresState = useSelector(state => state.professores);
-  const states = useMemo(() => [professoresState], [professoresState]);
+  const alunosState = useSelector(state => state.alunos);
+  const states = useMemo(
+    () => [professoresState, alunosState],
+    [professoresState, alunosState]
+  );
 
   const toggleSidebar = () => {
     const isMobile = isMobileFunction();
@@ -65,7 +69,7 @@ export function useApplicationLayout() {
 
     if (!isUnauthorized && statusErrors.includes('401')) {
       setIsUnauthorized(true);
-      dispatch(logout());
+      dispatch(logout(refreshToken));
       removeAuthenticate();
       error('Sua sessão expirou.');
       router.push('/login');

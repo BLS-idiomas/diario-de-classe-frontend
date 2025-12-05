@@ -1,5 +1,5 @@
 import { render } from '@testing-library/react';
-import { InputField } from './index';
+import { InputField } from './InputField';
 
 describe('InputField', () => {
   it('renders label and input with correct props', () => {

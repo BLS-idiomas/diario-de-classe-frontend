@@ -28,6 +28,7 @@ beforeAll(() => {
 function TestComponent() {
   const {
     currentUser,
+    refreshToken,
     authenticate,
     isAuthenticated,
     isAdmin,
@@ -42,6 +43,7 @@ function TestComponent() {
   return (
     <div>
       <span data-testid="user">{currentUser ? currentUser.nome : 'none'}</span>
+      <span data-testid="refreshToken">{refreshToken || 'none'}</span>
       <span data-testid="isUserLogin">{isLogin ? 'true' : 'false'}</span>
       <span data-testid="isAdmin">{isAdmin() ? 'true' : 'false'}</span>
       <button
@@ -77,6 +79,7 @@ describe('UserAuthProvider', () => {
       </UserAuthProvider>
     );
     expect(getByTestId('user').textContent).toBe('none');
+    expect(getByTestId('refreshToken').textContent).toBe('none');
     expect(getByTestId('isUserLogin').textContent).toBe('false');
     expect(getByTestId('isAdmin').textContent).toBe('false');
   });

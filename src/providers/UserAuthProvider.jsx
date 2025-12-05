@@ -83,6 +83,7 @@ export function UserAuthProvider({ children }) {
     <UserAuthContext.Provider
       value={{
         currentUser: auth.currentUser,
+        refreshToken: auth.refreshToken,
         authenticate,
         removeAuthenticate,
         isAuthenticated,
