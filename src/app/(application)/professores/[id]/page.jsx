@@ -17,6 +17,7 @@ import {
   Table,
 } from '@/components';
 import { useAlunosList } from '@/hooks/alunos/useAlunosList';
+import { useAulasList } from '@/hooks/aulas/useAulasList';
 
 export default function Professor() {
   const params = useParams();
@@ -30,6 +31,12 @@ export default function Professor() {
     telefoneFormatter,
     dataFormatter,
     readOnly: true,
+  });
+
+  const { columns: columnsAulas, data: dataAulas } = useAulasList({
+    aulas,
+    telefoneFormatter,
+    dataFormatter,
   });
 
   useEffect(() => {
@@ -174,6 +181,17 @@ export default function Professor() {
             data={dataAlunos}
             isLoading={isLoading}
             notFoundMessage="Nenhum aluno encontrado."
+          />
+        </Section>
+
+        {/*Aulas*/}
+        <Section>
+          <h3 className="text-lg font-semibold mb-3">Aulas</h3>
+          <Table
+            columns={columnsAulas}
+            data={dataAulas}
+            isLoading={isLoading}
+            notFoundMessage="Nenhuma aula encontrada."
           />
         </Section>
       </div>
