@@ -16,9 +16,13 @@ import {
   Loading,
   Section,
   Table,
-  Section1,
+  HeaderAvatar,
   Badge,
   BadgeGroup,
+  InfoCard,
+  InfoCardGroup,
+  SectionTitle,
+  BlockQuoteInfo,
 } from '@/components';
 
 export default function Professor() {
@@ -73,70 +77,62 @@ export default function Professor() {
 
       <div className="mt-4 space-y-8">
         <Section>
-          <div>
-            {/* Header: avatar + name/email */}
-            <Section1 entity={professor} />
+          {/* Header: avatar + name/email */}
+          <HeaderAvatar entity={professor} />
 
-            {/* Stats badges */}
-            <BadgeGroup>
-              <Badge
-                icon="calendar"
-                color="gray"
-                text={`${(professor.disponibilidades || []).filter(d => d.ativo).length} aulas por semana`}
-              />
+          {/* Stats badges */}
+          <BadgeGroup>
+            <Badge
+              icon="calendar"
+              color="gray"
+              text={`${(professor.disponibilidades || []).filter(d => d.ativo).length} aulas por semana`}
+            />
 
-              <Badge icon="lock" color="blue" text={professor.permissao} />
-            </BadgeGroup>
+            <Badge icon="lock" color="blue" text={professor.permissao} />
+          </BadgeGroup>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              {/* Contato */}
-              <div className="p-3 rounded-md bg-gray-50">
-                <div className="text-sm text-gray-500">Contato</div>
-                <div className="mt-2 text-sm text-gray-700">
-                  {telefoneFormatter(professor.telefone)}
-                </div>
-                <div className="mt-1 text-sm text-gray-600">
-                  {professor.email}
-                </div>
-              </div>
+          <InfoCardGroup>
+            {/* Contato */}
+            <InfoCard
+              columns={[
+                { text: 'Contato', type: 'header' },
+                { text: telefoneFormatter(professor.telefone) },
+                { text: professor.email },
+              ]}
+            />
 
-              {/* Acesso */}
-              <div className="p-3 rounded-md bg-gray-50">
-                <div className="text-sm text-gray-500">Acesso</div>
-                <div className="font-medium mt-2">
-                  Permissão: {professor.permissao}
-                </div>
-                <div className="text-sm text-gray-600">Id: {professor.id}</div>
-              </div>
+            {/* Acesso */}
+            <InfoCard
+              columns={[
+                { text: 'Acesso', type: 'header' },
+                { text: `Permissão: ${professor.permissao}`, type: 'bold' },
+                { text: `Id: ${professor.id}` },
+              ]}
+            />
 
-              {/* Datas */}
-              <div className="p-3 rounded-md bg-gray-50">
-                <div className="text-sm text-gray-500">Datas</div>
-                <div className="mt-2 text-sm">
-                  Criado: {dataFormatter(professor.dataCriacao)}
-                </div>
-                <div className="text-sm">
-                  Atualizado: {dataFormatter(professor.dataAtualizacao)}
-                </div>
-              </div>
-            </div>
+            {/* Datas */}
+            <InfoCard
+              columns={[
+                { text: 'Datas', type: 'header' },
+                { text: `Criado: ${dataFormatter(professor.dataCriacao)}` },
+                {
+                  text: `Atualizado: ${dataFormatter(professor.dataAtualizacao)}`,
+                },
+              ]}
+            />
+          </InfoCardGroup>
 
-            <div className="mt-4">
-              <h4 className="font-semibold">Observações</h4>
-              {professor.observacoes ? (
-                <blockquote className="border-l-4 pl-3 italic text-gray-700">
-                  {professor.observacoes}
-                </blockquote>
-              ) : (
-                <p className="text-gray-500">Nenhuma observação disponível.</p>
-              )}
-            </div>
-          </div>
+          <BlockQuoteInfo
+            title="Observações"
+            noContent="Nenhuma observação disponível."
+          >
+            {professor.observacoes}
+          </BlockQuoteInfo>
         </Section>
 
         {/* Disponibilidades */}
         <Section>
-          <h3 className="text-lg font-semibold mb-3">Disponibilidades</h3>
+          <SectionTitle>Disponibilidades</SectionTitle>
           {professor.disponibilidades &&
           professor.disponibilidades.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
@@ -161,7 +157,7 @@ export default function Professor() {
 
         {/*Alunos*/}
         <Section>
-          <h3 className="text-lg font-semibold mb-3">Alunos</h3>
+          <SectionTitle>Alunos</SectionTitle>
           <Table
             columns={columnsAlunos}
             data={dataAlunos}
@@ -172,7 +168,7 @@ export default function Professor() {
 
         {/*Aulas*/}
         <Section>
-          <h3 className="text-lg font-semibold mb-3">Aulas</h3>
+          <SectionTitle>Aulas</SectionTitle>
           <Table
             columns={columnsAulas}
             data={dataAulas}
