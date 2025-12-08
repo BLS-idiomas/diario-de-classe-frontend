@@ -20,3 +20,4 @@ export * from './Avatar';
 export * from './Badge';
 export * from './BadgeGroup';
 export * from './InfoCard';
+export * from './InfoCardGroup';
