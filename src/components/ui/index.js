@@ -17,3 +17,5 @@ export * from './FormError';
 export * from './Loading';
 export * from './Section';
 export * from './Avatar';
+export * from './Badge';
+export * from './BadgeGroup';
