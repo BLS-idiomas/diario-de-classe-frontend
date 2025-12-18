@@ -50,6 +50,9 @@ export function useLogin() {
       success(`Bem-vindo, ${data.user.nome}!`);
       authenticate({
         currentUser: data.user,
+        duracaoAula: data.configuracao.duracaoAula,
+        tolerancia: data.configuracao.tolerancia,
+        diasDeFuncionamento: data.configuracao.diasDeFuncionamento,
         accessToken: data.accessToken,
         refreshToken: data.refreshToken,
         tokenType: data.tokenType,
