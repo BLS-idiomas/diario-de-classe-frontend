@@ -7,14 +7,15 @@ const UserAuthContext = createContext();
 export function UserAuthProvider({ children }) {
   const [auth, setAuth] = useState(() => {
     // Check if we're in the browser before accessing localStorage
+    const emptyAuth = {
+      accessToken: null,
+      refreshToken: null,
+      tokenType: null,
+      expiresIn: null,
+      currentUser: null,
+    };
     if (typeof window === 'undefined') {
-      return {
-        accessToken: null,
-        refreshToken: null,
-        tokenType: null,
-        expiresIn: null,
-        currentUser: null,
-      };
+      return emptyAuth;
     }
 
     const tokenString = localStorage.getItem('token');
@@ -28,13 +29,31 @@ export function UserAuthProvider({ children }) {
         currentUser: token.currentUser || null,
       };
     }
-    return {
-      accessToken: null,
-      refreshToken: null,
-      tokenType: null,
-      expiresIn: null,
-      currentUser: null,
+    return emptyAuth;
+  });
+
+  const [settings, setSettings] = useState(() => {
+    // Check if we're in the browser before accessing localStorage
+    const emptySettings = {
+      duracaoAula: null,
+      tolerancia: null,
+      diasDeFuncionamento: [],
     };
+
+    if (typeof window === 'undefined') {
+      return emptySettings;
+    }
+
+    const settingsString = localStorage.getItem('settings');
+    if (settingsString) {
+      const settings = JSON.parse(settingsString);
+      return {
+        duracaoAula: settings.duracaoAula || null,
+        tolerancia: settings.tolerancia || null,
+        diasDeFuncionamento: settings.diasDeFuncionamento || [],
+      };
+    }
+    return emptySettings;
   });
 
   const authenticate = ({
@@ -43,6 +62,9 @@ export function UserAuthProvider({ children }) {
     tokenType,
     expiresIn,
     currentUser,
+    duracaoAula,
+    tolerancia,
+    diasDeFuncionamento,
   }) => {
     const token = {
       accessToken,
@@ -51,11 +73,17 @@ export function UserAuthProvider({ children }) {
       expiresIn,
       currentUser,
     };
-
+    const settings = {
+      duracaoAula,
+      tolerancia,
+      diasDeFuncionamento,
+    };
     if (typeof window !== 'undefined') {
       localStorage.setItem('token', JSON.stringify(token));
+      localStorage.setItem('settings', JSON.stringify(settings));
     }
     setAuth(token);
+    setSettings(settings);
   };
 
   const removeAuthenticate = () => {
@@ -84,6 +112,7 @@ export function UserAuthProvider({ children }) {
       value={{
         currentUser: auth.currentUser,
         refreshToken: auth.refreshToken,
+        settings,
         authenticate,
         removeAuthenticate,
         isAuthenticated,
