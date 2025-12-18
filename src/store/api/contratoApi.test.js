@@ -323,4 +323,251 @@ describe('ContratoApi', () => {
 
     expect(firstCheck).toBe(secondCheck);
   });
+
+  // Testes para métodos específicos de ContratoApi
+
+  it('should have getDiasAulasByContrato method', () => {
+    expect(api.getDiasAulasByContrato).toBeDefined();
+    expect(typeof api.getDiasAulasByContrato).toBe('function');
+  });
+
+  it('should call getDiasAulasByContrato with correct id', async () => {
+    const testId = 123;
+    api.get = jest.fn().mockResolvedValue({ data: [] });
+
+    await api.getDiasAulasByContrato(testId);
+
+    expect(api.get).toHaveBeenCalledWith(
+      `${api.baseEndpoint}/${testId}/dias-aulas`
+    );
+  });
+
+  it('should have createManyDiasAulas method', () => {
+    expect(api.createManyDiasAulas).toBeDefined();
+    expect(typeof api.createManyDiasAulas).toBe('function');
+  });
+
+  it('should call createManyDiasAulas with correct id and data', async () => {
+    const testId = 456;
+    const testData = [
+      { diaSemana: 1, horaInicio: '09:00', horaFim: '10:00' },
+      { diaSemana: 3, horaInicio: '14:00', horaFim: '15:00' },
+    ];
+    api.post = jest.fn().mockResolvedValue({ data: testData });
+
+    await api.createManyDiasAulas(testId, testData);
+
+    expect(api.post).toHaveBeenCalledWith(
+      `${api.baseEndpoint}/${testId}/dias-aulas`,
+      testData
+    );
+  });
+
+  it('should have getAulasByContrato method', () => {
+    expect(api.getAulasByContrato).toBeDefined();
+    expect(typeof api.getAulasByContrato).toBe('function');
+  });
+
+  it('should call getAulasByContrato with correct id', async () => {
+    const testId = 789;
+    api.get = jest.fn().mockResolvedValue({ data: [] });
+
+    await api.getAulasByContrato(testId);
+
+    expect(api.get).toHaveBeenCalledWith(`${api.baseEndpoint}/${testId}/aulas`);
+  });
+
+  it('should have createManyAulas method', () => {
+    expect(api.createManyAulas).toBeDefined();
+    expect(typeof api.createManyAulas).toBe('function');
+  });
+
+  it('should call createManyAulas with correct id and data', async () => {
+    const testId = 101;
+    const testData = [
+      { data: '2024-01-15', horaInicio: '09:00', horaFim: '10:00' },
+      { data: '2024-01-17', horaInicio: '14:00', horaFim: '15:00' },
+    ];
+    api.post = jest.fn().mockResolvedValue({ data: testData });
+
+    await api.createManyAulas(testId, testData);
+
+    expect(api.post).toHaveBeenCalledWith(
+      `${api.baseEndpoint}/${testId}/aulas`,
+      testData
+    );
+  });
+
+  it('should have generateAulas method', () => {
+    expect(api.generateAulas).toBeDefined();
+    expect(typeof api.generateAulas).toBe('function');
+  });
+
+  it('should call generateAulas with correct id and data', async () => {
+    const testId = 202;
+    const testData = { startDate: '2024-01-01', endDate: '2024-12-31' };
+    api.get = jest.fn().mockResolvedValue({ data: [] });
+
+    await api.generateAulas(testId, testData);
+
+    expect(api.get).toHaveBeenCalledWith(
+      `${api.baseEndpoint}/${testId}/aulas/generate`,
+      testData
+    );
+  });
+
+  it('should have validateContrato method', () => {
+    expect(api.validateContrato).toBeDefined();
+    expect(typeof api.validateContrato).toBe('function');
+  });
+
+  it('should call validateContrato with correct id', async () => {
+    const testId = 303;
+    api.get = jest.fn().mockResolvedValue({ data: { valid: true } });
+
+    await api.validateContrato(testId);
+
+    expect(api.get).toHaveBeenCalledWith(
+      `${api.baseEndpoint}/${testId}/validate`
+    );
+  });
+
+  it('should handle errors from getDiasAulasByContrato', async () => {
+    const error = new Error('Failed to get dias aulas');
+    api.get = jest.fn().mockRejectedValue(error);
+
+    await expect(api.getDiasAulasByContrato(123)).rejects.toThrow(
+      'Failed to get dias aulas'
+    );
+  });
+
+  it('should handle errors from createManyDiasAulas', async () => {
+    const error = new Error('Failed to create dias aulas');
+    api.post = jest.fn().mockRejectedValue(error);
+
+    await expect(api.createManyDiasAulas(123, [])).rejects.toThrow(
+      'Failed to create dias aulas'
+    );
+  });
+
+  it('should handle errors from getAulasByContrato', async () => {
+    const error = new Error('Failed to get aulas');
+    api.get = jest.fn().mockRejectedValue(error);
+
+    await expect(api.getAulasByContrato(123)).rejects.toThrow(
+      'Failed to get aulas'
+    );
+  });
+
+  it('should handle errors from createManyAulas', async () => {
+    const error = new Error('Failed to create aulas');
+    api.post = jest.fn().mockRejectedValue(error);
+
+    await expect(api.createManyAulas(123, [])).rejects.toThrow(
+      'Failed to create aulas'
+    );
+  });
+
+  it('should handle errors from generateAulas', async () => {
+    const error = new Error('Failed to generate aulas');
+    api.get = jest.fn().mockRejectedValue(error);
+
+    await expect(api.generateAulas(123, {})).rejects.toThrow(
+      'Failed to generate aulas'
+    );
+  });
+
+  it('should handle errors from validateContrato', async () => {
+    const error = new Error('Validation failed');
+    api.get = jest.fn().mockRejectedValue(error);
+
+    await expect(api.validateContrato(123)).rejects.toThrow(
+      'Validation failed'
+    );
+  });
+
+  it('should return response from getDiasAulasByContrato', async () => {
+    const mockResponse = {
+      data: [
+        { id: 1, diaSemana: 1, horaInicio: '09:00', horaFim: '10:00' },
+        { id: 2, diaSemana: 3, horaInicio: '14:00', horaFim: '15:00' },
+      ],
+    };
+    api.get = jest.fn().mockResolvedValue(mockResponse);
+
+    const result = await api.getDiasAulasByContrato(1);
+
+    expect(result).toEqual(mockResponse);
+  });
+
+  it('should return response from createManyDiasAulas', async () => {
+    const inputData = [{ diaSemana: 2, horaInicio: '10:00', horaFim: '11:00' }];
+    const mockResponse = {
+      data: [{ id: 5, ...inputData[0] }],
+    };
+    api.post = jest.fn().mockResolvedValue(mockResponse);
+
+    const result = await api.createManyDiasAulas(1, inputData);
+
+    expect(result).toEqual(mockResponse);
+  });
+
+  it('should return response from getAulasByContrato', async () => {
+    const mockResponse = {
+      data: [
+        { id: 1, data: '2024-01-15', status: 'agendada' },
+        { id: 2, data: '2024-01-17', status: 'realizada' },
+      ],
+    };
+    api.get = jest.fn().mockResolvedValue(mockResponse);
+
+    const result = await api.getAulasByContrato(1);
+
+    expect(result).toEqual(mockResponse);
+  });
+
+  it('should return response from createManyAulas', async () => {
+    const inputData = [
+      { data: '2024-01-20', horaInicio: '09:00', horaFim: '10:00' },
+    ];
+    const mockResponse = {
+      data: [{ id: 10, ...inputData[0], status: 'agendada' }],
+    };
+    api.post = jest.fn().mockResolvedValue(mockResponse);
+
+    const result = await api.createManyAulas(1, inputData);
+
+    expect(result).toEqual(mockResponse);
+  });
+
+  it('should return response from generateAulas', async () => {
+    const inputData = { startDate: '2024-01-01', endDate: '2024-01-31' };
+    const mockResponse = {
+      data: [
+        { id: 1, data: '2024-01-15' },
+        { id: 2, data: '2024-01-17' },
+      ],
+    };
+    api.get = jest.fn().mockResolvedValue(mockResponse);
+
+    const result = await api.generateAulas(1, inputData);
+
+    expect(result).toEqual(mockResponse);
+  });
+
+  it('should return response from validateContrato', async () => {
+    const mockResponse = {
+      data: {
+        valid: true,
+        errors: [],
+        warnings: [],
+      },
+    };
+    api.get = jest.fn().mockResolvedValue(mockResponse);
+
+    const result = await api.validateContrato(1);
+
+    expect(result).toEqual(mockResponse);
+    expect(result.data.valid).toBe(true);
+  });
 });
