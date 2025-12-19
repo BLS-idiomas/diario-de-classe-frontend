@@ -158,9 +158,7 @@ export default function ContratoStep3() {
       </div>
 
       <div className="grid grid-cols-[repeat(auto-fill,minmax(350px,500px))] gap-4">
-        {formData && formData.aulas && formData.aulas.length === 0 ? (
-          <Loading />
-        ) : (
+        {formData && formData.aulas && formData.aulas.length > 0 ? (
           formData.aulas.map(aula => (
             <div
               key={aula.id}
@@ -222,6 +220,8 @@ export default function ContratoStep3() {
               </div>
             </div>
           ))
+        ) : (
+          <Loading />
         )}
       </div>
     </div>
