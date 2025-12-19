@@ -34,7 +34,7 @@ export function useStep5Form({
       if (status === STATUS.SUCCESS && current) {
         setFormData(prev => ({
           ...prev,
-          currentDiasAulas: current,
+          contrato: current,
         }));
         successSubmit();
       } else if (status === STATUS.FAILED) {

@@ -219,7 +219,7 @@ describe('useStep5Form', () => {
 
       expect(result).toEqual({
         some: 'data',
-        currentDiasAulas: mockCurrent,
+        contrato: mockCurrent,
       });
     });
 
@@ -300,7 +300,7 @@ describe('useStep5Form', () => {
       const setFormDataCallback = mockSetFormData.mock.calls[0][0];
       const result = setFormDataCallback({});
 
-      expect(result.currentDiasAulas).toEqual({});
+      expect(result.contrato).toEqual({});
     });
 
     it('should handle validation success with complex current data', async () => {
@@ -341,7 +341,7 @@ describe('useStep5Form', () => {
       const setFormDataCallback = mockSetFormData.mock.calls[0][0];
       const result = setFormDataCallback({ existing: 'data' });
 
-      expect(result.currentDiasAulas).toEqual(mockCurrent);
+      expect(result.contrato).toEqual(mockCurrent);
     });
   });
 
