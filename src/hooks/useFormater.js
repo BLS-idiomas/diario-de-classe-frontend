@@ -16,10 +16,7 @@ export function useFormater() {
 
   const dataFormatter = dataCriacao => {
     if (!dataCriacao) return '-';
-    const data = new Date(dataCriacao);
-    const dia = String(data.getDate()).padStart(2, '0');
-    const mes = String(data.getMonth() + 1).padStart(2, '0');
-    const ano = data.getFullYear();
+    const [ano, mes, dia] = dataCriacao.split('T')[0].split('-');
     return `${dia}/${mes}/${ano}`;
   };
 
