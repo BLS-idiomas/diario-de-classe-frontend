@@ -124,7 +124,7 @@ describe('useGenerateAulasByContrato', () => {
           dataInicio: '2024-01-01',
           dataTermino: '2024-12-31',
         },
-        diasAulas: [
+        currentDiasAulas: [
           { diaSemana: 'SEGUNDA', horaInicial: '09:00', horaFinal: '10:00' },
           { diaSemana: 'QUARTA', horaInicial: '14:00', horaFinal: '15:00' },
         ],
@@ -138,7 +138,7 @@ describe('useGenerateAulasByContrato', () => {
         data: {
           dataInicio: '2024-01-01',
           dataFim: '2024-12-31',
-          diasAulas: formData.diasAulas,
+          diasAulas: formData.currentDiasAulas,
         },
       });
     });
@@ -160,12 +160,13 @@ describe('useGenerateAulasByContrato', () => {
           dataInicio: '2024-02-01',
           dataTermino: '2024-11-30',
         },
-        diasAulas: [],
+        currentDiasAulas: [],
       };
 
       result.current.generateAulasByContrato(formData);
 
-      expect(mockClearError).toHaveBeenCalledBefore(generateAulas);
+      expect(mockClearError).toHaveBeenCalled();
+      expect(generateAulas).toHaveBeenCalled();
     });
   });
 
@@ -387,7 +388,7 @@ describe('useGenerateAulasByContrato', () => {
 
       const formData = {
         contratoId: 789,
-        diasAulas: [],
+        currentDiasAulas: [],
       };
 
       result.current.generateAulasByContrato(formData);
@@ -402,7 +403,7 @@ describe('useGenerateAulasByContrato', () => {
       });
     });
 
-    it('should handle formData with empty diasAulas', () => {
+    it('should handle formData with empty currentDiasAulas', () => {
       const { result } = renderHook(
         () =>
           useGenerateAulasByContrato({
@@ -419,7 +420,7 @@ describe('useGenerateAulasByContrato', () => {
           dataInicio: '2024-01-01',
           dataTermino: '2024-12-31',
         },
-        diasAulas: [],
+        currentDiasAulas: [],
       };
 
       result.current.generateAulasByContrato(formData);

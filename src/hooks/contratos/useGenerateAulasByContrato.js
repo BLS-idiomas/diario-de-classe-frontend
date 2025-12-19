@@ -23,7 +23,7 @@ export function useGenerateAulasByContrato({
     const dataToSend = {
       dataInicio: formData.contrato?.dataInicio,
       dataFim: formData.contrato?.dataTermino,
-      diasAulas: formData.diasAulas,
+      diasAulas: formData.currentDiasAulas,
     };
     clearError();
     dispatch(generateAulas({ id, data: dataToSend }));
