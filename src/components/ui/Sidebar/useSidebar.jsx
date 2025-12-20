@@ -25,13 +25,13 @@ export function useSidebar(isAdmin) {
     {
       href: '/professores',
       label: 'Professores',
-      icon: <User strokeWidth={strokeWidth} />,
+      icon: <GraduationCap strokeWidth={strokeWidth} />,
       show: isAdmin(),
     },
     {
       href: '/alunos',
       label: 'Alunos',
-      icon: <GraduationCap strokeWidth={strokeWidth} />,
+      icon: <User strokeWidth={strokeWidth} />,
       show: true,
     },
     {
