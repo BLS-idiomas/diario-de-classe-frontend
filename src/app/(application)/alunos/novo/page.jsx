@@ -31,6 +31,17 @@ export default function NovoAluno() {
           ← Voltar
         </Link>
       </ButtonGroup>
+
+      <AlunoForm
+        handleSubmit={handleSubmit}
+        handleChange={handleChange}
+        formData={formData}
+        isSenhaError={isSenhaError}
+        isSubmitting={isSubmitting}
+        isLoading={isLoading}
+        message={message}
+        errors={errors}
+      />
     </Container>
   );
 }

@@ -46,5 +46,29 @@ export default function EditarAluno() {
     return <Loading />;
   }
 
-  return <h1>Editar aluno page</h1>;
+  return (
+    <Container>
+      <PageContent>
+        <PageTitle>Editar Aluno</PageTitle>
+
+        <PageSubTitle>Atualize os dados do aluno</PageSubTitle>
+      </PageContent>
+      <ButtonGroup>
+        <Link href={`/alunos/${params.id}`} className="btn btn-secondary">
+          ← Voltar
+        </Link>
+      </ButtonGroup>
+
+      <AlunoForm
+        handleSubmit={handleSubmit}
+        handleChange={handleChange}
+        formData={formData}
+        isSenhaError={isSenhaError}
+        isLoading={isLoading}
+        message={message}
+        errors={errors}
+        isEdit
+      />
+    </Container>
+  );
 }
