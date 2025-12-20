@@ -6,15 +6,7 @@ import { useAlunos } from '@/hooks/alunos/useAlunos';
 import { useDeletarAluno } from '@/hooks/alunos/useDeletarAluno';
 import { useFormater } from '@/hooks/useFormater';
 import { useAlunosList } from '@/hooks/alunos/useAlunosList';
-import {
-  ButtonGroup,
-  Container,
-  PageContent,
-  PageSubTitle,
-  PageTitle,
-  ProfessorForm,
-  Table,
-} from '@/components';
+import { ButtonGroup, Container, PageTitle, Table } from '@/components';
 
 export default function Alunos() {
   const { currentUser } = useUserAuth();
