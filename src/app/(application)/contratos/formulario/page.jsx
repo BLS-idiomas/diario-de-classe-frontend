@@ -1,11 +1,12 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useContratoForm } from '@/providers/ContratoFormProvider';
 import { Loading } from '@/components';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useDispatch, useSelector } from 'react-redux';
 import { getContrato } from '@/store/slices/contratosSlice';
+import { useUserAuth } from '@/providers/UserAuthProvider';
 
 export default function FormularioContrato() {
   const searchParams = useSearchParams();
@@ -14,6 +15,8 @@ export default function FormularioContrato() {
   const { status, message, errors, current, action } = useSelector(
     state => state.contratos
   );
+  const { list } = useSelector(state => state.professores);
+  const { currentUser } = useUserAuth();
   const { initialFormData, getNewStepByFormData } = useContratoForm();
   const id = searchParams.get('id');
   const mode = searchParams.get('mode');
@@ -29,9 +32,10 @@ export default function FormularioContrato() {
   }, [loadStep, router, dispatch, id]);
 
   useEffect(() => {
-    if (!loadStep || !current) {
+    if (!loadStep || !current || !list) {
       return;
     }
+
     const alunoId = current.idAluno || null;
     const aluno = current.aluno || null;
     const currentDiasAulas = current.diaAulas || [];
@@ -39,6 +43,10 @@ export default function FormularioContrato() {
     const firstProfessor =
       aulas.length === 0 ? null : aulas.find(aula => aula.tipo === 'PADRAO');
     const professorId = firstProfessor?.idProfessor || null;
+    const professor =
+      currentUser.id === professorId
+        ? currentUser
+        : list.find(professor => professor.id === professorId) || null;
     const contrato = {
       id: current.id,
       idAluno: current.idAluno,
@@ -55,6 +63,7 @@ export default function FormularioContrato() {
     };
     const data = {
       professorId: professorId,
+      professor: professor,
       alunoId: alunoId,
       aluno: aluno,
       contratoId: id,
@@ -63,15 +72,15 @@ export default function FormularioContrato() {
       currentDiasAulas: currentDiasAulas,
       aulas: aulas,
     };
-    const step = getNewStepByFormData(data);
     initialFormData({
       initialBackUrl: backUrl,
       initialMode: mode,
-      initialStep: step,
+      initialStep: getNewStepByFormData(data),
       initialFormData: data,
     });
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [current, id, backUrl, mode, loadStep]);
+  }, [current, list, id, backUrl, mode, loadStep]);
 
   return <Loading />;
 }
