@@ -58,7 +58,7 @@ describe('ContratoApi', () => {
 
     await api.getById(testId);
 
-    expect(api.get).toHaveBeenCalledWith(`${api.baseEndpoint}/${testId}`);
+    expect(api.get).toHaveBeenCalledWith(`${api.baseEndpoint}/${testId}`, {});
   });
 
   it('should call create with correct data', async () => {
@@ -114,7 +114,7 @@ describe('ContratoApi', () => {
 
     await api.getById(testId);
 
-    expect(api.get).toHaveBeenCalledWith(`${api.baseEndpoint}/${testId}`);
+    expect(api.get).toHaveBeenCalledWith(`${api.baseEndpoint}/${testId}`, {});
   });
 
   it('should handle create with minimal data', async () => {
@@ -305,7 +305,7 @@ describe('ContratoApi', () => {
 
     await api.getById(0);
 
-    expect(api.get).toHaveBeenCalledWith(`${api.baseEndpoint}/0`);
+    expect(api.get).toHaveBeenCalledWith(`${api.baseEndpoint}/0`, {});
   });
 
   it('should handle negative id', async () => {
@@ -313,7 +313,7 @@ describe('ContratoApi', () => {
 
     await api.getById(-1);
 
-    expect(api.get).toHaveBeenCalledWith(`${api.baseEndpoint}/-1`);
+    expect(api.get).toHaveBeenCalledWith(`${api.baseEndpoint}/-1`, {});
   });
 
   it('should preserve baseEndpoint value', () => {

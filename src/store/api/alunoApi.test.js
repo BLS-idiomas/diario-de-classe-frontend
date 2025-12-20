@@ -21,7 +21,7 @@ describe('AlunoApi', () => {
   it('should call getById with correct endpoint', async () => {
     api.get = jest.fn();
     await api.getById(123);
-    expect(api.get).toHaveBeenCalledWith('/alunos/123');
+    expect(api.get).toHaveBeenCalledWith('/alunos/123', {});
   });
 
   it('should call create with correct endpoint and data', async () => {

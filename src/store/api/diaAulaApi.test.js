@@ -46,19 +46,19 @@ describe('DiaAulaApi', () => {
     it('should call get with correct endpoint and id', async () => {
       api.get = jest.fn();
       await api.getById(123);
-      expect(api.get).toHaveBeenCalledWith('/dias-aulas/123');
+      expect(api.get).toHaveBeenCalledWith('/dias-aulas/123', {});
     });
 
     it('should handle string id', async () => {
       api.get = jest.fn();
       await api.getById('456');
-      expect(api.get).toHaveBeenCalledWith('/dias-aulas/456');
+      expect(api.get).toHaveBeenCalledWith('/dias-aulas/456', {});
     });
 
     it('should handle numeric id', async () => {
       api.get = jest.fn();
       await api.getById(789);
-      expect(api.get).toHaveBeenCalledWith('/dias-aulas/789');
+      expect(api.get).toHaveBeenCalledWith('/dias-aulas/789', {});
     });
   });
 
@@ -154,13 +154,13 @@ describe('DiaAulaApi', () => {
     it('should handle id as 0', async () => {
       api.get = jest.fn();
       await api.getById(0);
-      expect(api.get).toHaveBeenCalledWith('/dias-aulas/0');
+      expect(api.get).toHaveBeenCalledWith('/dias-aulas/0', {});
     });
 
     it('should handle negative id', async () => {
       api.get = jest.fn();
       await api.getById(-1);
-      expect(api.get).toHaveBeenCalledWith('/dias-aulas/-1');
+      expect(api.get).toHaveBeenCalledWith('/dias-aulas/-1', {});
     });
   });
 

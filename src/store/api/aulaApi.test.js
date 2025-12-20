@@ -21,7 +21,7 @@ describe('AulaApi', () => {
   it('should call getById with correct endpoint', async () => {
     api.get = jest.fn();
     await api.getById(123);
-    expect(api.get).toHaveBeenCalledWith('/aulas/123');
+    expect(api.get).toHaveBeenCalledWith('/aulas/123', {});
   });
 
   it('should call create with correct endpoint and data', async () => {
