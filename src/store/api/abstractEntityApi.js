@@ -14,8 +14,8 @@ export class AbstractEntityApi extends AuthenticatedApi {
     return this.get(`${this.baseEndpoint}`, params);
   }
 
-  async getById(id) {
-    return this.get(`${this.baseEndpoint}/${id}`);
+  async getById(id, params = {}) {
+    return this.get(`${this.baseEndpoint}/${id}`, params);
   }
 
   async create(data) {

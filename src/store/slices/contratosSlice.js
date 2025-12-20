@@ -36,9 +36,9 @@ export const getContratos = createAsyncThunk(
 // GET ONE
 export const getContrato = createAsyncThunk(
   'contratos/getOne',
-  async (id, { rejectWithValue }) => {
+  async ({ id, withRelations = false }, { rejectWithValue }) => {
     try {
-      const res = await GetContratoByIdService.handle(id);
+      const res = await GetContratoByIdService.handle(id, withRelations);
       return res.data;
     } catch (error) {
       // Capturar a mensagem de erro da resposta da API

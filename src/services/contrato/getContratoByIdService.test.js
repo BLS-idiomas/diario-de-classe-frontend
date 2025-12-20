@@ -9,21 +9,31 @@ describe('GetContratoByIdService', () => {
 
   beforeEach(() => {
     contratoApi = new ContratoApi();
-    service = new GetContratoByIdService(contratoApi);
+    service = new GetContratoByIdService(contratoApi, true);
     jest.clearAllMocks();
   });
 
   describe('constructor', () => {
-    it('should create an instance with contratoApi', () => {
+    it('should create an instance with contratoApi and withRelations', () => {
       expect(service).toBeInstanceOf(GetContratoByIdService);
       expect(service.contratoApi).toBe(contratoApi);
+      expect(service.withRelations).toBe(true);
     });
 
-    it('should store the contratoApi parameter', () => {
+    it('should store the contratoApi and withRelations parameters', () => {
+      const customApi = new ContratoApi();
+      const customService = new GetContratoByIdService(customApi, false);
+
+      expect(customService.contratoApi).toBe(customApi);
+      expect(customService.withRelations).toBe(false);
+    });
+
+    it('should handle withRelations as undefined', () => {
       const customApi = new ContratoApi();
       const customService = new GetContratoByIdService(customApi);
 
       expect(customService.contratoApi).toBe(customApi);
+      expect(customService.withRelations).toBeUndefined();
     });
 
     it('should not create contratoApi if provided', () => {
@@ -35,14 +45,16 @@ describe('GetContratoByIdService', () => {
   });
 
   describe('execute', () => {
-    it('should call contratoApi.getById with correct id', async () => {
+    it('should call contratoApi.getById with correct id and params', async () => {
       const contratoId = 1;
       const mockContrato = { id: 1, nome: 'Contrato 1' };
       contratoApi.getById.mockResolvedValue(mockContrato);
 
       await service.execute(contratoId);
 
-      expect(contratoApi.getById).toHaveBeenCalledWith(contratoId);
+      expect(contratoApi.getById).toHaveBeenCalledWith(contratoId, {
+        withRelations: true,
+      });
       expect(contratoApi.getById).toHaveBeenCalledTimes(1);
     });
 
@@ -67,7 +79,9 @@ describe('GetContratoByIdService', () => {
 
       await service.execute(contratoId);
 
-      expect(contratoApi.getById).toHaveBeenCalledWith('123');
+      expect(contratoApi.getById).toHaveBeenCalledWith('123', {
+        withRelations: true,
+      });
     });
 
     it('should handle zero as id', async () => {
@@ -76,7 +90,9 @@ describe('GetContratoByIdService', () => {
 
       await service.execute(0);
 
-      expect(contratoApi.getById).toHaveBeenCalledWith(0);
+      expect(contratoApi.getById).toHaveBeenCalledWith(0, {
+        withRelations: true,
+      });
     });
 
     it('should handle negative id', async () => {
@@ -85,7 +101,9 @@ describe('GetContratoByIdService', () => {
 
       await service.execute(-1);
 
-      expect(contratoApi.getById).toHaveBeenCalledWith(-1);
+      expect(contratoApi.getById).toHaveBeenCalledWith(-1, {
+        withRelations: true,
+      });
     });
 
     it('should propagate errors from contratoApi.getById', async () => {
@@ -131,7 +149,9 @@ describe('GetContratoByIdService', () => {
 
       await service.execute(null);
 
-      expect(contratoApi.getById).toHaveBeenCalledWith(null);
+      expect(contratoApi.getById).toHaveBeenCalledWith(null, {
+        withRelations: true,
+      });
     });
 
     it('should handle undefined id', async () => {
@@ -140,9 +160,53 @@ describe('GetContratoByIdService', () => {
 
       await service.execute(undefined);
 
-      expect(contratoApi.getById).toHaveBeenCalledWith(undefined);
+      expect(contratoApi.getById).toHaveBeenCalledWith(undefined, {
+        withRelations: true,
+      });
     });
 
+    it('should call contratoApi.getById with withRelations false when specified', async () => {
+      const serviceWithoutRelations = new GetContratoByIdService(
+        contratoApi,
+        false
+      );
+      const mockContrato = { id: 1, nome: 'Contrato Sem Relações' };
+      contratoApi.getById.mockResolvedValue(mockContrato);
+
+      await serviceWithoutRelations.execute(1);
+
+      expect(contratoApi.getById).toHaveBeenCalledWith(1, {
+        withRelations: false,
+      });
+    });
+
+    it('should call contratoApi.getById with withRelations undefined when not specified', async () => {
+      const serviceWithoutParam = new GetContratoByIdService(contratoApi);
+      const mockContrato = { id: 1, nome: 'Contrato' };
+      contratoApi.getById.mockResolvedValue(mockContrato);
+
+      await serviceWithoutParam.execute(1);
+
+      expect(contratoApi.getById).toHaveBeenCalledWith(1, {
+        withRelations: undefined,
+      });
+    });
+
+    it('should work with consecutive calls', async () => {
+      // You can implement this test or remove it if not needed.
+    });
+
+    it('should call contratoApi.getById with withRelations undefined when not specified', async () => {
+      const serviceWithoutParam = new GetContratoByIdService(contratoApi);
+      const mockContrato = { id: 1, nome: 'Contrato' };
+      contratoApi.getById.mockResolvedValue(mockContrato);
+
+      await serviceWithoutParam.execute(1);
+
+      expect(contratoApi.getById).toHaveBeenCalledWith(1, {
+        withRelations: undefined,
+      });
+    });
     it('should work with consecutive calls', async () => {
       const mockContrato1 = { id: 1, nome: 'Contrato 1' };
       const mockContrato2 = { id: 2, nome: 'Contrato 2' };
@@ -158,9 +222,15 @@ describe('GetContratoByIdService', () => {
       await service.execute(3);
 
       expect(contratoApi.getById).toHaveBeenCalledTimes(3);
-      expect(contratoApi.getById).toHaveBeenNthCalledWith(1, 1);
-      expect(contratoApi.getById).toHaveBeenNthCalledWith(2, 2);
-      expect(contratoApi.getById).toHaveBeenNthCalledWith(3, 3);
+      expect(contratoApi.getById).toHaveBeenNthCalledWith(1, 1, {
+        withRelations: true,
+      });
+      expect(contratoApi.getById).toHaveBeenNthCalledWith(2, 2, {
+        withRelations: true,
+      });
+      expect(contratoApi.getById).toHaveBeenNthCalledWith(3, 3, {
+        withRelations: true,
+      });
     });
 
     it('should return different contratos for different ids', async () => {
@@ -223,7 +293,7 @@ describe('GetContratoByIdService', () => {
         getById: jest.fn().mockResolvedValue({ id: 1 }),
       }));
 
-      await GetContratoByIdService.handle(1);
+      await GetContratoByIdService.handle(1, true);
 
       expect(ContratoApi.mock.instances.length).toBe(initialCount + 1);
     });
@@ -238,15 +308,26 @@ describe('GetContratoByIdService', () => {
       expect(result).toEqual({ id: 1, nome: 'Contrato' });
     });
 
-    it('should call execute with correct id', async () => {
+    it('should call execute with correct id and withRelations', async () => {
       const mockGetById = jest.fn().mockResolvedValue({ id: 5, nome: 'Test' });
       ContratoApi.mockImplementation(() => ({
         getById: mockGetById,
       }));
 
-      await GetContratoByIdService.handle(5);
+      await GetContratoByIdService.handle(5, true);
 
-      expect(mockGetById).toHaveBeenCalledWith(5);
+      expect(mockGetById).toHaveBeenCalledWith(5, { withRelations: true });
+    });
+
+    it('should call execute with withRelations false', async () => {
+      const mockGetById = jest.fn().mockResolvedValue({ id: 5, nome: 'Test' });
+      ContratoApi.mockImplementation(() => ({
+        getById: mockGetById,
+      }));
+
+      await GetContratoByIdService.handle(5, false);
+
+      expect(mockGetById).toHaveBeenCalledWith(5, { withRelations: false });
     });
 
     it('should return result from execute', async () => {
@@ -283,9 +364,9 @@ describe('GetContratoByIdService', () => {
         getById: mockGetById,
       }));
 
-      await GetContratoByIdService.handle('456');
+      await GetContratoByIdService.handle('456', true);
 
-      expect(mockGetById).toHaveBeenCalledWith('456');
+      expect(mockGetById).toHaveBeenCalledWith('456', { withRelations: true });
     });
 
     it('should work with consecutive calls', async () => {
@@ -329,7 +410,9 @@ describe('GetContratoByIdService', () => {
       const result = await service.execute(1);
 
       expect(result).toEqual(mockContrato);
-      expect(contratoApi.getById).toHaveBeenCalledWith(1);
+      expect(contratoApi.getById).toHaveBeenCalledWith(1, {
+        withRelations: true,
+      });
     });
 
     it('should handle getting multiple contratos', async () => {

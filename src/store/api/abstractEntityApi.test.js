@@ -31,10 +31,17 @@ describe('AbstractEntityApi', () => {
     expect(api.get).toHaveBeenCalledWith('test-entity', params);
   });
 
-  it('should call getById with correct endpoint', async () => {
+  it('should call getById with correct endpoint and default params', async () => {
     api.get = jest.fn();
     await api.getById(123);
-    expect(api.get).toHaveBeenCalledWith('test-entity/123');
+    expect(api.get).toHaveBeenCalledWith('test-entity/123', {});
+  });
+
+  it('should call getById with correct endpoint and custom params', async () => {
+    api.get = jest.fn();
+    const params = { foo: 'bar' };
+    await api.getById(123, params);
+    expect(api.get).toHaveBeenCalledWith('test-entity/123', params);
   });
 
   it('should call create with correct endpoint and data', async () => {

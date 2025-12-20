@@ -20,7 +20,7 @@ export function useContrato(id) {
 
   useEffect(() => {
     if (id) {
-      dispatch(getContrato(id));
+      dispatch(getContrato({ id }));
     }
   }, [dispatch, id]);
 

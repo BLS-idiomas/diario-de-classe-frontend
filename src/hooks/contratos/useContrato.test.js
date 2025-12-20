@@ -86,7 +86,7 @@ describe('useContrato', () => {
       wrapper: createWrapper(store),
     });
 
-    expect(mockDispatch).toHaveBeenCalledWith(getContrato(123));
+    expect(mockDispatch).toHaveBeenCalledWith(getContrato({ id: 123 }));
     expect(mockDispatch).toHaveBeenCalledTimes(1);
   });
 
@@ -367,13 +367,13 @@ describe('useContrato', () => {
       initialProps: { id: 1 },
     });
 
-    expect(mockDispatch).toHaveBeenCalledWith(getContrato(1));
+    expect(mockDispatch).toHaveBeenCalledWith(getContrato({ id: 1 }));
     expect(mockDispatch).toHaveBeenCalledTimes(1);
 
     // Change id
     rerender({ id: 2 });
 
-    expect(mockDispatch).toHaveBeenCalledWith(getContrato(2));
+    expect(mockDispatch).toHaveBeenCalledWith(getContrato({ id: 2 }));
     expect(mockDispatch).toHaveBeenCalledTimes(2);
   });
 
@@ -434,7 +434,7 @@ describe('useContrato', () => {
       wrapper: createWrapper(store),
     });
 
-    expect(mockDispatch).toHaveBeenCalledWith(getContrato('123'));
+    expect(mockDispatch).toHaveBeenCalledWith(getContrato({ id: '123' }));
   });
 
   it('handles zero id correctly', () => {
