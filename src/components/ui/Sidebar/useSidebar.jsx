@@ -44,7 +44,7 @@ export function useSidebar(isAdmin) {
       href: '/aulas',
       label: 'Aulas',
       icon: <Book strokeWidth={strokeWidth} />,
-      show: false,
+      show: true,
     },
     {
       href: '/relatorios',
