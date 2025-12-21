@@ -65,12 +65,12 @@ export function useAulasList({
       tipo: aula.tipo,
       acoes: (
         <div className="flex gap-2">
-          <Link
+          {/* <Link
             href={`/aulas/${aula.id}`}
             className="btn-outline btn-outline-primary"
           >
             <Eye {...iconParams} stroke="blue" />
-          </Link>
+          </Link> */}
 
           <Link
             href={`/aulas/${aula.id}/editar`}

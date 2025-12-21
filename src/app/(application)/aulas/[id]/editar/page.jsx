@@ -53,7 +53,8 @@ export default function EditarAula() {
         <PageSubTitle>Atualize os dados da aula</PageSubTitle>
       </PageContent>
       <ButtonGroup>
-        <Link href={`/aulas/${params.id}`} className="btn btn-secondary">
+        {/* `/aulas/${params.id}` */}
+        <Link href={`/aulas`} className="btn btn-secondary">
           ← Voltar
         </Link>
       </ButtonGroup>
