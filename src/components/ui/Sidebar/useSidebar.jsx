@@ -1,4 +1,7 @@
 'use client';
+
+import { usePathname } from 'next/navigation';
+import { IS_DEVELOPMENT } from '@/constants';
 import {
   Book,
   CircleUser,
@@ -10,7 +13,6 @@ import {
   Settings,
   User,
 } from 'lucide-react';
-import { usePathname } from 'next/navigation';
 
 export function useSidebar(isAdmin) {
   const pathname = usePathname();
@@ -53,10 +55,10 @@ export function useSidebar(isAdmin) {
       show: false,
     },
     {
-      href: '/exemple',
+      href: '/exemplo',
       label: 'Exemplos',
       icon: <Info strokeWidth={strokeWidth} />,
-      show: false,
+      show: IS_DEVELOPMENT,
     },
     {
       href: '/meu-perfil',
