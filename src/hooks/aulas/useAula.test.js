@@ -29,7 +29,7 @@ describe('useAula', () => {
   it('should return aula and status flags', () => {
     useSelector.mockImplementation(cb =>
       cb({
-        aulas: { current: { id: 1 }, status: 'SUCCESS', statusError: null },
+        aulas: { current: { id: 1 }, status: 'success', statusError: null },
       })
     );
     const { result } = renderHook(() => useAula(1));
