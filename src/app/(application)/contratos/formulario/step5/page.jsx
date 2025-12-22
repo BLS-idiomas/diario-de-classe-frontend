@@ -72,19 +72,22 @@ export default function ContratoStep5() {
       <section>
         <PageSubTitle>Dias de Aula</PageSubTitle>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {diasAulas.length === 0 && <span>Nenhum dia cadastrado.</span>}
-          {diasAulas.map(dia => (
-            <InfoCard
-              key={dia.diaSemana}
-              columns={[
-                { text: dia.diaSemana, type: 'header' },
-                { text: `Ativo: ${dia.ativo ? 'Sim' : 'Não'}` },
-                { text: `Início: ${dia.horaInicial || '-'}` },
-                { text: `Fim: ${dia.horaFinal || '-'}` },
-                { text: `Aulas: ${dia.quantidadeAulas}` },
-              ]}
-            />
-          ))}
+          {(!diasAulas || diasAulas.length === 0) && (
+            <span>Nenhum dia cadastrado.</span>
+          )}
+          {diasAulas &&
+            diasAulas.map(dia => (
+              <InfoCard
+                key={dia.diaSemana}
+                columns={[
+                  { text: dia.diaSemana, type: 'header' },
+                  { text: `Ativo: ${dia.ativo ? 'Sim' : 'Não'}` },
+                  { text: `Início: ${dia.horaInicial || '-'}` },
+                  { text: `Fim: ${dia.horaFinal || '-'}` },
+                  { text: `Aulas: ${dia.quantidadeAulas}` },
+                ]}
+              />
+            ))}
         </div>
       </section>
 
@@ -104,25 +107,26 @@ export default function ContratoStep5() {
               </tr>
             </thead>
             <tbody>
-              {aulas.length === 0 && (
+              {(!aulas || aulas.length === 0) && (
                 <tr>
                   <td colSpan={6} className="text-center p-2">
                     Nenhuma aula cadastrada.
                   </td>
                 </tr>
               )}
-              {aulas.map(aula => (
-                <tr key={aula.id}>
-                  <td className="border p-2">
-                    {aula.dataAula?.slice(0, 10) || '-'}
-                  </td>
-                  <td className="border p-2">{aula.horaInicial}</td>
-                  <td className="border p-2">{aula.horaFinal}</td>
-                  <td className="border p-2">{aula.tipo}</td>
-                  <td className="border p-2">{aula.status}</td>
-                  <td className="border p-2">{aula.observacao || '-'}</td>
-                </tr>
-              ))}
+              {aulas &&
+                aulas.map(aula => (
+                  <tr key={aula.id}>
+                    <td className="border p-2">
+                      {aula.dataAula?.slice(0, 10) || '-'}
+                    </td>
+                    <td className="border p-2">{aula.horaInicial}</td>
+                    <td className="border p-2">{aula.horaFinal}</td>
+                    <td className="border p-2">{aula.tipo}</td>
+                    <td className="border p-2">{aula.status}</td>
+                    <td className="border p-2">{aula.observacao || '-'}</td>
+                  </tr>
+                ))}
             </tbody>
           </table>
         </div>

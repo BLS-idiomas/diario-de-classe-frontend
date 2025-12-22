@@ -39,9 +39,10 @@ export function useStep4Form({
   useEffect(() => {
     if (action === 'createManyAulas') {
       if (status === STATUS.SUCCESS && extra) {
+        const aulas = extra.aulas;
         setFormData(prev => ({
           ...prev,
-          aulas: extra,
+          aulas,
         }));
         successSubmit();
       } else if (status === STATUS.FAILED) {

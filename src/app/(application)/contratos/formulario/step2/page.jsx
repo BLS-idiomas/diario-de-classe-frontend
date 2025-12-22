@@ -111,6 +111,8 @@ export default function ContratoStep2() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // TODO Melhorar os campos desabilitados
+  // TODO refazer a forma que HORA FINAL
   return (
     <div className="flex flex-col gap-4">
       <p>Registre as aulas que o aluno terá em cada dia da semana.</p>

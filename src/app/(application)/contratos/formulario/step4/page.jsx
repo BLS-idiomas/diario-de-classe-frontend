@@ -13,7 +13,8 @@ export default function ContratoStep4() {
   const { formData, setAulas, generateAulasByContrato } = useContratoForm();
   const { showForm, showSuccess } = useSweetAlert();
   const { dataFormatter } = useFormater();
-
+  // TODO calcular hora final igual aos outros
+  // TODO Quando adicionar uma aula precisa reordenar as aulas por data
   useEffect(() => {
     if (formData.aulas.length === 0) {
       generateAulasByContrato(formData);
@@ -131,7 +132,7 @@ export default function ContratoStep4() {
         }
 
         return {
-          dataAula,
+          dataAula: new Date(dataAula).toISOString(),
           horaInicial,
           horaFinal,
           tipo,
