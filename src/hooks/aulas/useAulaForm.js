@@ -6,8 +6,8 @@ export function useAulaForm({ id = null, submit }) {
     idProfessor: '',
     idContrato: '',
     dataAula: '',
-    horaInicio: '',
-    horaFim: '',
+    horaInicial: '',
+    horaFinal: '',
     tipo: 'PADRAO',
     observacao: '',
   });
@@ -22,7 +22,11 @@ export function useAulaForm({ id = null, submit }) {
 
   const handleSubmit = async e => {
     e.preventDefault();
-    submit({ id, dataToSend: formData });
+    const dataToSend = {
+      ...formData,
+      dataAula: new Date(formData.dataAula).toISOString(),
+    };
+    submit({ id, dataToSend });
   };
 
   return {

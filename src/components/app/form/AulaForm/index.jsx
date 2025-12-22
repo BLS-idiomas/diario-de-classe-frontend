@@ -117,20 +117,20 @@ export const AulaForm = ({
 
           <InputField
             required
-            htmlFor="horaInicio"
+            htmlFor="horaInicial"
             label="Hora Início"
             type="time"
             onChange={handleChange}
-            value={formData.horaInicio}
+            value={formData.horaInicial}
           />
 
           <InputField
             required
-            htmlFor="horaFim"
+            htmlFor="horaFinal"
             label="Hora Fim"
             type="time"
             onChange={handleChange}
-            value={formData.horaFim}
+            value={formData.horaFinal}
           />
         </FormGroup>
 

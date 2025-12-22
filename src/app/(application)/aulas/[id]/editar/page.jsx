@@ -28,7 +28,10 @@ export default function EditarAula() {
 
   useEffect(() => {
     if (current) {
-      setFormData(current);
+      setFormData({
+        ...current,
+        dataAula: current.dataAula.split('T')[0],
+      });
     }
   }, [current, setFormData]);
 
