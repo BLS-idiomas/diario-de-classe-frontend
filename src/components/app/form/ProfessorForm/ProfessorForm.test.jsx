@@ -1,5 +1,11 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { ProfessorForm } from '.';
+// Mock do hook useUserAuth para evitar erro de contexto
+jest.mock('@/providers/UserAuthProvider', () => ({
+  useUserAuth: () => ({
+    currentUser: { id: 1, permissao: 'admin' },
+  }),
+}));
 import { PERMISSAO } from '@/constants';
 
 // Mock dos componentes
