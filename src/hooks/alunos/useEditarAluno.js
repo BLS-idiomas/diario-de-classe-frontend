@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useRouter } from 'next/navigation';
-import { STATUS } from '@/constants';
+import { STATUS, STATUS_ERROR } from '@/constants';
 import { useToast } from '@/providers/ToastProvider';
 import { updateAluno, getAluno } from '@/store/slices/alunosSlice';
 import { clearStatus, clearCurrent } from '@/store/slices/alunosSlice';
@@ -14,6 +14,9 @@ export function useEditarAluno(alunoId) {
     state => state.alunos
   );
   const isLoading = status === STATUS.LOADING;
+  const isNotFound =
+    [STATUS_ERROR.BAD_REQUEST, STATUS_ERROR.NOT_FOUND].includes(statusError) &&
+    !current;
 
   const submit = ({ id, dataToSend }) => {
     dispatch(updateAluno({ id: id, data: dataToSend }));
@@ -43,6 +46,7 @@ export function useEditarAluno(alunoId) {
     message,
     errors,
     isLoading,
+    isNotFound,
     current,
     submit,
   };

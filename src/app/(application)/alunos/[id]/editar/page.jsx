@@ -5,7 +5,6 @@ import Link from 'next/link';
 import { notFound, useParams } from 'next/navigation';
 import { useEditarAluno } from '@/hooks/alunos/useEditarAluno';
 import { useAlunoForm } from '@/hooks/alunos/useAlunoForm';
-import { STATUS_ERROR } from '@/constants/statusError';
 import {
   ButtonGroup,
   PageContent,
@@ -18,7 +17,7 @@ import {
 
 export default function EditarAluno() {
   const params = useParams();
-  const { message, errors, isLoading, current, statusError, submit } =
+  const { message, errors, isLoading, current, isNotFound, submit } =
     useEditarAluno(params.id);
   const { formData, isSenhaError, handleChange, handleSubmit, setFormData } =
     useAlunoForm({ submit, isEdit: true, id: params.id });
@@ -30,13 +29,10 @@ export default function EditarAluno() {
   }, [current, setFormData]);
 
   useEffect(() => {
-    if (
-      statusError === STATUS_ERROR.BAD_REQUEST ||
-      statusError === STATUS_ERROR.NOT_FOUND
-    ) {
+    if (isNotFound) {
       return notFound();
     }
-  }, [statusError]);
+  }, [isNotFound]);
 
   if (isLoading && !current) {
     return <Loading />;
