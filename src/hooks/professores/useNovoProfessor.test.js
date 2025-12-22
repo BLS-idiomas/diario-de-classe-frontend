@@ -9,7 +9,12 @@ import { useToast } from '@/providers/ToastProvider';
 
 // Mock dos módulos
 jest.mock('@/store/slices/professoresSlice', () => ({
-  createProfessor: jest.fn(),
+  createProfessor: jest.fn(data => ({
+    type: 'createProfessor',
+    payload: data,
+  })),
+  clearStatus: jest.fn(() => ({ type: 'clearStatus' })),
+  clearCurrent: jest.fn(() => ({ type: 'clearCurrent' })),
 }));
 
 jest.mock('@/constants', () => ({
@@ -78,36 +83,12 @@ describe('useNovoProfessor', () => {
     });
   });
 
-  it('should return initial form data and functions', () => {
+  it('should dispatch createProfessor on submit', () => {
     const initialState = {
       status: STATUS.IDLE,
       message: '',
       errors: {},
-    };
-    const store = createMockStore(initialState);
-    store.dispatch = mockDispatch;
-
-    const wrapper = createWrapper(store);
-    const { result } = renderHook(() => useNovoProfessor(), { wrapper });
-
-    expect(result.current.formData).toEqual({
-      nome: '',
-      sobrenome: '',
-      email: '',
-      telefone: '',
-      senha: '',
-      repetirSenha: '',
-      permissao: 'professor',
-    });
-    expect(result.current.handleChange).toBeDefined();
-    expect(result.current.handleSubmit).toBeDefined();
-  });
-
-  it('should update form data when handleChange is called', () => {
-    const initialState = {
-      status: STATUS.IDLE,
-      message: '',
-      errors: {},
+      current: null,
     };
     const store = createMockStore(initialState);
     store.dispatch = mockDispatch;
@@ -116,109 +97,14 @@ describe('useNovoProfessor', () => {
     const { result } = renderHook(() => useNovoProfessor(), { wrapper });
 
     act(() => {
-      result.current.handleChange({
-        target: { name: 'nome', value: 'João' },
-      });
+      // submit expects an object with dataToSend
+      result.current.submit({ dataToSend: { nome: 'João' } });
     });
 
-    expect(result.current.formData.nome).toBe('João');
-  });
-
-  it('should update multiple form fields correctly', () => {
-    const initialState = {
-      status: STATUS.IDLE,
-      message: '',
-      errors: {},
-    };
-    const store = createMockStore(initialState);
-    store.dispatch = mockDispatch;
-
-    const wrapper = createWrapper(store);
-    const { result } = renderHook(() => useNovoProfessor(), { wrapper });
-
-    act(() => {
-      result.current.handleChange({
-        target: { name: 'nome', value: 'João' },
-      });
-    });
-
-    act(() => {
-      result.current.handleChange({
-        target: { name: 'email', value: 'joao@test.com' },
-      });
-    });
-
-    expect(result.current.formData.nome).toBe('João');
-    expect(result.current.formData.email).toBe('joao@test.com');
-    expect(result.current.formData.sobrenome).toBe(''); // outros campos mantidos
-  });
-
-  it('should call preventDefault on form submission', async () => {
-    const initialState = {
-      status: STATUS.IDLE,
-      message: '',
-      errors: {},
-    };
-    const store = createMockStore(initialState);
-    store.dispatch = mockDispatch;
-
-    const wrapper = createWrapper(store);
-    const { result } = renderHook(() => useNovoProfessor(), { wrapper });
-
-    // Submit do form
-    const mockEvent = { preventDefault: jest.fn() };
-    await act(async () => {
-      await result.current.handleSubmit(mockEvent);
-    });
-
-    expect(mockEvent.preventDefault).toHaveBeenCalled();
-  });
-
-  it('should handle form data correctly', async () => {
-    const initialState = {
-      status: STATUS.IDLE,
-      message: '',
-      errors: {},
-    };
-    const store = createMockStore(initialState);
-    store.dispatch = mockDispatch;
-
-    const wrapper = createWrapper(store);
-    const { result } = renderHook(() => useNovoProfessor(), { wrapper });
-
-    // Preencher dados incluindo repetirSenha
-    act(() => {
-      result.current.handleChange({
-        target: { name: 'nome', value: 'João' },
-      });
-      result.current.handleChange({
-        target: { name: 'repetirSenha', value: '123456' },
-      });
-    });
-
-    // Verificar se dados foram atualizados no form
-    expect(result.current.formData.nome).toBe('João');
-    expect(result.current.formData.repetirSenha).toBe('123456');
-  });
-
-  it('should handle form submission', async () => {
-    const initialState = {
-      status: STATUS.IDLE,
-      message: '',
-      errors: {},
-    };
-    const store = createMockStore(initialState);
-    store.dispatch = mockDispatch;
-
-    const wrapper = createWrapper(store);
-    const { result } = renderHook(() => useNovoProfessor(), { wrapper });
-
-    const mockEvent = { preventDefault: jest.fn() };
-    await act(async () => {
-      await result.current.handleSubmit(mockEvent);
-    });
-
-    expect(mockEvent.preventDefault).toHaveBeenCalled();
+    // Verifica se o dispatch foi chamado com createProfessor
+    expect(mockDispatch).toHaveBeenCalledWith(
+      createProfessor({ nome: 'João' })
+    );
   });
 
   it('should return correct loading states', () => {
@@ -226,6 +112,7 @@ describe('useNovoProfessor', () => {
       status: STATUS.LOADING,
       message: '',
       errors: {},
+      current: null,
     };
     const store = createMockStore(loadingState);
     store.dispatch = mockDispatch;
@@ -242,6 +129,8 @@ describe('useNovoProfessor', () => {
       status: STATUS.SUCCESS,
       message: 'Professor criado com sucesso',
       errors: {},
+      current: { id: 1, nome: 'João' },
+      action: 'createProfessor',
     };
     const store = createMockStore(successState);
     store.dispatch = mockDispatch;
@@ -254,30 +143,25 @@ describe('useNovoProfessor', () => {
     expect(result.current.message).toBe('Professor criado com sucesso');
   });
 
-  it('should handle form submission errors gracefully', async () => {
-    const initialState = {
-      status: STATUS.IDLE,
-      message: '',
+  it('should show success toast and redirect when status is SUCCESS and current exists', () => {
+    const successState = {
+      status: STATUS.SUCCESS,
+      message: 'Professor criado com sucesso',
       errors: {},
+      current: { id: 1, nome: 'João' },
+      action: 'createProfessor',
     };
-    const store = createMockStore(initialState);
+    const store = createMockStore(successState);
     store.dispatch = mockDispatch;
 
-    // Mock de erro na submissão
-    mockCreateProfessor.mockRejectedValue(new Error('Network error'));
-
     const wrapper = createWrapper(store);
-    const { result } = renderHook(() => useNovoProfessor(), { wrapper });
+    renderHook(() => useNovoProfessor(), { wrapper });
 
-    const mockEvent = { preventDefault: jest.fn() };
-
-    // Não deve lançar erro, deve ser tratado internamente
-    await act(async () => {
-      await result.current.handleSubmit(mockEvent);
+    // Effects may run asynchronously; wait for side-effects
+    const { waitFor } = require('@testing-library/react');
+    return waitFor(() => {
+      expect(mockSuccess).toHaveBeenCalledWith('Professor criado com sucesso!');
+      expect(mockPush).toHaveBeenCalledWith('/professores');
     });
-
-    expect(mockEvent.preventDefault).toHaveBeenCalled();
-    expect(mockSuccess).not.toHaveBeenCalled();
-    expect(mockPush).not.toHaveBeenCalled();
   });
 });

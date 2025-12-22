@@ -185,6 +185,24 @@ export const useSweetAlert = () => {
     });
   }, []);
 
+  // Alert com formulário de múltiplos campos
+  const showForm = useCallback(
+    (options = {}) => {
+      return Swal.fire({
+        ...baseConfig,
+        title: options.title || 'Preencha os campos',
+        html: options.html || '',
+        showCancelButton: true,
+        confirmButtonText: options.confirmButtonText || 'Confirmar',
+        cancelButtonText: options.cancelButtonText || 'Cancelar',
+        focusConfirm: false,
+        preConfirm: options.preConfirm || (() => ({})),
+        ...options,
+      });
+    },
+    [baseConfig]
+  );
+
   return {
     showSuccess,
     showError,
@@ -195,6 +213,7 @@ export const useSweetAlert = () => {
     showInput,
     showDeleteConfirm,
     showToast,
+    showForm,
     close,
     // Acesso direto ao Swal para casos especiais
     Swal,

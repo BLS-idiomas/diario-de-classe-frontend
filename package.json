@@ -6,6 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "start:docker": "docker build -t diario-de-classe-frontend . && docker run -d -p 3000:3000 --name diario-de-classe-frontend diario-de-classe-frontend",
+    "server": "git pull && npm install && npm run build && npm run start",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix",
     "format": "prettier --write .",
@@ -22,7 +24,9 @@
     "axios": "^1.13.2",
     "lucide-react": "^0.552.0",
     "next": "16.0.1",
+    "next-pwa": "^5.6.0",
     "react": "19.2.0",
+    "react-data-table-component": "^7.7.0",
     "react-dom": "19.2.0",
     "react-redux": "^9.2.0",
     "sweetalert2": "^11.26.3"
@@ -30,7 +34,7 @@
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
     "@testing-library/jest-dom": "^6.9.1",
-    "@testing-library/react": "^16.3.0",
+    "@testing-library/react": "^16.3.1",
     "@testing-library/user-event": "^14.6.1",
     "eslint": "^9",
     "eslint-config-next": "16.0.1",
@@ -39,6 +43,7 @@
     "jest-environment-jsdom": "^30.2.0",
     "lint-staged": "^16.2.6",
     "prettier": "^3.3.3",
+    "redux-mock-store": "^1.5.5",
     "tailwindcss": "^4"
   },
   "lint-staged": {

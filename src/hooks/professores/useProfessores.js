@@ -12,14 +12,10 @@ export function useProfessores() {
   }, [dispatch]);
 
   const isLoading = status === STATUS.IDLE || status === STATUS.LOADING;
-  const isSuccess = status === STATUS.SUCCESS;
-  const isEmpty = isSuccess && list.length === 0;
 
   return {
     professores: list,
     status,
     isLoading,
-    isSuccess,
-    isEmpty,
   };
 }

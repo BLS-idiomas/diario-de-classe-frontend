@@ -1,5 +1,35 @@
 @import 'tailwindcss';
 
+@layer components {
+  .btn {
+    @apply px-4 py-2 text-sm text-white rounded transition-colors cursor-pointer font-semibold;
+
+    &.blocked {
+      @apply bg-gray-400 cursor-not-allowed;
+    }
+    &.btn-primary {
+      @apply bg-blue-600 hover:bg-blue-700;
+    }
+    &.btn-secondary {
+      @apply bg-gray-600 hover:bg-gray-700;
+    }
+  }
+
+  .btn-outline {
+    @apply px-2 py-1 text-sm border rounded transition-colors cursor-pointer;
+
+    &.btn-outline-primary {
+      @apply border-blue-500 text-blue-500 hover:bg-blue-50;
+    }
+    &.btn-outline-secondary {
+      @apply border-gray-500 text-gray-500 hover:bg-gray-50;
+    }
+    &.btn-outline-danger {
+      @apply border-red-500 text-red-500 hover:bg-red-50;
+    }
+  }
+}
+
 /* :root {
   --background: #ffffff;
   --foreground: #171717;

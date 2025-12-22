@@ -1,46 +1,27 @@
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useRouter } from 'next/navigation';
 import { STATUS } from '@/constants';
 import { useToast } from '@/providers/ToastProvider';
 import { updateProfessor, getProfessor } from '@/store/slices/professoresSlice';
+import { clearStatus, clearCurrent } from '@/store/slices/professoresSlice';
 
 export function useEditarProfessor(professorId) {
   const dispatch = useDispatch();
   const router = useRouter();
   const { success } = useToast();
-  const { status, message, errors, current } = useSelector(
+  const { status, message, errors, current, action, statusError } = useSelector(
     state => state.professores
   );
+  const isLoading = status === STATUS.LOADING;
 
-  const initialFormData = useMemo(() => {
-    if (current && current.id) {
-      return {
-        nome: current.nome || '',
-        sobrenome: current.sobrenome || '',
-        email: current.email || '',
-        telefone: current.telefone || '',
-        senha: '',
-        repetirSenha: '',
-        permissao: current.permissao || 'professor',
-      };
-    }
-    return {
-      nome: '',
-      sobrenome: '',
-      email: '',
-      telefone: '',
-      senha: '',
-      repetirSenha: '',
-      permissao: 'professor',
-    };
-  }, [current]);
-
-  const [formData, setFormData] = useState(initialFormData);
+  const submit = ({ id, dataToSend }) => {
+    dispatch(updateProfessor({ id: id, data: dataToSend }));
+  };
 
   useEffect(() => {
-    setFormData(initialFormData);
-  }, [initialFormData]);
+    dispatch(clearStatus());
+  }, [dispatch]);
 
   useEffect(() => {
     if (professorId) {
@@ -48,47 +29,21 @@ export function useEditarProfessor(professorId) {
     }
   }, [dispatch, professorId]);
 
-  const handleChange = e => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
-  const handleSubmit = async e => {
-    e.preventDefault();
-
-    try {
-      const { repetirSenha, ...dataToSend } = formData;
-
-      const result = await dispatch(
-        updateProfessor({ id: professorId, data: dataToSend })
-      );
-
-      if (updateProfessor.fulfilled.match(result)) {
-        // Sucesso - redirecionar para lista
-        success('Operação realizada com sucesso!');
-        router.push('/professores');
-      }
-    } catch (error) {
-      console.error('Erro ao editar professor:', error);
+  useEffect(() => {
+    if (status === STATUS.SUCCESS && current && action === 'updateProfessor') {
+      dispatch(clearCurrent());
+      dispatch(clearStatus());
+      success('Operação realizada com sucesso!');
+      router.push('/professores');
     }
-  };
-
-  // Estados computados para facilitar o uso
-  const isLoading = status === STATUS.LOADING;
-  const isSubmitting = status === STATUS.IDLE || status === STATUS.LOADING;
+  }, [status, router, success, current, action, dispatch]);
 
   return {
-    formData,
-    status,
+    statusError,
     message,
     errors,
-    current,
     isLoading,
-    isSubmitting,
-    handleChange,
-    handleSubmit,
+    current,
+    submit,
   };
 }

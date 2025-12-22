@@ -2,12 +2,18 @@ import { renderHook } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
 import { useProfessor } from './useProfessor';
-import { getProfessor } from '@/store/slices/professoresSlice';
+import {
+  getProfessor,
+  getAulasProfessor,
+  getAlunosProfessor,
+} from '@/store/slices/professoresSlice';
 import { STATUS } from '@/constants';
 
 // Mock dos módulos
 jest.mock('@/store/slices/professoresSlice', () => ({
   getProfessor: jest.fn(),
+  getAulasProfessor: jest.fn(),
+  getAlunosProfessor: jest.fn(),
 }));
 
 jest.mock('@/constants', () => ({
@@ -16,6 +22,13 @@ jest.mock('@/constants', () => ({
     LOADING: 'loading',
     SUCCESS: 'success',
     FAILED: 'failed',
+  },
+}));
+
+jest.mock('@/constants/statusError', () => ({
+  STATUS_ERROR: {
+    BAD_REQUEST: '400',
+    NOT_FOUND: '404',
   },
 }));
 
@@ -43,42 +56,32 @@ describe('useProfessor', () => {
   beforeEach(() => {
     jest.clearAllMocks();
 
-    // Mock do getProfessor action
+    // Implementações dos actions para facilitar asserções
     getProfessor.mockImplementation(id => ({
       type: 'professores/getProfessor',
+      payload: id,
+    }));
+    getAulasProfessor.mockImplementation(id => ({
+      type: 'professores/getAulasProfessor',
+      payload: id,
+    }));
+    getAlunosProfessor.mockImplementation(id => ({
+      type: 'professores/getAlunosProfessor',
       payload: id,
     }));
 
     mockDispatch = jest.fn();
   });
 
-  it('should return initial state correctly', () => {
+  it('dispatches getProfessor, getAulasProfessor and getAlunosProfessor when id is provided', () => {
     const initialState = {
-      current: null,
-      message: '',
+      current: { id: 123, nome: 'Teste' },
+      aulas: [{ id: 1 }],
+      alunos: [{ id: 2 }],
+      message: 'ok',
       status: STATUS.IDLE,
     };
-    const store = createMockStore(initialState);
-    store.dispatch = mockDispatch;
 
-    const wrapper = createWrapper(store);
-    const { result } = renderHook(() => useProfessor(123), { wrapper });
-
-    expect(result.current).toEqual({
-      professor: null,
-      message: '',
-      isLoading: true,
-      isSuccess: false,
-      isFailed: false,
-    });
-  });
-
-  it('should dispatch getProfessor when id is provided', () => {
-    const initialState = {
-      current: null,
-      message: '',
-      status: STATUS.IDLE,
-    };
     const store = createMockStore(initialState);
     store.dispatch = mockDispatch;
 
@@ -89,14 +92,18 @@ describe('useProfessor', () => {
       type: 'professores/getProfessor',
       payload: 123,
     });
+    expect(mockDispatch).toHaveBeenCalledWith({
+      type: 'professores/getAulasProfessor',
+      payload: 123,
+    });
+    expect(mockDispatch).toHaveBeenCalledWith({
+      type: 'professores/getAlunosProfessor',
+      payload: 123,
+    });
   });
 
-  it('should not dispatch getProfessor when id is not provided', () => {
-    const initialState = {
-      current: null,
-      message: '',
-      status: STATUS.IDLE,
-    };
+  it('does not dispatch when id is falsy', () => {
+    const initialState = {};
     const store = createMockStore(initialState);
     store.dispatch = mockDispatch;
 
@@ -106,163 +113,118 @@ describe('useProfessor', () => {
     expect(mockDispatch).not.toHaveBeenCalled();
   });
 
-  it('should not dispatch getProfessor when id is undefined', () => {
+  it('returns correct shape and flags for different statuses', () => {
     const initialState = {
-      current: null,
-      message: '',
-      status: STATUS.IDLE,
-    };
-    const store = createMockStore(initialState);
-    store.dispatch = mockDispatch;
-
-    const wrapper = createWrapper(store);
-    renderHook(() => useProfessor(undefined), { wrapper });
-
-    expect(mockDispatch).not.toHaveBeenCalled();
-  });
-
-  it('should return loading state correctly', () => {
-    const initialState = {
-      current: null,
-      message: '',
-      status: STATUS.LOADING,
-    };
-    const store = createMockStore(initialState);
-    store.dispatch = mockDispatch;
-
-    const wrapper = createWrapper(store);
-    const { result } = renderHook(() => useProfessor(123), { wrapper });
-
-    expect(result.current.isLoading).toBe(true);
-    expect(result.current.isSuccess).toBe(false);
-    expect(result.current.isFailed).toBe(false);
-  });
-
-  it('should return success state with professor data', () => {
-    const mockProfessor = {
-      id: 123,
-      nome: 'João',
-      sobrenome: 'Silva',
-      email: 'joao@test.com',
-    };
-    const initialState = {
-      current: mockProfessor,
-      message: 'Professor carregado com sucesso',
+      current: { id: 5, nome: 'Ana' },
+      aulas: [{ id: 11 }],
+      alunos: [{ id: 22 }],
+      message: 'all good',
       status: STATUS.SUCCESS,
     };
+
     const store = createMockStore(initialState);
     store.dispatch = mockDispatch;
 
     const wrapper = createWrapper(store);
-    const { result } = renderHook(() => useProfessor(123), { wrapper });
+    const { result: successResult } = renderHook(() => useProfessor(5), {
+      wrapper,
+    });
 
-    expect(result.current).toEqual({
-      professor: mockProfessor,
-      message: 'Professor carregado com sucesso',
+    expect(successResult.current).toEqual({
+      professor: initialState.current,
+      aulas: initialState.aulas,
+      alunos: initialState.alunos,
+      message: initialState.message,
       isLoading: false,
       isSuccess: true,
       isFailed: false,
+      isNotFound: false,
     });
+
+    // Loading state
+    const loadingState = { ...initialState, status: STATUS.LOADING };
+    const loadingStore = createMockStore(loadingState);
+    loadingStore.dispatch = mockDispatch;
+    const loadingWrapper = createWrapper(loadingStore);
+    const { result: loadingResult } = renderHook(() => useProfessor(5), {
+      wrapper: loadingWrapper,
+    });
+
+    expect(loadingResult.current.isLoading).toBe(true);
+    expect(loadingResult.current.isSuccess).toBe(false);
+    expect(loadingResult.current.isFailed).toBe(false);
+
+    // Failed state
+    const failedState = { ...initialState, status: STATUS.FAILED };
+    const failedStore = createMockStore(failedState);
+    failedStore.dispatch = mockDispatch;
+    const failedWrapper = createWrapper(failedStore);
+    const { result: failedResult } = renderHook(() => useProfessor(5), {
+      wrapper: failedWrapper,
+    });
+
+    expect(failedResult.current.isFailed).toBe(true);
+    expect(failedResult.current.isSuccess).toBe(false);
+    expect(failedResult.current.isLoading).toBe(false);
   });
 
-  it('should return failed state correctly', () => {
+  it('returns isNotFound true when statusError is 404 and no current professor', () => {
     const initialState = {
       current: null,
-      message: 'Erro ao carregar professor',
+      aulas: [],
+      alunos: [],
+      message: 'Not found',
       status: STATUS.FAILED,
+      statusError: '404',
     };
+
     const store = createMockStore(initialState);
     store.dispatch = mockDispatch;
 
     const wrapper = createWrapper(store);
-    const { result } = renderHook(() => useProfessor(123), { wrapper });
+    const { result } = renderHook(() => useProfessor(999), { wrapper });
 
-    expect(result.current.isLoading).toBe(false);
-    expect(result.current.isSuccess).toBe(false);
-    expect(result.current.isFailed).toBe(true);
-    expect(result.current.message).toBe('Erro ao carregar professor');
+    expect(result.current.isNotFound).toBe(true);
+    expect(result.current.professor).toBeNull();
   });
 
-  it('should dispatch getProfessor when id changes', () => {
+  it('returns isNotFound true when statusError is 400 and no current professor', () => {
     const initialState = {
       current: null,
-      message: '',
-      status: STATUS.IDLE,
+      aulas: [],
+      alunos: [],
+      message: 'Bad request',
+      status: STATUS.FAILED,
+      statusError: '400',
     };
+
     const store = createMockStore(initialState);
     store.dispatch = mockDispatch;
 
     const wrapper = createWrapper(store);
-    const { rerender } = renderHook(({ id }) => useProfessor(id), {
-      wrapper,
-      initialProps: { id: 123 },
-    });
+    const { result } = renderHook(() => useProfessor(999), { wrapper });
 
-    expect(mockDispatch).toHaveBeenCalledWith({
-      type: 'professores/getProfessor',
-      payload: 123,
-    });
-
-    // Mudar o ID deve disparar nova busca
-    rerender({ id: 456 });
-
-    expect(mockDispatch).toHaveBeenCalledWith({
-      type: 'professores/getProfessor',
-      payload: 456,
-    });
-
-    expect(mockDispatch).toHaveBeenCalledTimes(2);
+    expect(result.current.isNotFound).toBe(true);
+    expect(result.current.professor).toBeNull();
   });
 
-  it('should handle string IDs correctly', () => {
+  it('returns isNotFound false when professor exists even with error status', () => {
     const initialState = {
-      current: null,
-      message: '',
-      status: STATUS.IDLE,
+      current: { id: 5, nome: 'Ana' },
+      aulas: [],
+      alunos: [],
+      message: 'Some error',
+      status: STATUS.FAILED,
+      statusError: '404',
     };
+
     const store = createMockStore(initialState);
     store.dispatch = mockDispatch;
 
     const wrapper = createWrapper(store);
-    renderHook(() => useProfessor('abc123'), { wrapper });
+    const { result } = renderHook(() => useProfessor(5), { wrapper });
 
-    expect(mockDispatch).toHaveBeenCalledWith({
-      type: 'professores/getProfessor',
-      payload: 'abc123',
-    });
-  });
-
-  it('should handle zero as valid ID', () => {
-    const initialState = {
-      current: null,
-      message: '',
-      status: STATUS.IDLE,
-    };
-    const store = createMockStore(initialState);
-    store.dispatch = mockDispatch;
-
-    const wrapper = createWrapper(store);
-    renderHook(() => useProfessor(0), { wrapper });
-
-    expect(mockDispatch).not.toHaveBeenCalled(); // 0 é falsy
-  });
-
-  it('should only dispatch once for same ID on re-render', () => {
-    const initialState = {
-      current: null,
-      message: '',
-      status: STATUS.IDLE,
-    };
-    const store = createMockStore(initialState);
-    store.dispatch = mockDispatch;
-
-    const wrapper = createWrapper(store);
-    const { rerender } = renderHook(() => useProfessor(123), { wrapper });
-
-    expect(mockDispatch).toHaveBeenCalledTimes(1);
-
-    // Re-render com mesmo ID não deve disparar nova busca
-    rerender();
-    expect(mockDispatch).toHaveBeenCalledTimes(1);
+    expect(result.current.isNotFound).toBe(false);
+    expect(result.current.professor).toEqual({ id: 5, nome: 'Ana' });
   });
 });
