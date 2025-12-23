@@ -1,6 +1,8 @@
 import { renderHook } from '@testing-library/react';
 import { useAulasList } from './useAulasList';
 import React from 'react';
+import { STATUS_AULA_LABEL } from '@/constants/statusAulas';
+import { TIPO_AULA } from '@/constants/tipoAula';
 
 describe('useAulasList', () => {
   const mockFormatter = jest.fn(date => `format:${date}`);
@@ -11,7 +13,39 @@ describe('useAulasList', () => {
       dataCriacao: '2025-12-21',
       horaFinal: '10:00',
       horaInicial: '09:00',
-      status: 'ATIVO',
+      status: 'AGENDADA',
+      tipo: 'PADRAO',
+    },
+    {
+      id: 11,
+      dataCriacao: '2025-12-22',
+      horaFinal: '11:00',
+      horaInicial: '10:00',
+      status: 'EM_ANDAMENTO',
+      tipo: 'PADRAO',
+    },
+    {
+      id: 12,
+      dataCriacao: '2025-12-23',
+      horaFinal: '12:00',
+      horaInicial: '11:00',
+      status: 'CONCLUIDA',
+      tipo: 'PADRAO',
+    },
+    {
+      id: 13,
+      dataCriacao: '2025-12-24',
+      horaFinal: '13:00',
+      horaInicial: '12:00',
+      status: 'CANCELADA',
+      tipo: 'PADRAO',
+    },
+    {
+      id: 14,
+      dataCriacao: '2025-12-25',
+      horaFinal: '14:00',
+      horaInicial: '13:00',
+      status: 'CANCELADA_POR_FALTA',
       tipo: 'PADRAO',
     },
   ];
@@ -29,8 +63,10 @@ describe('useAulasList', () => {
     expect(result.current.data[0].dataCriacao).toBe('format:2025-12-21');
     expect(result.current.data[0].horaFinal).toBe('10:00');
     expect(result.current.data[0].horaInicial).toBe('09:00');
-    expect(result.current.data[0].status).toBe('ATIVO');
-    expect(result.current.data[0].tipo).toBe('PADRAO');
+    expect(result.current.data[0].status).toBe(
+      STATUS_AULA_LABEL[aulas[0].status]
+    );
+    expect(result.current.data[0].tipo).toBe(TIPO_AULA[aulas[0].tipo]);
     // Testa se existe o componente de ações (div)
     expect(React.isValidElement(result.current.data[0].acoes)).toBe(true);
   });

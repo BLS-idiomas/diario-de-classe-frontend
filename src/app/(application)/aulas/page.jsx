@@ -7,11 +7,13 @@ import { useDeletarAula } from '@/hooks/aulas/useDeletarAula';
 import { useFormater } from '@/hooks/useFormater';
 import { useAulasList } from '@/hooks/aulas/useAulasList';
 import { ButtonGroup, Container, PageTitle, Table } from '@/components';
+import { useEditarAndamentoAula } from '@/hooks/aulas/useEditarAndamentoAula';
 
 export default function Aulas() {
   const { currentUser } = useUserAuth();
   const { aulas, isLoading } = useAulas();
   const { handleDeleteAula } = useDeletarAula();
+  const { submit, isLoading: isLoadingSubmit } = useEditarAndamentoAula();
   const { telefoneFormatter, dataFormatter } = useFormater();
   const { columns, data } = useAulasList({
     currentUser,
@@ -20,6 +22,8 @@ export default function Aulas() {
     telefoneFormatter,
     dataFormatter,
     handleDeleteAula,
+    submit,
+    isLoadingSubmit,
   });
 
   return (

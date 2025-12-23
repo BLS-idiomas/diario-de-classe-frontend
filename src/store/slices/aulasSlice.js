@@ -7,6 +7,7 @@ import { GetAulaByIdService } from '@/services/aula/getAulaByIdService';
 import { CreateAulaService } from '@/services/aula/createAulaService';
 import { UpdateAulaService } from '@/services/aula/updateAulaService';
 import { DeleteAulaService } from '@/services/aula/deleteAulaService';
+import { UpdateAndamentoAulaService } from '@/services/aula/updateAndamentoAulaService';
 
 // GET ALL
 export const getAulas = createAsyncThunk(
@@ -100,6 +101,28 @@ export const deleteAula = createAsyncThunk(
         'Erro ao deletar aula';
       return rejectWithValue({
         message: errorMessage,
+        statusError: error.response?.status,
+      });
+    }
+  }
+);
+
+// UPDATE AULA
+export const updateAndamentoAula = createAsyncThunk(
+  'aulas/updateAndamento',
+  async ({ id, data }, { rejectWithValue }) => {
+    try {
+      const res = await UpdateAndamentoAulaService.handle(id, data);
+      return res.data;
+    } catch (error) {
+      const errorMessage =
+        error.response?.data?.message ||
+        error.message ||
+        'Erro ao atualizar o status da aula';
+      const validationErrors = error.response?.data?.errors || [];
+      return rejectWithValue({
+        message: errorMessage,
+        errors: validationErrors,
         statusError: error.response?.status,
       });
     }
@@ -242,6 +265,29 @@ const aulasSlice = createSlice({
         state.status = STATUS.FAILED;
         state.errors = action.payload?.errors || [];
         state.message = action.payload?.message || 'Erro ao deletar aula';
+        state.statusError = action.payload.statusError;
+      })
+      // updateAndamentoAula
+      .addCase(updateAndamentoAula.pending, state => {
+        state.status = STATUS.LOADING;
+        state.errors = [];
+        state.message = null;
+        state.statusError = null;
+        state.action = 'updateAndamentoAula';
+      })
+      .addCase(updateAndamentoAula.fulfilled, (state, action) => {
+        state.status = STATUS.SUCCESS;
+        state.current = action.payload;
+        if (Array.isArray(state.list)) {
+          state.list = state.list.map(item =>
+            item && item.id === action.payload.id ? action.payload : item
+          );
+        }
+      })
+      .addCase(updateAndamentoAula.rejected, (state, action) => {
+        state.status = STATUS.FAILED;
+        state.errors = action.payload?.errors || [];
+        state.message = action.payload?.message || 'Erro ao atualizar aula';
         state.statusError = action.payload.statusError;
       });
   },

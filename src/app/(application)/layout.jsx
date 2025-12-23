@@ -4,8 +4,13 @@ import { useApplicationLayout } from './useApplicationLayout';
 import { Header, Sidebar, Footer, Loading } from '@/components';
 
 export default function ApplicationLayout({ children }) {
-  const { isUnauthorized, isLoading, sidebarExpanded, toggleSidebar } =
-    useApplicationLayout();
+  const {
+    isMobile,
+    isUnauthorized,
+    isLoading,
+    sidebarExpanded,
+    toggleSidebar,
+  } = useApplicationLayout();
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -15,6 +20,7 @@ export default function ApplicationLayout({ children }) {
           sidebarExpanded={sidebarExpanded.isExpanded}
           sidebarClass={sidebarExpanded.sidebarClass}
           toggleSidebar={toggleSidebar}
+          isMobile={isMobile}
         />
         <main
           className={`flex-1 transition-all duration-300 ease-in-out ${sidebarExpanded.mainClass}`}

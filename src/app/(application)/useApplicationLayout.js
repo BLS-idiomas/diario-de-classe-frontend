@@ -81,6 +81,7 @@ export function useApplicationLayout() {
     isUnauthorized,
     isLoading,
     sidebarExpanded,
+    isMobile: isMobileFunction(),
     toggleSidebar,
   };
 }

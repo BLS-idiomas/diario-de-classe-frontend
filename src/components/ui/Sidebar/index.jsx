@@ -5,7 +5,12 @@ import { useSidebar } from './useSidebar';
 import { useUserAuth } from '@/providers/UserAuthProvider';
 import { useState, useEffect } from 'react';
 
-export const Sidebar = ({ sidebarExpanded, toggleSidebar, sidebarClass }) => {
+export const Sidebar = ({
+  isMobile,
+  sidebarExpanded,
+  toggleSidebar,
+  sidebarClass,
+}) => {
   const { isAdmin } = useUserAuth();
   const [mounted, setMounted] = useState(false);
   const { strokeWidth, sidebarItems, isActive } = useSidebar(isAdmin);
@@ -34,6 +39,7 @@ export const Sidebar = ({ sidebarExpanded, toggleSidebar, sidebarClass }) => {
                         label={item.label}
                         sidebarExpanded={sidebarExpanded}
                         active={isActive(item.href)}
+                        isMobile={isMobile}
                       >
                         {item.icon}
                       </SidebarItem>

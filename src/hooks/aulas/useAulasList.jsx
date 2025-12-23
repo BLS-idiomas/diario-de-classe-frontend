@@ -1,4 +1,6 @@
-import { Eye, Pencil, Trash2 } from 'lucide-react';
+import { AndamentoAulaButton } from '@/components';
+import { STATUS_AULA_LABEL, TIPO_AULA } from '@/constants';
+import { Pencil, Trash2 } from 'lucide-react';
 import Link from 'next/link';
 import { useMemo } from 'react';
 
@@ -7,6 +9,8 @@ export function useAulasList({
   dataFormatter,
   handleDeleteAula,
   readOnly = false,
+  submit,
+  isLoadingSubmit,
 }) {
   const columns = [
     {
@@ -54,15 +58,14 @@ export function useAulasList({
 
   const data = useMemo(() => {
     if (!aulas) return [];
-
     const iconParams = { strokeWidth: 1, size: 16 };
     return aulas.map((aula, index) => ({
       id: index + 1,
       dataCriacao: dataFormatter(aula.dataCriacao),
       horaFinal: aula.horaFinal,
       horaInicial: aula.horaInicial,
-      status: aula.status,
-      tipo: aula.tipo,
+      status: STATUS_AULA_LABEL[aula.status],
+      tipo: TIPO_AULA[aula.tipo],
       acoes: (
         <div className="flex gap-2">
           {/* <Link
@@ -71,6 +74,35 @@ export function useAulasList({
           >
             <Eye {...iconParams} stroke="blue" />
           </Link> */}
+
+          {submit && (
+            <>
+              {aula.status === 'AGENDADA' && (
+                <AndamentoAulaButton
+                  id={aula.id}
+                  nextStatus={'EM_ANDAMENTO'}
+                  submit={submit}
+                  isLoading={isLoadingSubmit}
+                />
+              )}
+              {aula.status === 'EM_ANDAMENTO' && (
+                <>
+                  <AndamentoAulaButton
+                    id={aula.id}
+                    nextStatus={'CONCLUIDA'}
+                    submit={submit}
+                    isLoading={isLoadingSubmit}
+                  />
+                  <AndamentoAulaButton
+                    id={aula.id}
+                    nextStatus={'CANCELADA'}
+                    submit={submit}
+                    isLoading={isLoadingSubmit}
+                  />
+                </>
+              )}
+            </>
+          )}
 
           <Link
             href={`/aulas/${aula.id}/editar`}
@@ -88,6 +120,6 @@ export function useAulasList({
         </div>
       ),
     }));
-  }, [aulas, dataFormatter, handleDeleteAula]);
+  }, [aulas, dataFormatter, handleDeleteAula, submit, isLoadingSubmit]);
   return { columns, data };
 }

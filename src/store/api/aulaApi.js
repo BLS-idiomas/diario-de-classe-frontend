@@ -8,4 +8,8 @@ export class AulaApi extends AbstractEntityApi {
   getEndpoint() {
     return '/aulas';
   }
+
+  async updateAndamento(id, data) {
+    return this.put(`${this.baseEndpoint}/${id}/andamento`, data);
+  }
 }

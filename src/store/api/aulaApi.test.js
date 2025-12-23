@@ -43,4 +43,12 @@ describe('AulaApi', () => {
     await api.delete(789);
     expect(api.destroy).toHaveBeenCalledWith('/aulas/789');
   });
+
+  it('should call updateAndamento with correct endpoint and data', async () => {
+    const id = 101;
+    const data = { andamento: 'em andamento' };
+    api.put = jest.fn();
+    await api.updateAndamento(id, data);
+    expect(api.put).toHaveBeenCalledWith('/aulas/101/andamento', data);
+  });
 });
