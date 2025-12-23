@@ -173,4 +173,13 @@ describe('useApplicationLayout', () => {
       expect(dispatchMock).toHaveBeenCalledWith(logout(mockRefreshToken));
     });
   });
+
+  it('deve retornar o valor correto de isMobile', () => {
+    isMobileFunctionMock.mockReturnValue(true);
+    const { result } = renderHook(() => useApplicationLayout());
+    expect(result.current.isMobile).toBe(true);
+    isMobileFunctionMock.mockReturnValue(false);
+    const { result: result2 } = renderHook(() => useApplicationLayout());
+    expect(result2.current.isMobile).toBe(false);
+  });
 });

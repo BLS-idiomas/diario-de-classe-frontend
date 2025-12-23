@@ -35,6 +35,7 @@ describe('Sidebar', () => {
         sidebarExpanded={true}
         toggleSidebar={() => {}}
         sidebarClass=""
+        isMobile={false}
       />
     );
     expect(screen.getByText('Home')).toBeInTheDocument();
@@ -49,10 +50,12 @@ describe('Sidebar', () => {
         sidebarExpanded={true}
         toggleSidebar={() => {}}
         sidebarClass=""
+        isMobile={false}
       />
     );
     const homeItem = screen.getByText('Home').closest('a');
-    expect(homeItem).toHaveClass('bg-blue-200'); // verifica a classe usada para ativo
+    // O item ativo deve ter o texto azul
+    expect(homeItem.querySelector('span')).toHaveClass('text-blue-600');
   });
 
   it('chama toggleSidebar ao clicar no botão', () => {
@@ -62,6 +65,7 @@ describe('Sidebar', () => {
         sidebarExpanded={true}
         toggleSidebar={mockToggle}
         sidebarClass=""
+        isMobile={false}
       />
     );
     fireEvent.click(screen.getByRole('button'));
