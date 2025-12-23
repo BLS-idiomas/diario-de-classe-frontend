@@ -1,0 +1,8 @@
+const STATUS_AULA = [
+  'AGENDADA',
+  'EM_ANDAMENTO',
+  'CONCLUIDA',
+  'CANCELADA',
+  'CANCELADA_POR_FALTA',
+];
+export { STATUS_AULA };
