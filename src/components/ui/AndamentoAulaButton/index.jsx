@@ -39,7 +39,7 @@ export const AndamentoAulaButton = ({ id, nextStatus, submit, isLoading }) => {
       className={`btn-outline btn-outline-${buttonType[nextStatus]}`}
     >
       {isLoading ? (
-        <Loading size={4} border={1} />
+        <Loading size={4} border={1} color={stroke[nextStatus]} />
       ) : (
         <Icon strokeWidth={1} size={16} stroke={stroke[nextStatus]} />
       )}
