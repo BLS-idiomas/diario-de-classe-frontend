@@ -8,6 +8,9 @@ const mockAxiosInstance = {
   post: jest.fn(),
   put: jest.fn(),
   delete: jest.fn(),
+  defaults: {
+    headers: {},
+  },
 };
 
 describe('BaseApi', () => {
@@ -58,5 +61,13 @@ describe('BaseApi', () => {
     const result = await api.destroy('/test');
     expect(mockAxiosInstance.delete).toHaveBeenCalledWith('/test');
     expect(result).toEqual({ data: 'deleted' });
+  });
+
+  it('deve configurar Content-Type para multipart/form-data', () => {
+    const api = new BaseApi();
+    api.useMultipartFormData();
+    expect(api.api.defaults.headers['Content-Type']).toBe(
+      'multipart/form-data'
+    );
   });
 });
