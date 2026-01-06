@@ -67,4 +67,14 @@ describe('AlunoApi', () => {
     await api.getContratosByAluno(4);
     expect(api.get).toHaveBeenCalledWith('/alunos/4/contratos');
   });
+
+  it('should call uploadAlunoList with correct endpoint and file', async () => {
+    const file = new FormData();
+    file.append('file', 'test.csv');
+    api.useMultipartFormData = jest.fn();
+    api.post = jest.fn();
+    await api.uploadAlunoList(file);
+    expect(api.useMultipartFormData).toHaveBeenCalled();
+    expect(api.post).toHaveBeenCalledWith('/alunos/upload', file);
+  });
 });

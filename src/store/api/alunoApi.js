@@ -24,4 +24,9 @@ export class AlunoApi extends AbstractEntityApi {
   async getContratosByAluno(id) {
     return this.get(`${this.baseEndpoint}/${id}/contratos`);
   }
+
+  async uploadAlunoList(file) {
+    this.useMultipartFormData();
+    return this.post(`${this.baseEndpoint}/upload`, file);
+  }
 }
