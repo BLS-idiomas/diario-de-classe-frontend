@@ -29,8 +29,4 @@ export class BaseApi {
   async destroy(endpoint) {
     return await this.api.delete(endpoint);
   }
-
-  useMultipartFormData() {
-    this.api.defaults.headers['Content-Type'] = 'multipart/form-data';
-  }
 }

@@ -26,7 +26,12 @@ export class AlunoApi extends AbstractEntityApi {
   }
 
   async uploadAlunoList(file) {
-    this.useMultipartFormData();
-    return this.post(`${this.baseEndpoint}/upload`, file);
+    const originalContentType = this.api.defaults.headers['Content-Type'];
+    delete this.api.defaults.headers['Content-Type'];
+    try {
+      return await this.post(`${this.baseEndpoint}/upload`, file);
+    } finally {
+      this.api.defaults.headers['Content-Type'] = originalContentType;
+    }
   }
 }

@@ -451,15 +451,9 @@ const alunosSlice = createSlice({
       })
       .addCase(uploadAlunos.fulfilled, (state, action) => {
         state.status = STATUS.SUCCESS;
-        if (!Array.isArray(state.list)) state.list = [];
-        // Adiciona os alunos retornados ao list
-        if (Array.isArray(action.payload)) {
-          state.list.push(...action.payload);
-          state.count = (state.count || 0) + action.payload.length;
-        } else if (action.payload) {
-          state.list.push(action.payload);
-          state.count = (state.count || 0) + 1;
-        }
+        state.list = action.payload.data;
+        state.count = action.payload.count;
+        state.message = action.payload.message;
       })
       .addCase(uploadAlunos.rejected, (state, action) => {
         state.status = STATUS.FAILED;

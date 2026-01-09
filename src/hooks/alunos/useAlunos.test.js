@@ -55,6 +55,7 @@ describe('useAlunos', () => {
     const initialState = {
       list: [],
       status: STATUS.IDLE,
+      action: 'getAlunos',
     };
     const store = createMockStore(initialState);
     store.dispatch = mockDispatch;
@@ -73,6 +74,7 @@ describe('useAlunos', () => {
     const initialState = {
       list: [],
       status: STATUS.IDLE,
+      action: null,
     };
     const store = createMockStore(initialState);
     store.dispatch = mockDispatch;
@@ -89,6 +91,7 @@ describe('useAlunos', () => {
     const initialState = {
       list: [],
       status: STATUS.LOADING,
+      action: 'getAlunos',
     };
     const store = createMockStore(initialState);
     store.dispatch = mockDispatch;
@@ -108,6 +111,7 @@ describe('useAlunos', () => {
     const initialState = {
       list: mockAlunos,
       status: STATUS.SUCCESS,
+      action: 'getAlunos',
     };
     const store = createMockStore(initialState);
     store.dispatch = mockDispatch;
@@ -126,6 +130,7 @@ describe('useAlunos', () => {
     const initialState = {
       list: [],
       status: STATUS.SUCCESS,
+      action: 'getAlunos',
     };
     const store = createMockStore(initialState);
     store.dispatch = mockDispatch;
@@ -142,6 +147,7 @@ describe('useAlunos', () => {
     const initialState = {
       list: [],
       status: STATUS.FAILED,
+      action: 'getAlunos',
     };
     const store = createMockStore(initialState);
     store.dispatch = mockDispatch;
@@ -157,6 +163,7 @@ describe('useAlunos', () => {
     const initialState = {
       list: [],
       status: STATUS.IDLE,
+      action: null,
     };
     const store = createMockStore(initialState);
     store.dispatch = mockDispatch;
@@ -193,6 +200,7 @@ describe('useAlunos', () => {
     const initialState = {
       list: mockAlunos,
       status: STATUS.SUCCESS,
+      action: 'getAlunos',
     };
     const store = createMockStore(initialState);
     store.dispatch = mockDispatch;

@@ -71,10 +71,45 @@ describe('AlunoApi', () => {
   it('should call uploadAlunoList with correct endpoint and file', async () => {
     const file = new FormData();
     file.append('file', 'test.csv');
-    api.useMultipartFormData = jest.fn();
-    api.post = jest.fn();
+
+    // Mock dos headers e defaults
+    api.api = {
+      defaults: {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      },
+    };
+
+    api.post = jest.fn().mockResolvedValue({ data: [] });
+
     await api.uploadAlunoList(file);
-    expect(api.useMultipartFormData).toHaveBeenCalled();
+
+    // Verifica se o post foi chamado corretamente
     expect(api.post).toHaveBeenCalledWith('/alunos/upload', file);
+
+    // Verifica se o Content-Type foi restaurado após o upload
+    expect(api.api.defaults.headers['Content-Type']).toBe('application/json');
+  });
+
+  it('should restore Content-Type even when upload fails', async () => {
+    const file = new FormData();
+    file.append('file', 'test.csv');
+
+    // Mock dos headers e defaults
+    api.api = {
+      defaults: {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      },
+    };
+
+    api.post = jest.fn().mockRejectedValue(new Error('Upload failed'));
+
+    await expect(api.uploadAlunoList(file)).rejects.toThrow('Upload failed');
+
+    // Verifica se o Content-Type foi restaurado mesmo após erro
+    expect(api.api.defaults.headers['Content-Type']).toBe('application/json');
   });
 });
