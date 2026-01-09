@@ -11,6 +11,7 @@ import { GetAulasByAlunoService } from '@/services/aluno/getAulasByAlunoService'
 import { GetDiasAulasByAlunoService } from '@/services/aluno/getDiasAulasByAlunoService';
 import { GetContratoByAlunoService } from '@/services/aluno/getContratoByAlunoService';
 import { GetContratosByAlunoService } from '@/services/aluno/getContratosByAlunoService';
+import { UploadAlunoListService } from '@/services/aluno/uploadAlunoListService';
 
 // GET ALL
 export const getAlunos = createAsyncThunk(
@@ -190,6 +191,30 @@ export const getContratosAluno = createAsyncThunk(
         'Erro ao buscar contratos do aluno';
       return rejectWithValue({
         message: errorMessage,
+        statusError: error.response?.status,
+      });
+    }
+  }
+);
+
+// UPLOAD LIST
+export const uploadAlunos = createAsyncThunk(
+  'alunos/upload',
+  async (file, { rejectWithValue }) => {
+    try {
+      const res = await UploadAlunoListService.handle(file);
+      return res.data;
+    } catch (error) {
+      const errorMessage =
+        error.response?.data?.message ||
+        error.message ||
+        'Erro ao fazer upload de alunos';
+
+      const validationErrors = error.response?.data?.errors || [];
+
+      return rejectWithValue({
+        message: errorMessage,
+        errors: validationErrors,
         statusError: error.response?.status,
       });
     }
@@ -415,6 +440,27 @@ const alunosSlice = createSlice({
         state.errors = action.error;
         state.message = action.payload?.message || 'Erro ao buscar contratos';
         state.statusError = action.payload?.statusError;
+      })
+      // uploadAlunos
+      .addCase(uploadAlunos.pending, state => {
+        state.status = STATUS.LOADING;
+        state.errors = [];
+        state.message = null;
+        state.statusError = null;
+        state.action = 'uploadAlunos';
+      })
+      .addCase(uploadAlunos.fulfilled, (state, action) => {
+        state.status = STATUS.SUCCESS;
+        state.list = action.payload.data;
+        state.count = action.payload.count;
+        state.message = action.payload.message;
+      })
+      .addCase(uploadAlunos.rejected, (state, action) => {
+        state.status = STATUS.FAILED;
+        state.errors = action.payload?.errors || [];
+        state.message =
+          action.payload?.message || 'Erro ao fazer upload de alunos';
+        state.statusError = action.payload.statusError;
       });
   },
 });

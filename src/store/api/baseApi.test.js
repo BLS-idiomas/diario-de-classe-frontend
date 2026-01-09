@@ -8,6 +8,9 @@ const mockAxiosInstance = {
   post: jest.fn(),
   put: jest.fn(),
   delete: jest.fn(),
+  defaults: {
+    headers: {},
+  },
 };
 
 describe('BaseApi', () => {
