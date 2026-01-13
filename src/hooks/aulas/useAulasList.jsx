@@ -1,4 +1,3 @@
-import { AndamentoAulaButton } from '@/components';
 import { STATUS_AULA_LABEL, TIPO_AULA } from '@/constants';
 import { Pencil, Trash2 } from 'lucide-react';
 import Link from 'next/link';
@@ -74,35 +73,6 @@ export function useAulasList({
           >
             <Eye {...iconParams} stroke="blue" />
           </Link> */}
-
-          {submit && (
-            <>
-              {aula.status === 'AGENDADA' && (
-                <AndamentoAulaButton
-                  id={aula.id}
-                  nextStatus={'EM_ANDAMENTO'}
-                  submit={submit}
-                  isLoading={isLoadingSubmit}
-                />
-              )}
-              {aula.status === 'EM_ANDAMENTO' && (
-                <>
-                  <AndamentoAulaButton
-                    id={aula.id}
-                    nextStatus={'CONCLUIDA'}
-                    submit={submit}
-                    isLoading={isLoadingSubmit}
-                  />
-                  <AndamentoAulaButton
-                    id={aula.id}
-                    nextStatus={'CANCELADA'}
-                    submit={submit}
-                    isLoading={isLoadingSubmit}
-                  />
-                </>
-              )}
-            </>
-          )}
 
           <Link
             href={`/aulas/${aula.id}/editar`}

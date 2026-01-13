@@ -22,4 +22,3 @@ export * from './BadgeGroup';
 export * from './InfoCard';
 export * from './InfoCardGroup';
 export * from './SectionTitle';
-export * from './AndamentoAulaButton';
