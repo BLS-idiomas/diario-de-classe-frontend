@@ -9,6 +9,7 @@ export function useAulaForm({ id = null, submit }) {
     horaInicial: '',
     horaFinal: '',
     tipo: 'PADRAO',
+    status: 'AGENDADA',
     observacao: '',
   });
 
