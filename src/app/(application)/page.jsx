@@ -6,6 +6,7 @@ import { useDashboard } from '@/hooks/dashboard/useDashboard';
 import { useUserAuth } from '@/providers/UserAuthProvider';
 import { makeEmailLabel } from '@/utils/makeEmailLabel';
 import { makeFullNameLabel } from '@/utils/makeFullNameLabel';
+import { useRouter } from 'next/navigation';
 
 // TODO passas os componetes para arquivos separados
 const HomeCard = ({ title, value, color, isLoading }) => {
@@ -26,6 +27,7 @@ const HomeCard = ({ title, value, color, isLoading }) => {
 };
 
 const HomeInfoCard = ({
+  id,
   name,
   status,
   tipo,
@@ -33,6 +35,8 @@ const HomeInfoCard = ({
   horaInicial,
   horaFinal,
   professorName,
+  handleRedirect,
+  canEdit,
 }) => {
   const getActionText = (status, tipo) => {
     if (status === 'AGENDADA') {
@@ -100,17 +104,24 @@ const HomeInfoCard = ({
     }
     if (diffDays === 1) return 'Amanhã';
     if (diffDays > 1) return `Em ${diffDays} dias`;
-    return '';
+    return `Há ${Math.abs(diffDays)} dias`;
   };
 
   const action = getActionText(status, tipo);
   const time = getTimeText(dataAula, horaInicial, horaFinal);
+  const onClick = () => {
+    handleRedirect(id);
+  };
+
   return (
-    <div className="flex items-center gap-5 p-4 bg-gray-50 rounded-lg">
+    <div
+      onClick={onClick}
+      className={`flex items-center gap-5 p-4 bg-gray-50 rounded-lg transition-transform duration-200 ${canEdit ? 'cursor-pointer hover:bg-gray-100 hover:scale-105' : ''}  `}
+    >
       <Avatar text={name} className="w-10 h-10" />
       <div>
         <p className="font-medium text-gray-800">
-          {name} {action}
+          <b>{name}</b> {action}
         </p>
 
         <p className="text-sm text-gray-500">{professorName}</p>
@@ -126,7 +137,14 @@ const HomeSection = ({
   data,
   hasProfessor,
   notFoundMessage,
+  canEdit,
 }) => {
+  const router = useRouter();
+  const handleRedirect = id => {
+    if (!!canEdit) {
+      router.push(`/aulas/${id}/editar?backUrl=/`);
+    }
+  };
   return (
     <section className="bg-white p-8 rounded-lg shadow-md border border-gray-200 mb-8">
       <h3 className="text-xl font-semibold text-gray-800 mb-4">{title}</h3>
@@ -137,12 +155,15 @@ const HomeSection = ({
           data.map(aula => (
             <HomeInfoCard
               key={aula.id}
+              id={aula.id}
               name={makeFullNameLabel(aula.aluno)}
               tipo={aula.tipo}
               status={aula.status}
               dataAula={aula.dataAula}
               horaInicial={aula.horaInicial}
               horaFinal={aula.horaFinal}
+              handleRedirect={handleRedirect}
+              canEdit={canEdit}
               professorName={
                 hasProfessor ? makeEmailLabel(aula.professor) : undefined
               }
@@ -200,7 +221,7 @@ export default function Home() {
           title={'Minhas Aulas'}
           isLoading={isLoading}
           data={minhasAulas}
-          hasProfessor={false}
+          canEdit
           notFoundMessage={'Nenhuma aula encontrada.'}
         />
 
@@ -209,7 +230,7 @@ export default function Home() {
             title={'Atividades Recentes'}
             isLoading={isLoading}
             data={todasAsAulas}
-            hasProfessor={true}
+            hasProfessor
             notFoundMessage={'Nenhuma atividade recente.'}
           />
         )}

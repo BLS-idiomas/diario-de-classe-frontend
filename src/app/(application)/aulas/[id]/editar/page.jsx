@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react';
 import Link from 'next/link';
-import { useParams } from 'next/navigation';
+import { useParams, useSearchParams } from 'next/navigation';
 import { STATUS_ERROR } from '@/constants';
 import { useEditarAula } from '@/hooks/aulas/useEditarAula';
 import { useAulaForm } from '@/hooks/aulas/useAulaForm';
@@ -18,12 +18,15 @@ import {
 
 export default function EditarAula() {
   const params = useParams();
+  const searchParams = useSearchParams();
+  const backUrl = searchParams.get('backUrl');
   const { message, errors, isLoading, current, statusError, submit } =
-    useEditarAula(params.id);
+    useEditarAula(params.id, backUrl);
   const { formData, handleChange, handleSubmit, setFormData } = useAulaForm({
     submit,
     isEdit: true,
     id: params.id,
+    backUrl,
   });
 
   useEffect(() => {
@@ -57,7 +60,7 @@ export default function EditarAula() {
       </PageContent>
       <ButtonGroup>
         {/* `/aulas/${params.id}` */}
-        <Link href={`/aulas`} className="btn btn-secondary">
+        <Link href={backUrl || `/aulas`} className="btn btn-secondary">
           ← Voltar
         </Link>
       </ButtonGroup>

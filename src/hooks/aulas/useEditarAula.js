@@ -6,7 +6,7 @@ import { useToast } from '@/providers/ToastProvider';
 import { updateAula, getAula } from '@/store/slices/aulasSlice';
 import { clearStatus, clearCurrent } from '@/store/slices/aulasSlice';
 
-export function useEditarAula(aulaId) {
+export function useEditarAula(aulaId, backUrl = null) {
   const dispatch = useDispatch();
   const router = useRouter();
   const { success } = useToast();
@@ -34,9 +34,9 @@ export function useEditarAula(aulaId) {
       dispatch(clearCurrent());
       dispatch(clearStatus());
       success('Operação realizada com sucesso!');
-      router.push('/aulas');
+      router.push(backUrl || '/aulas');
     }
-  }, [status, router, success, current, action, dispatch]);
+  }, [status, router, success, current, action, dispatch, backUrl]);
 
   return {
     statusError,

@@ -1,5 +1,5 @@
-import { useEffect, useState, useMemo } from 'react';
-import { TIPO_AULA } from '@/constants';
+import { useMemo } from 'react';
+import { STATUS_AULA, STATUS_AULA_LABEL, TIPO_AULA } from '@/constants';
 import { useAlunos } from '@/hooks/alunos/useAlunos';
 import { useContratos } from '@/hooks/contratos/useContratos';
 import { useProfessores } from '@/hooks/professores/useProfessores';
@@ -105,7 +105,7 @@ export const AulaForm = ({
           />
         </FormGroup>
 
-        <FormGroup cols={3}>
+        <FormGroup cols={isEdit ? 4 : 3}>
           <InputField
             required
             htmlFor="dataAula"
@@ -132,6 +132,19 @@ export const AulaForm = ({
             onChange={handleChange}
             value={formData.horaFinal}
           />
+          {isEdit && (
+            <SelectField
+              required
+              htmlFor="status"
+              label="Status da aula"
+              options={STATUS_AULA.map(status => ({
+                label: STATUS_AULA_LABEL[status],
+                value: status,
+              }))}
+              onChange={handleChange}
+              value={formData.status}
+            />
+          )}
         </FormGroup>
 
         <TextAreaField
