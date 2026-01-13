@@ -36,6 +36,7 @@ const HomeInfoCard = ({
   horaFinal,
   professorName,
   handleRedirect,
+  canEdit,
 }) => {
   const getActionText = (status, tipo) => {
     if (status === 'AGENDADA') {
@@ -103,7 +104,7 @@ const HomeInfoCard = ({
     }
     if (diffDays === 1) return 'Amanhã';
     if (diffDays > 1) return `Em ${diffDays} dias`;
-    return '';
+    return `Há ${Math.abs(diffDays)} dias`;
   };
 
   const action = getActionText(status, tipo);
@@ -115,7 +116,7 @@ const HomeInfoCard = ({
   return (
     <div
       onClick={onClick}
-      className="flex items-center gap-5 p-4 bg-gray-50 rounded-lg"
+      className={`flex items-center gap-5 p-4 bg-gray-50 rounded-lg transition-transform duration-200 ${canEdit ? 'cursor-pointer hover:bg-gray-100 hover:scale-105' : ''}  `}
     >
       <Avatar text={name} className="w-10 h-10" />
       <div>
@@ -162,6 +163,7 @@ const HomeSection = ({
               horaInicial={aula.horaInicial}
               horaFinal={aula.horaFinal}
               handleRedirect={handleRedirect}
+              canEdit={canEdit}
               professorName={
                 hasProfessor ? makeEmailLabel(aula.professor) : undefined
               }
