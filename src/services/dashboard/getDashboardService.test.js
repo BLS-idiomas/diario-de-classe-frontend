@@ -23,7 +23,7 @@ describe('GetDashboardService', () => {
 
     const result = await service.execute(searchParam);
 
-    expect(mockApi.getAll).toHaveBeenCalledWith({ q: searchParam });
+    expect(mockApi.getAll).toHaveBeenCalledWith(searchParam);
     expect(result).toBe(expectedResponse);
   });
 
