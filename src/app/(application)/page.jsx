@@ -196,8 +196,7 @@ export default function Home() {
     totalAlunos,
     totalAulas,
     totalContratos,
-    minhasAulas,
-    todasAsAulas,
+    aulas,
     status,
     isLoading,
     formData,
@@ -293,8 +292,8 @@ export default function Home() {
                     <SelectField
                       required
                       htmlFor="professorId"
-                      label="Selecione o professor"
-                      // placeholder="Selecione o professor"
+                      label="Professor"
+                      placeholder="Selecione o professor"
                       onChange={handleChange}
                       value={formData.professorId}
                       options={professorOptions}
@@ -309,21 +308,11 @@ export default function Home() {
         <HomeSection
           title={formData.minhasAulas ? 'Minhas Aulas' : 'Todas as Aulas'}
           isLoading={isLoading}
-          data={minhasAulas}
+          data={aulas}
           canEdit
           hasProfessor={!formData.minhasAulas}
           notFoundMessage={'Nenhuma aula encontrada.'}
         />
-
-        {isAdmin() && (
-          <HomeSection
-            title={'Atividades Recentes'}
-            isLoading={isLoading}
-            data={todasAsAulas}
-            hasProfessor
-            notFoundMessage={'Nenhuma atividade recente.'}
-          />
-        )}
       </div>
     </div>
   );

@@ -9,7 +9,6 @@ export function useDashboard(currentUser) {
   const dispatch = useDispatch();
   const { professores } = useProfessores();
   const { data, status } = useSelector(state => state.dashboard);
-
   const hoje = new Date();
   const dataInicioFormatada = hoje.toISOString().split('T')[0];
   const dataFim = new Date(hoje);
@@ -18,10 +17,12 @@ export function useDashboard(currentUser) {
   const isLoading = status === STATUS.IDLE || status === STATUS.LOADING;
   const professorOptions =
     professores && professores.length > 0
-      ? professores.map(professor => ({
-          label: makeEmailLabel(professor),
-          value: professor.id,
-        }))
+      ? professores
+          .filter(professor => professor.id !== currentUser.id)
+          .map(professor => ({
+            label: makeEmailLabel(professor),
+            value: professor.id,
+          }))
       : [];
   const [formData, setFormData] = useState({
     dataInicio: dataInicioFormatada,
@@ -29,12 +30,15 @@ export function useDashboard(currentUser) {
     status: STATUS_AULA[0],
     tipo: TIPO_AULA[0],
     minhasAulas: true,
-    professorId: currentUser.id,
+    professorId: '',
   });
 
-  const handleSubmit = useCallback(async () => {
-    dispatch(getDashboard(formData));
-  }, [dispatch, formData]);
+  const handleSubmit = useCallback(
+    formData => {
+      dispatch(getDashboard(formData));
+    },
+    [dispatch]
+  );
 
   const handleChange = async e => {
     const { name, value, checked } = e.target;
@@ -43,19 +47,17 @@ export function useDashboard(currentUser) {
       ...prevState,
       [name]: newValue,
     }));
-    handleSubmit();
   };
 
   useEffect(() => {
-    handleSubmit();
-  }, [handleSubmit]);
+    handleSubmit(formData);
+  }, [handleSubmit, formData]);
 
   return {
     totalAulas: data?.totalAulas || null,
     totalAlunos: data?.totalAlunos || null,
     totalContratos: data?.totalContratos || null,
-    minhasAulas: data?.minhasAulas || null,
-    todasAsAulas: data?.todasAsAulas || null,
+    aulas: data?.aulas || null,
     status,
     isLoading,
     formData,
