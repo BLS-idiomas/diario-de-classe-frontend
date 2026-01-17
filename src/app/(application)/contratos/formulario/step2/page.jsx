@@ -135,9 +135,9 @@ export default function ContratoStep2() {
               label="Quantidade de aulas"
               onChange={handleQuantidadeAulasChange}
               options={[
-                { label: 'Uma aula', value: 1 },
-                { label: 'Duas aulas', value: 2 },
-                { label: 'Três aulas', value: 3 },
+                { label: '1 (40 min)', value: 1 },
+                { label: '2 (80 min)', value: 2 },
+                { label: '3 (120 min)', value: 3 },
               ]}
               value={dia.quantidadeAulas}
             />
