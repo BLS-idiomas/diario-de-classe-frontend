@@ -167,9 +167,7 @@ export default function ContratoStep4() {
                 <div>
                   <p className="text-sm text-gray-600">
                     {(() => {
-                      const date = new Date(
-                        aula.dataAula.split('T')[0] + 'T12:00:00'
-                      );
+                      const date = new Date(aula.dataAula);
                       const dias = [
                         'DOMINGO',
                         'SEGUNDA',
