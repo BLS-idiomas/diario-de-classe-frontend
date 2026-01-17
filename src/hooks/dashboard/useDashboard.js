@@ -1,17 +1,54 @@
-import { useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { STATUS } from '@/constants';
+import { STATUS, STATUS_AULA, TIPO_AULA } from '@/constants';
 import { getDashboard } from '@/store/slices/dashboardSlice';
+import { useProfessores } from '../professores/useProfessores';
+import { makeEmailLabel } from '@/utils/makeEmailLabel';
 
-export function useDashboard() {
+export function useDashboard(currentUser) {
   const dispatch = useDispatch();
+  const { professores } = useProfessores();
   const { data, status } = useSelector(state => state.dashboard);
 
-  useEffect(() => {
-    dispatch(getDashboard());
-  }, [dispatch]);
-
+  const hoje = new Date();
+  const dataInicioFormatada = hoje.toISOString().split('T')[0];
+  const dataFim = new Date(hoje);
+  dataFim.setMonth(dataFim.getMonth() + 6);
+  const dataTerminoFormatada = dataFim.toISOString().split('T')[0];
   const isLoading = status === STATUS.IDLE || status === STATUS.LOADING;
+  const professorOptions =
+    professores && professores.length > 0
+      ? professores.map(professor => ({
+          label: makeEmailLabel(professor),
+          value: professor.id,
+        }))
+      : [];
+  const [formData, setFormData] = useState({
+    dataInicio: dataInicioFormatada,
+    dataTermino: dataTerminoFormatada,
+    status: STATUS_AULA[0],
+    tipo: TIPO_AULA[0],
+    minhasAulas: true,
+    professorId: currentUser.id,
+  });
+
+  const handleSubmit = useCallback(async () => {
+    dispatch(getDashboard(formData));
+  }, [dispatch, formData]);
+
+  const handleChange = async e => {
+    const { name, value, checked } = e.target;
+    const newValue = checked !== undefined ? checked : value;
+    setFormData(prevState => ({
+      ...prevState,
+      [name]: newValue,
+    }));
+    handleSubmit();
+  };
+
+  useEffect(() => {
+    handleSubmit();
+  }, [handleSubmit]);
 
   return {
     totalAulas: data?.totalAulas || null,
@@ -21,5 +58,9 @@ export function useDashboard() {
     todasAsAulas: data?.todasAsAulas || null,
     status,
     isLoading,
+    formData,
+    professorOptions,
+    handleSubmit,
+    handleChange,
   };
 }

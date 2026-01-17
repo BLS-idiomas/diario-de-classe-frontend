@@ -1,7 +1,20 @@
 'use client';
 
-import { Avatar, Loading } from '@/components';
-import { TIPO_AULA } from '@/constants';
+import {
+  Avatar,
+  CheckboxField,
+  Form,
+  FormGroup,
+  InputField,
+  Loading,
+  SelectField,
+} from '@/components';
+import {
+  STATUS_AULA,
+  STATUS_AULA_LABEL,
+  TIPO_AULA,
+  TIPO_AULA_LABEL,
+} from '@/constants';
 import { useDashboard } from '@/hooks/dashboard/useDashboard';
 import { useUserAuth } from '@/providers/UserAuthProvider';
 import { makeEmailLabel } from '@/utils/makeEmailLabel';
@@ -40,10 +53,10 @@ const HomeInfoCard = ({
 }) => {
   const getActionText = (status, tipo) => {
     if (status === 'AGENDADA') {
-      return `agendou uma aula ${TIPO_AULA[tipo].toLowerCase()}`;
+      return `agendou uma aula ${TIPO_AULA_LABEL[tipo].toLowerCase()}`;
     }
     if (status === 'EM_ANDAMENTO') {
-      return `está em uma aula ${TIPO_AULA[tipo].toLowerCase()}`;
+      return `está em uma aula ${TIPO_AULA_LABEL[tipo].toLowerCase()}`;
     }
 
     return 'dss';
@@ -178,6 +191,7 @@ const HomeSection = ({
 };
 
 export default function Home() {
+  const { isAdmin, currentUser } = useUserAuth();
   const {
     totalAlunos,
     totalAulas,
@@ -186,14 +200,17 @@ export default function Home() {
     todasAsAulas,
     status,
     isLoading,
-  } = useDashboard();
-  const { isAdmin } = useUserAuth();
+    formData,
+    professorOptions,
+    handleSubmit,
+    handleChange,
+  } = useDashboard(currentUser);
 
   return (
     <div className="p-8">
       <div className="max-w-6xl mx-auto">
         <h2 className="text-3xl font-bold text-gray-800 mb-8">
-          Bem-vindo ao Diário de Classe
+          Diário de Classe
         </h2>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
@@ -217,11 +234,84 @@ export default function Home() {
           />
         </div>
 
+        <div className="mb-8">
+          <Form handleSubmit={handleSubmit}>
+            <h3 className="text-xl font-semibold text-gray-800 mb-4">
+              Filtros
+            </h3>
+            <FormGroup cols={2}>
+              <InputField
+                required
+                htmlFor="dataInicio"
+                label="Data de inicio do contrato"
+                type="date"
+                onChange={handleChange}
+                value={formData.dataInicio}
+              />
+              <InputField
+                required
+                htmlFor="dataTermino"
+                label="Data de término do contrato"
+                type="date"
+                onChange={handleChange}
+                value={formData.dataTermino}
+              />
+              <SelectField
+                required
+                htmlFor="tipo"
+                label="Tipo da aula"
+                options={TIPO_AULA.map(tipo => ({
+                  label: TIPO_AULA_LABEL[tipo],
+                  value: tipo,
+                }))}
+                onChange={handleChange}
+                value={formData.tipo}
+              />
+              <SelectField
+                required
+                htmlFor="status"
+                label="Status da aula"
+                options={STATUS_AULA.map(status => ({
+                  label: STATUS_AULA_LABEL[status],
+                  value: status,
+                }))}
+                onChange={handleChange}
+                value={formData.status}
+              />
+            </FormGroup>
+
+            {isAdmin() && (
+              <FormGroup cols={1} className=" mt-6">
+                <CheckboxField
+                  htmlFor={'minhasAulas'}
+                  label="Somente minhas Aulas"
+                  checked={formData.minhasAulas}
+                  onChange={handleChange}
+                />
+                {!formData.minhasAulas && (
+                  <div className="mt-4 pt-4 border-t border-gray-300">
+                    <SelectField
+                      required
+                      htmlFor="professorId"
+                      label="Selecione o professor"
+                      // placeholder="Selecione o professor"
+                      onChange={handleChange}
+                      value={formData.professorId}
+                      options={professorOptions}
+                    />
+                  </div>
+                )}
+              </FormGroup>
+            )}
+          </Form>
+        </div>
+
         <HomeSection
-          title={'Minhas Aulas'}
+          title={formData.minhasAulas ? 'Minhas Aulas' : 'Todas as Aulas'}
           isLoading={isLoading}
           data={minhasAulas}
           canEdit
+          hasProfessor={!formData.minhasAulas}
           notFoundMessage={'Nenhuma aula encontrada.'}
         />
 
