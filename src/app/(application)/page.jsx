@@ -19,7 +19,6 @@ import { useDashboard } from '@/hooks/dashboard/useDashboard';
 import { useUserAuth } from '@/providers/UserAuthProvider';
 import { makeEmailLabel } from '@/utils/makeEmailLabel';
 import { makeFullNameLabel } from '@/utils/makeFullNameLabel';
-import { useRouter } from 'next/navigation';
 
 // TODO passas os componetes para arquivos separados
 const HomeCard = ({ title, value, color, isLoading }) => {
@@ -48,7 +47,7 @@ const HomeInfoCard = ({
   horaInicial,
   horaFinal,
   professorName,
-  handleRedirect,
+  handleClick,
   canEdit,
 }) => {
   const getActionText = (status, tipo) => {
@@ -123,7 +122,7 @@ const HomeInfoCard = ({
   const action = getActionText(status, tipo);
   const time = getTimeText(dataAula, horaInicial, horaFinal);
   const onClick = () => {
-    handleRedirect(id);
+    handleClick(id);
   };
 
   return (
@@ -144,65 +143,17 @@ const HomeInfoCard = ({
   );
 };
 
-const HomeSection = ({
-  title,
-  isLoading,
-  data,
-  hasProfessor,
-  notFoundMessage,
-  canEdit,
-}) => {
-  const router = useRouter();
-  const handleRedirect = id => {
-    if (!!canEdit) {
-      router.push(`/aulas/${id}/editar?backUrl=/`);
-    }
-  };
-  return (
-    <section className="bg-white p-8 rounded-lg shadow-md border border-gray-200 mb-8">
-      <h3 className="text-xl font-semibold text-gray-800 mb-4">{title}</h3>
-
-      <div className="space-y-4">
-        {isLoading && <Loading />}
-        {!isLoading && data && data.length > 0 ? (
-          data.map(aula => (
-            <HomeInfoCard
-              key={aula.id}
-              id={aula.id}
-              name={makeFullNameLabel(aula.aluno)}
-              tipo={aula.tipo}
-              status={aula.status}
-              dataAula={aula.dataAula}
-              horaInicial={aula.horaInicial}
-              horaFinal={aula.horaFinal}
-              handleRedirect={handleRedirect}
-              canEdit={canEdit}
-              professorName={
-                hasProfessor ? makeEmailLabel(aula.professor) : undefined
-              }
-            />
-          ))
-        ) : (
-          <p>{notFoundMessage}</p>
-        )}
-      </div>
-    </section>
-  );
-};
-
 export default function Home() {
   const { isAdmin, currentUser } = useUserAuth();
   const {
-    totalAlunos,
-    totalAulas,
-    totalContratos,
     aulas,
-    status,
     isLoading,
     formData,
     professorOptions,
+    homeCardValues,
     handleSubmit,
     handleChange,
+    handleClick,
   } = useDashboard(currentUser);
 
   return (
@@ -213,24 +164,15 @@ export default function Home() {
         </h2>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-          <HomeCard
-            title="Total de Alunos"
-            value={totalAlunos}
-            color="blue"
-            isLoading={isLoading}
-          />
-          <HomeCard
-            title="Total de agendadas"
-            value={totalAulas}
-            color="green"
-            isLoading={isLoading}
-          />
-          <HomeCard
-            title="Contratos ativos"
-            value={totalContratos}
-            color="purple"
-            isLoading={isLoading}
-          />
+          {homeCardValues.map(row => (
+            <HomeCard
+              key={row.title}
+              title={row.title}
+              value={row.value}
+              color={row.color}
+              isLoading={isLoading}
+            />
+          ))}
         </div>
 
         <div className="mb-8">
@@ -305,14 +247,38 @@ export default function Home() {
           </Form>
         </div>
 
-        <HomeSection
-          title={formData.minhasAulas ? 'Minhas Aulas' : 'Todas as Aulas'}
-          isLoading={isLoading}
-          data={aulas}
-          canEdit
-          hasProfessor={!formData.minhasAulas}
-          notFoundMessage={'Nenhuma aula encontrada.'}
-        />
+        <section className="bg-white p-8 rounded-lg shadow-md border border-gray-200 mb-8">
+          <h3 className="text-xl font-semibold text-gray-800 mb-4">
+            {formData.minhasAulas ? 'Minhas Aulas' : 'Todas as Aulas'}
+          </h3>
+
+          <div className="space-y-4">
+            {isLoading && <Loading />}
+            {!isLoading && aulas && aulas.length > 0 ? (
+              aulas.map(aula => (
+                <HomeInfoCard
+                  key={aula.id}
+                  id={aula.id}
+                  name={makeFullNameLabel(aula.aluno)}
+                  tipo={aula.tipo}
+                  status={aula.status}
+                  dataAula={aula.dataAula}
+                  horaInicial={aula.horaInicial}
+                  horaFinal={aula.horaFinal}
+                  handleClick={handleClick}
+                  canEdit={true}
+                  professorName={
+                    !formData.minhasAulas
+                      ? makeEmailLabel(aula.professor)
+                      : undefined
+                  }
+                />
+              ))
+            ) : (
+              <p>Nenhuma aula encontrada</p>
+            )}
+          </div>
+        </section>
       </div>
     </div>
   );
