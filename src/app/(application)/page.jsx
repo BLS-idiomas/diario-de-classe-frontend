@@ -1,12 +1,24 @@
 'use client';
 
-import { Avatar, Loading } from '@/components';
-import { TIPO_AULA } from '@/constants';
+import {
+  Avatar,
+  CheckboxField,
+  Form,
+  FormGroup,
+  InputField,
+  Loading,
+  SelectField,
+} from '@/components';
+import {
+  STATUS_AULA,
+  STATUS_AULA_LABEL,
+  TIPO_AULA,
+  TIPO_AULA_LABEL,
+} from '@/constants';
 import { useDashboard } from '@/hooks/dashboard/useDashboard';
 import { useUserAuth } from '@/providers/UserAuthProvider';
 import { makeEmailLabel } from '@/utils/makeEmailLabel';
 import { makeFullNameLabel } from '@/utils/makeFullNameLabel';
-import { useRouter } from 'next/navigation';
 
 // TODO passas os componetes para arquivos separados
 const HomeCard = ({ title, value, color, isLoading }) => {
@@ -35,15 +47,15 @@ const HomeInfoCard = ({
   horaInicial,
   horaFinal,
   professorName,
-  handleRedirect,
+  handleClick,
   canEdit,
 }) => {
   const getActionText = (status, tipo) => {
     if (status === 'AGENDADA') {
-      return `agendou uma aula ${TIPO_AULA[tipo].toLowerCase()}`;
+      return `agendou uma aula ${TIPO_AULA_LABEL[tipo].toLowerCase()}`;
     }
     if (status === 'EM_ANDAMENTO') {
-      return `está em uma aula ${TIPO_AULA[tipo].toLowerCase()}`;
+      return `está em uma aula ${TIPO_AULA_LABEL[tipo].toLowerCase()}`;
     }
 
     return 'dss';
@@ -110,7 +122,7 @@ const HomeInfoCard = ({
   const action = getActionText(status, tipo);
   const time = getTimeText(dataAula, horaInicial, horaFinal);
   const onClick = () => {
-    handleRedirect(id);
+    handleClick(id);
   };
 
   return (
@@ -131,109 +143,142 @@ const HomeInfoCard = ({
   );
 };
 
-const HomeSection = ({
-  title,
-  isLoading,
-  data,
-  hasProfessor,
-  notFoundMessage,
-  canEdit,
-}) => {
-  const router = useRouter();
-  const handleRedirect = id => {
-    if (!!canEdit) {
-      router.push(`/aulas/${id}/editar?backUrl=/`);
-    }
-  };
-  return (
-    <section className="bg-white p-8 rounded-lg shadow-md border border-gray-200 mb-8">
-      <h3 className="text-xl font-semibold text-gray-800 mb-4">{title}</h3>
-
-      <div className="space-y-4">
-        {isLoading && <Loading />}
-        {!isLoading && data && data.length > 0 ? (
-          data.map(aula => (
-            <HomeInfoCard
-              key={aula.id}
-              id={aula.id}
-              name={makeFullNameLabel(aula.aluno)}
-              tipo={aula.tipo}
-              status={aula.status}
-              dataAula={aula.dataAula}
-              horaInicial={aula.horaInicial}
-              horaFinal={aula.horaFinal}
-              handleRedirect={handleRedirect}
-              canEdit={canEdit}
-              professorName={
-                hasProfessor ? makeEmailLabel(aula.professor) : undefined
-              }
-            />
-          ))
-        ) : (
-          <p>{notFoundMessage}</p>
-        )}
-      </div>
-    </section>
-  );
-};
-
 export default function Home() {
+  const { isAdmin, currentUser } = useUserAuth();
   const {
-    totalAlunos,
-    totalAulas,
-    totalContratos,
-    minhasAulas,
-    todasAsAulas,
-    status,
+    aulas,
     isLoading,
-  } = useDashboard();
-  const { isAdmin } = useUserAuth();
+    formData,
+    professorOptions,
+    homeCardValues,
+    handleSubmit,
+    handleChange,
+    handleClick,
+  } = useDashboard(currentUser);
 
   return (
     <div className="p-8">
       <div className="max-w-6xl mx-auto">
         <h2 className="text-3xl font-bold text-gray-800 mb-8">
-          Bem-vindo ao Diário de Classe
+          Diário de Classe
         </h2>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-          <HomeCard
-            title="Total de Alunos"
-            value={totalAlunos}
-            color="blue"
-            isLoading={isLoading}
-          />
-          <HomeCard
-            title="Total de agendadas"
-            value={totalAulas}
-            color="green"
-            isLoading={isLoading}
-          />
-          <HomeCard
-            title="Contratos ativos"
-            value={totalContratos}
-            color="purple"
-            isLoading={isLoading}
-          />
+          {homeCardValues.map(row => (
+            <HomeCard
+              key={row.title}
+              title={row.title}
+              value={row.value}
+              color={row.color}
+              isLoading={isLoading}
+            />
+          ))}
         </div>
 
-        <HomeSection
-          title={'Minhas Aulas'}
-          isLoading={isLoading}
-          data={minhasAulas}
-          canEdit
-          notFoundMessage={'Nenhuma aula encontrada.'}
-        />
+        <div className="mb-8">
+          <Form handleSubmit={handleSubmit}>
+            <h3 className="text-xl font-semibold text-gray-800 mb-4">
+              Filtros
+            </h3>
+            <FormGroup cols={2}>
+              <InputField
+                required
+                htmlFor="dataInicio"
+                label="Data de inicio do contrato"
+                type="date"
+                onChange={handleChange}
+                value={formData.dataInicio}
+              />
+              <InputField
+                required
+                htmlFor="dataTermino"
+                label="Data de término do contrato"
+                type="date"
+                onChange={handleChange}
+                value={formData.dataTermino}
+              />
+              <SelectField
+                required
+                htmlFor="tipo"
+                label="Tipo da aula"
+                options={TIPO_AULA.map(tipo => ({
+                  label: TIPO_AULA_LABEL[tipo],
+                  value: tipo,
+                }))}
+                onChange={handleChange}
+                value={formData.tipo}
+              />
+              <SelectField
+                required
+                htmlFor="status"
+                label="Status da aula"
+                options={STATUS_AULA.map(status => ({
+                  label: STATUS_AULA_LABEL[status],
+                  value: status,
+                }))}
+                onChange={handleChange}
+                value={formData.status}
+              />
+            </FormGroup>
 
-        {isAdmin() && (
-          <HomeSection
-            title={'Atividades Recentes'}
-            isLoading={isLoading}
-            data={todasAsAulas}
-            hasProfessor
-            notFoundMessage={'Nenhuma atividade recente.'}
-          />
-        )}
+            {isAdmin() && (
+              <FormGroup cols={1} className=" mt-6">
+                <CheckboxField
+                  htmlFor={'minhasAulas'}
+                  label="Somente minhas Aulas"
+                  checked={formData.minhasAulas}
+                  onChange={handleChange}
+                />
+                {!formData.minhasAulas && (
+                  <div className="mt-4 pt-4 border-t border-gray-300">
+                    <SelectField
+                      required
+                      htmlFor="professorId"
+                      label="Professor"
+                      placeholder="Selecione o professor"
+                      onChange={handleChange}
+                      value={formData.professorId}
+                      options={professorOptions}
+                    />
+                  </div>
+                )}
+              </FormGroup>
+            )}
+          </Form>
+        </div>
+
+        <section className="bg-white p-8 rounded-lg shadow-md border border-gray-200 mb-8">
+          <h3 className="text-xl font-semibold text-gray-800 mb-4">
+            {formData.minhasAulas ? 'Minhas Aulas' : 'Todas as Aulas'}
+          </h3>
+
+          <div className="space-y-4">
+            {isLoading && <Loading />}
+            {!isLoading && aulas && aulas.length > 0 ? (
+              aulas.map(aula => (
+                <HomeInfoCard
+                  key={aula.id}
+                  id={aula.id}
+                  name={makeFullNameLabel(aula.aluno)}
+                  tipo={aula.tipo}
+                  status={aula.status}
+                  dataAula={aula.dataAula}
+                  horaInicial={aula.horaInicial}
+                  horaFinal={aula.horaFinal}
+                  handleClick={handleClick}
+                  canEdit={true}
+                  professorName={
+                    !formData.minhasAulas
+                      ? makeEmailLabel(aula.professor)
+                      : undefined
+                  }
+                />
+              ))
+            ) : (
+              <p>Nenhuma aula encontrada</p>
+            )}
+          </div>
+        </section>
       </div>
     </div>
   );

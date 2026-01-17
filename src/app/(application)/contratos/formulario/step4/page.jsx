@@ -1,7 +1,7 @@
 'use client';
 
 import { Badge, Loading } from '@/components';
-import { TIPO_AULA, DIAS_LABEL } from '@/constants';
+import { TIPO_AULA_LABEL, DIAS_LABEL } from '@/constants';
 import { useFormater } from '@/hooks/useFormater';
 import useSweetAlert from '@/hooks/useSweetAlert';
 import { useContratoForm } from '@/providers/ContratoFormProvider';
@@ -93,9 +93,9 @@ export default function ContratoStep4() {
                           <div>
                             <label for="tipo" style="display: block; margin-bottom: 0.25rem; font-weight: 500;">Tipo</label>
                             <select id="tipo" class="swal2-input" style="margin: 0; width: 100%;">
-                              <option value="PADRAO" ${aula.tipo === 'PADRAO' ? 'selected' : ''}>${TIPO_AULA.PADRAO}</option>
-                              <option value="REPOSICAO" ${aula.tipo === 'REPOSICAO' ? 'selected' : ''}>${TIPO_AULA.REPOSICAO}</option>
-                              <option value="OUTRA" ${aula.tipo === 'OUTRA' ? 'selected' : ''}>${TIPO_AULA.OUTRA}</option>
+                              <option value="PADRAO" ${aula.tipo === 'PADRAO' ? 'selected' : ''}>${TIPO_AULA_LABEL.PADRAO}</option>
+                              <option value="REPOSICAO" ${aula.tipo === 'REPOSICAO' ? 'selected' : ''}>${TIPO_AULA_LABEL.REPOSICAO}</option>
+                              <option value="OUTRA" ${aula.tipo === 'OUTRA' ? 'selected' : ''}>${TIPO_AULA_LABEL.OUTRA}</option>
                             </select>
                           </div>
                           <div>
@@ -167,9 +167,7 @@ export default function ContratoStep4() {
                 <div>
                   <p className="text-sm text-gray-600">
                     {(() => {
-                      const date = new Date(
-                        aula.dataAula.split('T')[0] + 'T12:00:00'
-                      );
+                      const date = new Date(aula.dataAula);
                       const dias = [
                         'DOMINGO',
                         'SEGUNDA',
@@ -191,7 +189,7 @@ export default function ContratoStep4() {
                     <Badge
                       icon="calendar"
                       color="alert"
-                      text={TIPO_AULA[aula.tipo]}
+                      text={TIPO_AULA_LABEL[aula.tipo]}
                     />
                   )}
                   {aula.observacao && (

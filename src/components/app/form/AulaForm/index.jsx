@@ -1,5 +1,10 @@
 import { useMemo } from 'react';
-import { STATUS_AULA, STATUS_AULA_LABEL, TIPO_AULA } from '@/constants';
+import {
+  STATUS_AULA,
+  STATUS_AULA_LABEL,
+  TIPO_AULA,
+  TIPO_AULA_LABEL,
+} from '@/constants';
 import { useAlunos } from '@/hooks/alunos/useAlunos';
 import { useContratos } from '@/hooks/contratos/useContratos';
 import { useProfessores } from '@/hooks/professores/useProfessores';
@@ -96,8 +101,8 @@ export const AulaForm = ({
             required
             htmlFor="tipo"
             label="Tipo da aula"
-            options={['PADRAO', 'REPOSICAO', 'OUTRA'].map(tipo => ({
-              label: TIPO_AULA[tipo],
+            options={TIPO_AULA.map(tipo => ({
+              label: TIPO_AULA_LABEL[tipo],
               value: tipo,
             }))}
             onChange={handleChange}

@@ -1,8 +1,13 @@
 #!/bin/sh
 
 # Validar mensagem de commit
-commit_regex='^(Merge|feat|fix|docs|style|refactor|test|chore)(\(.+\))?: .{1,50}'
+commit_regex='^(feat|fix|docs|style|refactor|test|chore)(\(.+\))?: .{1,50}'
 commit_message=$(cat "$1")
+
+# Permitir commits de merge
+if echo "$commit_message" | grep -qE "^Merge"; then
+    exit 0
+fi
 
 if ! echo "$commit_message" | grep -qE "$commit_regex"; then
     echo "❌ Mensagem de commit inválida!"

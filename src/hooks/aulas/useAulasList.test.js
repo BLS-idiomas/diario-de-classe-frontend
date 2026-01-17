@@ -2,7 +2,7 @@ import { renderHook } from '@testing-library/react';
 import { useAulasList } from './useAulasList';
 import React from 'react';
 import { STATUS_AULA_LABEL } from '@/constants/statusAulas';
-import { TIPO_AULA } from '@/constants/tipoAula';
+import { TIPO_AULA_LABEL } from '@/constants/tipoAula';
 
 describe('useAulasList', () => {
   const mockFormatter = jest.fn(date => `format:${date}`);
@@ -66,7 +66,7 @@ describe('useAulasList', () => {
     expect(result.current.data[0].status).toBe(
       STATUS_AULA_LABEL[aulas[0].status]
     );
-    expect(result.current.data[0].tipo).toBe(TIPO_AULA[aulas[0].tipo]);
+    expect(result.current.data[0].tipo).toBe(TIPO_AULA_LABEL[aulas[0].tipo]);
     // Testa se existe o componente de ações (div)
     expect(React.isValidElement(result.current.data[0].acoes)).toBe(true);
   });

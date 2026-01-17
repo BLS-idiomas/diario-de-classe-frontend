@@ -6,7 +6,7 @@ export class GetDashboardService {
   }
 
   async execute(searchParam) {
-    return await this.dashboardApi.getAll({ q: searchParam });
+    return await this.dashboardApi.getAll(searchParam);
   }
 
   static async handle(searchParam) {

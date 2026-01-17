@@ -1,4 +1,4 @@
-import { STATUS_AULA_LABEL, TIPO_AULA } from '@/constants';
+import { STATUS_AULA_LABEL, TIPO_AULA_LABEL } from '@/constants';
 import { Pencil, Trash2 } from 'lucide-react';
 import Link from 'next/link';
 import { useMemo } from 'react';
@@ -64,7 +64,7 @@ export function useAulasList({
       horaFinal: aula.horaFinal,
       horaInicial: aula.horaInicial,
       status: STATUS_AULA_LABEL[aula.status],
-      tipo: TIPO_AULA[aula.tipo],
+      tipo: TIPO_AULA_LABEL[aula.tipo],
       acoes: (
         <div className="flex gap-2">
           {/* <Link
