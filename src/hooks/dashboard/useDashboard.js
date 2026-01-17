@@ -41,11 +41,10 @@ export function useDashboard(currentUser) {
   );
 
   const handleChange = async e => {
-    const { name, value, checked } = e.target;
-    const newValue = checked !== undefined ? checked : value;
+    const { name, value, checked, type } = e.target;
     setFormData(prevState => ({
       ...prevState,
-      [name]: newValue,
+      [name]: type === 'checkbox' ? checked : value,
     }));
   };
 
