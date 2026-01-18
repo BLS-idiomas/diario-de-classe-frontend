@@ -4,7 +4,6 @@ export * from './Sidebar';
 export * from './SidebarItem';
 export * from './Toast';
 export * from './Table';
-export * from './Container';
 export * from './PageTitle';
 export * from './ButtonGroup';
 export * from './PageSubTitle';

@@ -6,7 +6,6 @@ import { notFound, useParams } from 'next/navigation';
 import { useFormater } from '@/hooks/useFormater';
 import { useAluno } from '@/hooks/alunos/useAluno';
 import {
-  Container,
   PageContent,
   PageTitle,
   PageSubTitle,
@@ -41,7 +40,7 @@ export default function Aluno() {
   // TODO fazer igual a professor
 
   return (
-    <Container>
+    <>
       <PageContent>
         <PageTitle>Detalhes do aluno</PageTitle>
         <PageSubTitle>Visualização dos dados do aluno</PageSubTitle>
@@ -136,6 +135,6 @@ export default function Aluno() {
           </div>
         </Section>
       </div>
-    </Container>
+    </>
   );
 }

@@ -5,7 +5,6 @@ import { useNovoProfessor } from '@/hooks/professores/useNovoProfessor';
 import { useProfessorForm } from '@/hooks/professores/useProfessorForm';
 import {
   ButtonGroup,
-  Container,
   PageContent,
   PageSubTitle,
   PageTitle,
@@ -19,7 +18,7 @@ export default function NovoProfessor() {
     useProfessorForm({ submit });
 
   return (
-    <Container>
+    <>
       <PageContent>
         <PageTitle>Novo Professor</PageTitle>
 
@@ -44,6 +43,6 @@ export default function NovoProfessor() {
         message={message}
         errors={errors}
       />
-    </Container>
+    </>
   );
 }

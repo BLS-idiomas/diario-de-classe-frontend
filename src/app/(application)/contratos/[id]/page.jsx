@@ -5,7 +5,6 @@ import Link from 'next/link';
 import { notFound, useParams } from 'next/navigation';
 import { useFormater } from '@/hooks/useFormater';
 import {
-  Container,
   PageContent,
   PageTitle,
   PageSubTitle,
@@ -36,7 +35,7 @@ export default function Contrato() {
   }
 
   return (
-    <Container>
+    <>
       <PageContent>
         <PageTitle>Detalhes do contrato</PageTitle>
         <PageSubTitle>Visualização dos dados do contrato</PageSubTitle>
@@ -99,6 +98,6 @@ export default function Contrato() {
           </InfoCardGroup>
         </Section>
       </div>
-    </Container>
+    </>
   );
 }

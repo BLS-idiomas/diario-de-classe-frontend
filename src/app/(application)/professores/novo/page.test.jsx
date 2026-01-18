@@ -93,7 +93,6 @@ describe('NovoProfessor Page', () => {
   it('renders the page with all main components', () => {
     render(<NovoProfessor />);
 
-    expect(screen.getByTestId('container')).toBeInTheDocument();
     expect(screen.getByTestId('page-content')).toBeInTheDocument();
     expect(screen.getByTestId('page-title')).toBeInTheDocument();
     expect(screen.getByTestId('page-subtitle')).toBeInTheDocument();

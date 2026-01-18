@@ -13,7 +13,6 @@ import {
   PageSubTitle,
   PageTitle,
   ProfessorForm,
-  Container,
   Loading,
 } from '@/components';
 
@@ -48,7 +47,7 @@ export default function EditarProfessor() {
   }
 
   return (
-    <Container>
+    <>
       <PageContent>
         <PageTitle>Editar Professor</PageTitle>
 
@@ -70,6 +69,6 @@ export default function EditarProfessor() {
         errors={errors}
         isEdit
       />
-    </Container>
+    </>
   );
 }

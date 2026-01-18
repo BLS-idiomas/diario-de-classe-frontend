@@ -6,7 +6,7 @@ import { useAulas } from '@/hooks/aulas/useAulas';
 import { useDeletarAula } from '@/hooks/aulas/useDeletarAula';
 import { useFormater } from '@/hooks/useFormater';
 import { useAulasList } from '@/hooks/aulas/useAulasList';
-import { ButtonGroup, Container, PageTitle, Table } from '@/components';
+import { ButtonGroup, PageTitle, Table } from '@/components';
 import { useEditarAndamentoAula } from '@/hooks/aulas/useEditarAndamentoAula';
 
 export default function Aulas() {
@@ -27,7 +27,7 @@ export default function Aulas() {
   });
 
   return (
-    <Container>
+    <>
       <PageTitle>Lista de aulas</PageTitle>
 
       <ButtonGroup>
@@ -42,6 +42,6 @@ export default function Aulas() {
         isLoading={isLoading}
         notFoundMessage="Nenhum aula encontrado."
       />
-    </Container>
+    </>
   );
 }

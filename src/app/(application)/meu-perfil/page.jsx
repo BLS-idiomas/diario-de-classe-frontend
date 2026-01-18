@@ -10,7 +10,6 @@ import { useAlunosList } from '@/hooks/alunos/useAlunosList';
 import { useAulasList } from '@/hooks/aulas/useAulasList';
 import { useEditarDisponibilidadeProfessor } from '@/hooks/professores/useEditarDisponibilidadeProfessor';
 import {
-  Container,
   PageContent,
   PageTitle,
   PageSubTitle,
@@ -83,7 +82,7 @@ export default function MeuPerfil() {
 
   if (editMode) {
     return (
-      <Container>
+      <>
         <PageContent>
           <PageTitle>Editar Disponibilidade</PageTitle>
 
@@ -110,12 +109,12 @@ export default function MeuPerfil() {
           isLoading={isLoading}
           setEditMode={setEditMode}
         />
-      </Container>
+      </>
     );
   }
 
   return (
-    <Container>
+    <>
       <PageContent>
         <PageTitle>Detalhes do professor</PageTitle>
         <PageSubTitle>Visualização dos dados do professor</PageSubTitle>
@@ -236,6 +235,6 @@ export default function MeuPerfil() {
           />
         </Section>
       </div>
-    </Container>
+    </>
   );
 }

@@ -5,13 +5,7 @@ import {
   ContratoFormProvider,
   useContratoForm,
 } from '@/providers/ContratoFormProvider';
-import {
-  Container,
-  Form,
-  FormError,
-  PageSubTitle,
-  PageTitle,
-} from '@/components';
+import { Form, FormError, PageSubTitle, PageTitle } from '@/components';
 import {
   UserCircle,
   Calendar,
@@ -71,7 +65,7 @@ function FormularioContratoContent({ children }) {
   } = useContratoForm();
 
   return (
-    <Container>
+    <>
       {/* Header com botão cancelar */}
       <div className="flex justify-between items-center mb-8">
         <div>
@@ -230,7 +224,7 @@ function FormularioContratoContent({ children }) {
           </button>
         </div>
       </Form>
-    </Container>
+    </>
   );
 }
 
