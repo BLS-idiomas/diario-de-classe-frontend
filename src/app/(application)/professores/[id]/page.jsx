@@ -223,6 +223,7 @@ export default function Professor() {
             data={dataAlunos}
             isLoading={isLoading}
             notFoundMessage="Nenhum aluno encontrado."
+            className="null"
           />
         </Section>
 
@@ -234,6 +235,7 @@ export default function Professor() {
             data={dataAulas}
             isLoading={isLoading}
             notFoundMessage="Nenhuma aula encontrada."
+            className="null"
           />
         </Section>
       </div>

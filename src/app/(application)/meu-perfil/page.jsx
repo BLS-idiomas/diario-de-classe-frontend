@@ -220,6 +220,7 @@ export default function MeuPerfil() {
             columns={columnsAlunos}
             data={dataAlunos}
             isLoading={isLoading}
+            className="null"
             notFoundMessage="Nenhum aluno encontrado."
           />
         </Section>
@@ -231,6 +232,7 @@ export default function MeuPerfil() {
             columns={columnsAulas}
             data={dataAulas}
             isLoading={isLoading}
+            className="null"
             notFoundMessage="Nenhuma aula encontrada."
           />
         </Section>
