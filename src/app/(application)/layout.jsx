@@ -23,9 +23,13 @@ export default function ApplicationLayout({ children }) {
           isMobile={isMobile}
         />
         <main
-          className={`flex-1 transition-all duration-300 ease-in-out ${sidebarExpanded.mainClass}`}
+          className={`flex-1 p-8 transition-all duration-300 ease-in-out ${sidebarExpanded.mainClass}`}
         >
-          {isLoading || isUnauthorized ? <Loading /> : children}
+          {isLoading || isUnauthorized ? (
+            <Loading />
+          ) : (
+            <div className="max-w-6xl mx-auto">{children}</div>
+          )}
         </main>
       </div>
       <Footer />
