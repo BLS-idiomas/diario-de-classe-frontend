@@ -60,7 +60,7 @@ describe('useNovaAula', () => {
           message: '',
           errors: [],
           current: null,
-          action: '',
+          action: 'createAula',
         },
       })
     );

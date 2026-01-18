@@ -13,7 +13,9 @@ export function useEditarProfessor(professorId) {
   const { status, message, errors, current, action, statusError } = useSelector(
     state => state.professores
   );
-  const isLoading = status === STATUS.LOADING;
+  const isLoading =
+    status === STATUS.LOADING &&
+    ['updateProfessor', 'getProfessor'].includes(action);
 
   const submit = ({ id, dataToSend }) => {
     dispatch(updateProfessor({ id: id, data: dataToSend }));

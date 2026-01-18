@@ -123,6 +123,7 @@ describe('useNovoAluno', () => {
       message: '',
       errors: {},
       current: null,
+      action: 'createAluno',
     };
     const store = createMockStore(loadingState);
     store.dispatch = mockDispatch;

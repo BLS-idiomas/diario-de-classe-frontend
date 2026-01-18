@@ -253,6 +253,7 @@ describe('useEditarProfessor', () => {
       message: '',
       errors: {},
       current: null,
+      action: 'updateProfessor',
     };
     const store = createMockStore(loadingState);
     store.dispatch = mockDispatch;

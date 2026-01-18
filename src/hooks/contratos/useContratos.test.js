@@ -57,6 +57,7 @@ describe('useContratos', () => {
       list: [],
       status: STATUS.IDLE,
       count: 0,
+      action: 'getContratos',
     });
     store.dispatch = mockDispatch;
 
@@ -109,6 +110,7 @@ describe('useContratos', () => {
     const store = createMockStore({
       list: [],
       status: STATUS.IDLE,
+      action: 'getContratos',
     });
     store.dispatch = mockDispatch;
 
@@ -123,6 +125,7 @@ describe('useContratos', () => {
     const store = createMockStore({
       list: [],
       status: STATUS.LOADING,
+      action: 'getContratos',
     });
     store.dispatch = mockDispatch;
 
@@ -239,6 +242,7 @@ describe('useContratos', () => {
     const initialStore = createMockStore({
       list: [],
       status: STATUS.IDLE,
+      action: 'getContratos',
     });
     initialStore.dispatch = mockDispatch;
 

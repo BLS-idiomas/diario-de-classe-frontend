@@ -113,6 +113,7 @@ describe('useNovoProfessor', () => {
       message: '',
       errors: {},
       current: null,
+      action: 'createProfessor',
     };
     const store = createMockStore(loadingState);
     store.dispatch = mockDispatch;

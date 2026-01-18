@@ -5,13 +5,15 @@ import { getProfessores } from '@/store/slices/professoresSlice';
 
 export function useProfessores() {
   const dispatch = useDispatch();
-  const { list, status } = useSelector(state => state.professores);
+  const { list, status, action } = useSelector(state => state.professores);
 
   useEffect(() => {
     dispatch(getProfessores());
   }, [dispatch]);
 
-  const isLoading = status === STATUS.IDLE || status === STATUS.LOADING;
+  const isLoading =
+    action === 'getProfessores' &&
+    (status === STATUS.IDLE || status === STATUS.LOADING);
 
   return {
     professores: list,

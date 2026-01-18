@@ -13,7 +13,9 @@ export function useEditarAula(aulaId, backUrl = null) {
   const { status, message, errors, current, action, statusError } = useSelector(
     state => state.aulas
   );
-  const isLoading = status === STATUS.LOADING;
+  const isLoading =
+    (status === STATUS.IDLE || status === STATUS.LOADING) &&
+    ['updateAula', 'getAula'].includes(action);
 
   const submit = ({ id, dataToSend }) => {
     dispatch(updateAula({ id: id, data: dataToSend }));

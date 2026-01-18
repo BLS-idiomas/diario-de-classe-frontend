@@ -20,7 +20,8 @@ export function useEditarDisponibilidadeProfessor(professor) {
     'SABADO',
     'DOMINGO',
   ];
-  const isLoading = status === STATUS.LOADING;
+  const isLoading =
+    action === 'updateDisponibilidadeProfessor' && status === STATUS.LOADING;
   const [editMode, setEditMode] = useState(false);
   const [formData, setFormData] = useState(() => {
     const disponibilidadesMap = {};

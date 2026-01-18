@@ -13,7 +13,7 @@ export function useEditarAluno(alunoId) {
   const { status, message, errors, current, action, statusError } = useSelector(
     state => state.alunos
   );
-  const isLoading = status === STATUS.LOADING;
+  const isLoading = status === STATUS.LOADING && action === 'updateAluno';
   const isNotFound =
     [STATUS_ERROR.BAD_REQUEST, STATUS_ERROR.NOT_FOUND].includes(statusError) &&
     !current &&
