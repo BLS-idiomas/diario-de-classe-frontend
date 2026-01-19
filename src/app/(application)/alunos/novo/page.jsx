@@ -5,7 +5,6 @@ import { useNovoAluno } from '@/hooks/alunos/useNovoAluno';
 import { useAlunoForm } from '@/hooks/alunos/useAlunoForm';
 import {
   ButtonGroup,
-  Container,
   PageContent,
   PageSubTitle,
   PageTitle,
@@ -19,7 +18,7 @@ export default function NovoAluno() {
   });
 
   return (
-    <Container>
+    <>
       <PageContent>
         <PageTitle>Novo aluno</PageTitle>
 
@@ -42,6 +41,6 @@ export default function NovoAluno() {
         message={message}
         errors={errors}
       />
-    </Container>
+    </>
   );
 }

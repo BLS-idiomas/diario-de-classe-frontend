@@ -12,7 +12,6 @@ import {
   PageSubTitle,
   PageTitle,
   AulaForm,
-  Container,
   Loading,
 } from '@/components';
 
@@ -52,7 +51,7 @@ export default function EditarAula() {
   }
 
   return (
-    <Container>
+    <>
       <PageContent>
         <PageTitle>Editar Aula</PageTitle>
 
@@ -74,6 +73,6 @@ export default function EditarAula() {
         errors={errors}
         isEdit
       />
-    </Container>
+    </>
   );
 }

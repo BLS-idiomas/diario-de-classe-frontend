@@ -11,7 +11,6 @@ import {
   PageSubTitle,
   PageTitle,
   AlunoForm,
-  Container,
   Loading,
 } from '@/components';
 
@@ -39,7 +38,7 @@ export default function EditarAluno() {
   }
 
   return (
-    <Container>
+    <>
       <PageContent>
         <PageTitle>Editar Aluno</PageTitle>
 
@@ -61,6 +60,6 @@ export default function EditarAluno() {
         errors={errors}
         isEdit
       />
-    </Container>
+    </>
   );
 }

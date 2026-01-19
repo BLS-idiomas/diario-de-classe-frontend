@@ -1,6 +1,6 @@
 {
   "name": "diario-de-classe-frontend",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -44,6 +44,13 @@
     "lint-staged": "^16.2.6",
     "prettier": "^3.3.3",
     "redux-mock-store": "^1.5.5",
+    "semantic-release": "^24.2.0",
+    "@semantic-release/changelog": "^6.0.3",
+    "@semantic-release/commit-analyzer": "^13.0.0",
+    "@semantic-release/git": "^10.0.1",
+    "@semantic-release/github": "^11.0.0",
+    "@semantic-release/npm": "^12.0.1",
+    "@semantic-release/release-notes-generator": "^14.0.1",
     "tailwindcss": "^4"
   },
   "lint-staged": {

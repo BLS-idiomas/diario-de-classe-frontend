@@ -7,13 +7,15 @@ import { getAluno } from '@/store/slices/alunosSlice';
 
 export function useContrato(id) {
   const dispatch = useDispatch();
-  const { current, message, status, statusError } = useSelector(
+  const { current, message, status, statusError, action } = useSelector(
     state => state.contratos
   );
   const alunos = useSelector(state => state.alunos);
-  const isLoading = status === STATUS.IDLE || status === STATUS.LOADING;
-  const isSuccess = status === STATUS.SUCCESS;
-  const isFailed = status === STATUS.FAILED;
+  const isAction = action === 'getContrato';
+  const isLoading =
+    isAction && (status === STATUS.IDLE || status === STATUS.LOADING);
+  const isSuccess = isAction && status === STATUS.SUCCESS;
+  const isFailed = isAction && status === STATUS.FAILED;
   const isNotFound =
     [STATUS_ERROR.BAD_REQUEST, STATUS_ERROR.NOT_FOUND].includes(statusError) &&
     !current;

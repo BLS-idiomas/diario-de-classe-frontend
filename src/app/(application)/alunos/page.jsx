@@ -7,7 +7,7 @@ import { useDeletarAluno } from '@/hooks/alunos/useDeletarAluno';
 import { useFormater } from '@/hooks/useFormater';
 import { useAlunosList } from '@/hooks/alunos/useAlunosList';
 import { useUploadAlunos } from '@/hooks/alunos/useUploadAlunos';
-import { ButtonGroup, Container, PageTitle, Table } from '@/components';
+import { ButtonGroup, PageTitle, Table } from '@/components';
 
 export default function Alunos() {
   const { currentUser } = useUserAuth();
@@ -25,7 +25,7 @@ export default function Alunos() {
   });
 
   return (
-    <Container>
+    <>
       <PageTitle>Lista de alunos</PageTitle>
 
       <ButtonGroup>
@@ -44,6 +44,6 @@ export default function Alunos() {
         isLoading={isLoading || isUploading}
         notFoundMessage="Nenhum aluno encontrado."
       />
-    </Container>
+    </>
   );
 }

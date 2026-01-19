@@ -118,7 +118,6 @@ describe('EditarProfessor Page', () => {
   it('renders the page with all main components', () => {
     render(<EditarProfessor />);
 
-    expect(screen.getByTestId('container')).toBeInTheDocument();
     expect(screen.getByTestId('page-content')).toBeInTheDocument();
     expect(screen.getByTestId('page-title')).toBeInTheDocument();
     expect(screen.getByTestId('page-subtitle')).toBeInTheDocument();

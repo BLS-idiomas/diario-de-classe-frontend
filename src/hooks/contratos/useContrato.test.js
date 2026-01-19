@@ -167,6 +167,7 @@ describe('useContrato', () => {
       message: null,
       status: STATUS.IDLE,
       statusError: null,
+      action: 'getContrato',
     });
     store.dispatch = mockDispatch;
 
@@ -183,6 +184,7 @@ describe('useContrato', () => {
       message: null,
       status: STATUS.LOADING,
       statusError: null,
+      action: 'getContrato',
     });
     store.dispatch = mockDispatch;
 
@@ -231,6 +233,7 @@ describe('useContrato', () => {
       message: null,
       status: STATUS.SUCCESS,
       statusError: null,
+      action: 'getContrato',
     });
     store.dispatch = mockDispatch;
 
@@ -263,6 +266,7 @@ describe('useContrato', () => {
       message: 'Error',
       status: STATUS.FAILED,
       statusError: STATUS_ERROR.INTERNAL_SERVER_ERROR,
+      action: 'getContrato',
     });
     store.dispatch = mockDispatch;
 
@@ -493,6 +497,7 @@ describe('useContrato', () => {
       message: 'Success',
       status: STATUS.SUCCESS,
       statusError: null,
+      action: 'getContrato',
     });
     store.dispatch = mockDispatch;
 
@@ -512,6 +517,7 @@ describe('useContrato', () => {
       message: 'Error',
       status: STATUS.FAILED,
       statusError: STATUS_ERROR.INTERNAL_SERVER_ERROR,
+      action: 'getContrato',
     });
     store.dispatch = mockDispatch;
 
@@ -531,6 +537,7 @@ describe('useContrato', () => {
       message: 'Not found',
       status: STATUS.FAILED,
       statusError: STATUS_ERROR.NOT_FOUND,
+      action: 'getContrato',
     });
     store.dispatch = mockDispatch;
 

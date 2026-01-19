@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useUserAuth } from '@/providers/UserAuthProvider';
 import { useFormater } from '@/hooks/useFormater';
-import { ButtonGroup, Container, PageTitle, Table } from '@/components';
+import { ButtonGroup, PageTitle, Table } from '@/components';
 import { useContratos } from '@/hooks/contratos/useContratos';
 import { useDeletarContrato } from '@/hooks/contratos/useDeletarContrato';
 import { useContratosList } from '@/hooks/contratos/useContratosList';
@@ -22,7 +22,7 @@ export default function Contratos() {
   });
 
   return (
-    <Container>
+    <>
       <PageTitle>Lista de Contratos</PageTitle>
 
       <ButtonGroup>
@@ -37,6 +37,6 @@ export default function Contratos() {
         isLoading={isLoading}
         notFoundMessage="Nenhum contrato encontrado."
       />
-    </Container>
+    </>
   );
 }

@@ -55,6 +55,7 @@ describe('useProfessores', () => {
     const initialState = {
       list: [],
       status: STATUS.IDLE,
+      action: 'getProfessores',
     };
     const store = createMockStore(initialState);
     store.dispatch = mockDispatch;
@@ -89,6 +90,7 @@ describe('useProfessores', () => {
     const initialState = {
       list: [],
       status: STATUS.LOADING,
+      action: 'getProfessores',
     };
     const store = createMockStore(initialState);
     store.dispatch = mockDispatch;

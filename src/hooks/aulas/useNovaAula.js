@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { act, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useRouter } from 'next/navigation';
 import { STATUS } from '@/constants';
@@ -35,7 +35,7 @@ export function useNovaAula() {
   }, [status, router, success, current, action, dispatch]);
 
   // Estados computados para facilitar o uso
-  const isLoading = status === STATUS.LOADING;
+  const isLoading = status === STATUS.LOADING && action === 'createAula';
 
   return {
     message,

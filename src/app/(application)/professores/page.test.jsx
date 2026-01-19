@@ -128,7 +128,6 @@ describe('Professores Page', () => {
   it('renders the page with all main components', () => {
     render(<Professores />);
 
-    expect(screen.getByTestId('container')).toBeInTheDocument();
     expect(screen.getByTestId('page-title')).toBeInTheDocument();
     expect(screen.getByTestId('button-group')).toBeInTheDocument();
     expect(screen.getByTestId('table')).toBeInTheDocument();

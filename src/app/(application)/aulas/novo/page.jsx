@@ -5,7 +5,6 @@ import { useNovaAula } from '@/hooks/aulas/useNovaAula';
 import { useAulaForm } from '@/hooks/aulas/useAulaForm';
 import {
   ButtonGroup,
-  Container,
   PageContent,
   PageSubTitle,
   PageTitle,
@@ -19,7 +18,7 @@ export default function NovoAula() {
   });
 
   return (
-    <Container>
+    <>
       <PageContent>
         <PageTitle>Nova aula</PageTitle>
 
@@ -40,6 +39,6 @@ export default function NovoAula() {
         message={message}
         errors={errors}
       />
-    </Container>
+    </>
   );
 }

@@ -9,7 +9,6 @@ import { useAlunosList } from '@/hooks/alunos/useAlunosList';
 import { useAulasList } from '@/hooks/aulas/useAulasList';
 import { useEditarDisponibilidadeProfessor } from '@/hooks/professores/useEditarDisponibilidadeProfessor';
 import {
-  Container,
   PageContent,
   PageTitle,
   PageSubTitle,
@@ -82,7 +81,7 @@ export default function Professor() {
 
   if (editMode) {
     return (
-      <Container>
+      <>
         <PageContent>
           <PageTitle>Editar Disponibilidade</PageTitle>
 
@@ -109,12 +108,12 @@ export default function Professor() {
           isLoading={isLoading}
           setEditMode={setEditMode}
         />
-      </Container>
+      </>
     );
   }
 
   return (
-    <Container>
+    <>
       <PageContent>
         <PageTitle>Detalhes do professor</PageTitle>
         <PageSubTitle>Visualização dos dados do professor</PageSubTitle>
@@ -224,6 +223,7 @@ export default function Professor() {
             data={dataAlunos}
             isLoading={isLoading}
             notFoundMessage="Nenhum aluno encontrado."
+            className="null"
           />
         </Section>
 
@@ -235,9 +235,10 @@ export default function Professor() {
             data={dataAulas}
             isLoading={isLoading}
             notFoundMessage="Nenhuma aula encontrada."
+            className="null"
           />
         </Section>
       </div>
-    </Container>
+    </>
   );
 }

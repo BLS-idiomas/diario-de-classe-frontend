@@ -57,3 +57,25 @@ global.setImmediate =
 
 // Configura timeouts menores para evitar stack overflow
 jest.setTimeout(10000);
+
+// Mock do HTMLFormElement.requestSubmit para jsdom
+if (typeof HTMLFormElement.prototype.requestSubmit === 'undefined') {
+  HTMLFormElement.prototype.requestSubmit = function (submitter) {
+    if (submitter) {
+      if (!submitter.form || submitter.form !== this) {
+        throw new DOMException(
+          "Failed to execute 'requestSubmit' on 'HTMLFormElement'",
+          'NotFoundError'
+        );
+      }
+      if (submitter.type !== 'submit') {
+        throw new TypeError(
+          "Failed to execute 'requestSubmit' on 'HTMLFormElement': The specified element is not a submit button."
+        );
+      }
+    }
+    this.dispatchEvent(
+      new Event('submit', { bubbles: true, cancelable: true })
+    );
+  };
+}

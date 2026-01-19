@@ -25,7 +25,13 @@ describe('useAulaProfessores', () => {
 
   it('deve retornar aulas e status corretamente', () => {
     useSelector.mockImplementation(fn =>
-      fn({ professores: { aulas: ['Aula1'], status: STATUS.SUCCESS } })
+      fn({
+        professores: {
+          aulas: ['Aula1'],
+          status: STATUS.SUCCESS,
+          action: 'getAulasProfessor',
+        },
+      })
     );
     const { result } = renderHook(() => useAulaProfessores(123));
     expect(result.current.aulas).toEqual(['Aula1']);
@@ -52,7 +58,13 @@ describe('useAulaProfessores', () => {
 
   it('deve retornar isLoading, isSuccess e isFailed corretamente', () => {
     useSelector.mockImplementation(fn =>
-      fn({ professores: { aulas: [], status: STATUS.LOADING } })
+      fn({
+        professores: {
+          aulas: [],
+          status: STATUS.LOADING,
+          action: 'getAulasProfessor',
+        },
+      })
     );
     let { result, rerender } = renderHook(() => useAulaProfessores(1));
     expect(result.current.isLoading).toBe(true);
@@ -60,7 +72,13 @@ describe('useAulaProfessores', () => {
     expect(result.current.isFailed).toBe(false);
 
     useSelector.mockImplementation(fn =>
-      fn({ professores: { aulas: [], status: STATUS.FAILED } })
+      fn({
+        professores: {
+          aulas: [],
+          status: STATUS.FAILED,
+          action: 'getAulasProfessor',
+        },
+      })
     );
     rerender();
     expect(result.current.isLoading).toBe(false);

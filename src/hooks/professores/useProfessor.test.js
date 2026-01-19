@@ -120,6 +120,7 @@ describe('useProfessor', () => {
       alunos: [{ id: 22 }],
       message: 'all good',
       status: STATUS.SUCCESS,
+      action: 'getProfessor',
     };
 
     const store = createMockStore(initialState);

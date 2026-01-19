@@ -35,8 +35,9 @@ export function useNovoAluno() {
   }, [status, router, success, current, action, dispatch]);
 
   // Estados computados para facilitar o uso
-  const isLoading = status === STATUS.LOADING;
-  const isSubmitting = status === STATUS.LOADING;
+  const isAction = action === 'createAluno';
+  const isLoading = status === STATUS.LOADING && isAction;
+  const isSubmitting = status === STATUS.LOADING && isAction;
 
   return {
     message,

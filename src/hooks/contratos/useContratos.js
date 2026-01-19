@@ -5,13 +5,15 @@ import { getContratos } from '@/store/slices/contratosSlice';
 
 export function useContratos() {
   const dispatch = useDispatch();
-  const { list, status } = useSelector(state => state.contratos);
+  const { list, status, action } = useSelector(state => state.contratos);
 
   useEffect(() => {
     dispatch(getContratos());
   }, [dispatch]);
 
-  const isLoading = status === STATUS.IDLE || status === STATUS.LOADING;
+  const isAction = action === 'getContratos';
+  const isLoading =
+    isAction && (status === STATUS.IDLE || status === STATUS.LOADING);
 
   return {
     contratos: list,

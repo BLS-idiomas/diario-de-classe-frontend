@@ -23,13 +23,15 @@ export function useAluno(id) {
     statusError,
     action,
   } = useSelector(state => state.alunos);
-  const isLoading = status === STATUS.IDLE || status === STATUS.LOADING;
-  const isSuccess = status === STATUS.SUCCESS;
-  const isFailed = status === STATUS.FAILED;
+  const isAction = action === 'getAluno';
+  const isLoading =
+    isAction && (status === STATUS.IDLE || status === STATUS.LOADING);
+  const isSuccess = isAction && status === STATUS.SUCCESS;
+  const isFailed = isAction && status === STATUS.FAILED;
   const isNotFound =
     [STATUS_ERROR.BAD_REQUEST, STATUS_ERROR.NOT_FOUND].includes(statusError) &&
     !current &&
-    action === 'getAluno';
+    isAction;
 
   useEffect(() => {
     if (id) {

@@ -157,129 +157,125 @@ export default function Home() {
   } = useDashboard(currentUser);
 
   return (
-    <div className="p-8">
-      <div className="max-w-6xl mx-auto">
-        <h2 className="text-3xl font-bold text-gray-800 mb-8">
-          Diário de Classe
-        </h2>
+    <>
+      <h2 className="text-3xl font-bold text-gray-800 mb-8">
+        Diário de Classe
+      </h2>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-          {homeCardValues.map(row => (
-            <HomeCard
-              key={row.title}
-              title={row.title}
-              value={row.value}
-              color={row.color}
-              isLoading={isLoading}
-            />
-          ))}
-        </div>
-
-        <div className="mb-8">
-          <Form handleSubmit={handleSubmit}>
-            <h3 className="text-xl font-semibold text-gray-800 mb-4">
-              Filtros
-            </h3>
-            <FormGroup cols={2}>
-              <InputField
-                required
-                htmlFor="dataInicio"
-                label="Data de inicio do contrato"
-                type="date"
-                onChange={handleChange}
-                value={formData.dataInicio}
-              />
-              <InputField
-                required
-                htmlFor="dataTermino"
-                label="Data de término do contrato"
-                type="date"
-                onChange={handleChange}
-                value={formData.dataTermino}
-              />
-              <SelectField
-                required
-                htmlFor="tipo"
-                label="Tipo da aula"
-                options={TIPO_AULA.map(tipo => ({
-                  label: TIPO_AULA_LABEL[tipo],
-                  value: tipo,
-                }))}
-                onChange={handleChange}
-                value={formData.tipo}
-              />
-              <SelectField
-                required
-                htmlFor="status"
-                label="Status da aula"
-                options={STATUS_AULA.map(status => ({
-                  label: STATUS_AULA_LABEL[status],
-                  value: status,
-                }))}
-                onChange={handleChange}
-                value={formData.status}
-              />
-            </FormGroup>
-
-            {isAdmin() && (
-              <FormGroup cols={1} className=" mt-6">
-                <CheckboxField
-                  htmlFor={'minhasAulas'}
-                  label="Somente minhas Aulas"
-                  checked={formData.minhasAulas}
-                  onChange={handleChange}
-                />
-                {!formData.minhasAulas && (
-                  <div className="mt-4 pt-4 border-t border-gray-300">
-                    <SelectField
-                      required
-                      htmlFor="professorId"
-                      label="Professor"
-                      placeholder="Selecione o professor"
-                      onChange={handleChange}
-                      value={formData.professorId}
-                      options={professorOptions}
-                    />
-                  </div>
-                )}
-              </FormGroup>
-            )}
-          </Form>
-        </div>
-
-        <section className="bg-white p-8 rounded-lg shadow-md border border-gray-200 mb-8">
-          <h3 className="text-xl font-semibold text-gray-800 mb-4">
-            {formData.minhasAulas ? 'Minhas Aulas' : 'Todas as Aulas'}
-          </h3>
-
-          <div className="space-y-4">
-            {isLoading && <Loading />}
-            {!isLoading && aulas && aulas.length > 0 ? (
-              aulas.map(aula => (
-                <HomeInfoCard
-                  key={aula.id}
-                  id={aula.id}
-                  name={makeFullNameLabel(aula.aluno)}
-                  tipo={aula.tipo}
-                  status={aula.status}
-                  dataAula={aula.dataAula}
-                  horaInicial={aula.horaInicial}
-                  horaFinal={aula.horaFinal}
-                  handleClick={handleClick}
-                  canEdit={true}
-                  professorName={
-                    !formData.minhasAulas
-                      ? makeEmailLabel(aula.professor)
-                      : undefined
-                  }
-                />
-              ))
-            ) : (
-              <p>Nenhuma aula encontrada</p>
-            )}
-          </div>
-        </section>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+        {homeCardValues.map(row => (
+          <HomeCard
+            key={row.title}
+            title={row.title}
+            value={row.value}
+            color={row.color}
+            isLoading={isLoading}
+          />
+        ))}
       </div>
-    </div>
+
+      <div className="mb-8">
+        <Form handleSubmit={handleSubmit}>
+          <h3 className="text-xl font-semibold text-gray-800 mb-4">Filtros</h3>
+          <FormGroup cols={2}>
+            <InputField
+              required
+              htmlFor="dataInicio"
+              label="Data de inicio do contrato"
+              type="date"
+              onChange={handleChange}
+              value={formData.dataInicio}
+            />
+            <InputField
+              required
+              htmlFor="dataTermino"
+              label="Data de término do contrato"
+              type="date"
+              onChange={handleChange}
+              value={formData.dataTermino}
+            />
+            <SelectField
+              required
+              htmlFor="tipo"
+              label="Tipo da aula"
+              options={TIPO_AULA.map(tipo => ({
+                label: TIPO_AULA_LABEL[tipo],
+                value: tipo,
+              }))}
+              onChange={handleChange}
+              value={formData.tipo}
+            />
+            <SelectField
+              required
+              htmlFor="status"
+              label="Status da aula"
+              options={STATUS_AULA.map(status => ({
+                label: STATUS_AULA_LABEL[status],
+                value: status,
+              }))}
+              onChange={handleChange}
+              value={formData.status}
+            />
+          </FormGroup>
+
+          {isAdmin() && (
+            <FormGroup cols={1} className=" mt-6">
+              <CheckboxField
+                htmlFor={'minhasAulas'}
+                label="Somente minhas Aulas"
+                checked={formData.minhasAulas}
+                onChange={handleChange}
+              />
+              {!formData.minhasAulas && (
+                <div className="mt-4 pt-4 border-t border-gray-300">
+                  <SelectField
+                    required
+                    htmlFor="professorId"
+                    label="Professor"
+                    placeholder="Selecione o professor"
+                    onChange={handleChange}
+                    value={formData.professorId}
+                    options={professorOptions}
+                  />
+                </div>
+              )}
+            </FormGroup>
+          )}
+        </Form>
+      </div>
+
+      <section className="bg-white p-8 rounded-lg shadow-md border border-gray-200 mb-8">
+        <h3 className="text-xl font-semibold text-gray-800 mb-4">
+          {formData.minhasAulas ? 'Minhas Aulas' : 'Todas as Aulas'}
+        </h3>
+
+        <div className="space-y-4">
+          {isLoading && <Loading />}
+          {!isLoading && aulas && aulas.length > 0 ? (
+            aulas.map(aula => (
+              <HomeInfoCard
+                key={aula.id}
+                id={aula.id}
+                name={makeFullNameLabel(aula.aluno)}
+                tipo={aula.tipo}
+                status={aula.status}
+                dataAula={aula.dataAula}
+                horaInicial={aula.horaInicial}
+                horaFinal={aula.horaFinal}
+                handleClick={handleClick}
+                canEdit={true}
+                professorName={
+                  !formData.minhasAulas
+                    ? makeEmailLabel(aula.professor)
+                    : undefined
+                }
+              />
+            ))
+          ) : (
+            <p>Nenhuma aula encontrada</p>
+          )}
+        </div>
+      </section>
+    </>
   );
 }

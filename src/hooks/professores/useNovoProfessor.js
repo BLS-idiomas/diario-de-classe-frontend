@@ -35,8 +35,9 @@ export function useNovoProfessor() {
   }, [status, router, success, current, action, dispatch]);
 
   // Estados computados para facilitar o uso
-  const isLoading = status === STATUS.LOADING;
-  const isSubmitting = status === STATUS.LOADING;
+  const isAction = action === 'createProfessor';
+  const isLoading = isAction && status === STATUS.LOADING;
+  const isSubmitting = isAction && status === STATUS.LOADING;
 
   return {
     message,

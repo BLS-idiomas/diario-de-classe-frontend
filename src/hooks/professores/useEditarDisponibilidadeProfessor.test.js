@@ -102,7 +102,7 @@ describe('useEditarDisponibilidadeProfessor', () => {
             status: STATUS.LOADING,
             message: '',
             errors: [],
-            action: '',
+            action: 'updateDisponibilidadeProfessor',
           },
         })
       );
