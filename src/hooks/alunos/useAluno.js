@@ -1,28 +1,14 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  getAluno,
-  getAulasAluno,
-  getDiasAulasAluno,
-  getContratoAluno,
-  getContratosAluno,
-} from '@/store/slices/alunosSlice';
+import { getAluno } from '@/store/slices/alunosSlice';
 import { STATUS } from '@/constants';
 import { STATUS_ERROR } from '@/constants/statusError';
 
 export function useAluno(id) {
   const dispatch = useDispatch();
-  const {
-    current,
-    aulas,
-    diasAulas,
-    contrato,
-    contratos,
-    message,
-    status,
-    statusError,
-    action,
-  } = useSelector(state => state.alunos);
+  const { current, message, status, statusError, action } = useSelector(
+    state => state.alunos
+  );
   const isAction = action === 'getAluno';
   const isLoading =
     isAction && (status === STATUS.IDLE || status === STATUS.LOADING);
@@ -34,26 +20,15 @@ export function useAluno(id) {
     isAction;
 
   useEffect(() => {
-    if (id) {
-      dispatch(getAluno(id));
-    }
+    if (id) dispatch(getAluno(id));
   }, [dispatch, id]);
-
-  useEffect(() => {
-    if (id && current) {
-      dispatch(getAulasAluno(id));
-      dispatch(getDiasAulasAluno(id));
-      dispatch(getContratoAluno(id));
-      dispatch(getContratosAluno(id));
-    }
-  }, [dispatch, id, current]);
 
   return {
     aluno: current,
-    aulas,
-    diasAulas,
-    contrato,
-    contratos,
+    aulas: current ? current.aulas : [],
+    diasAulas: current ? current.diasAulas : [],
+    contratos: current ? current.contratos : [],
+    contrato: current ? current.contrato : {},
     message,
     isLoading,
     isSuccess,
