@@ -19,6 +19,16 @@ export function useAulasList({
       width: '75px',
     },
     {
+      name: 'Aluno',
+      selector: row => row.aluno,
+      sortable: true,
+    },
+    {
+      name: 'Professor',
+      selector: row => row.professor,
+      sortable: true,
+    },
+    {
       name: 'Data',
       selector: row => row.dataCriacao,
       sortable: true,
@@ -65,6 +75,8 @@ export function useAulasList({
       horaInicial: aula.horaInicial,
       status: STATUS_AULA_LABEL[aula.status],
       tipo: TIPO_AULA_LABEL[aula.tipo],
+      aluno: aula.aluno?.nome || '-',
+      professor: aula.professor?.nome || '-',
       acoes: (
         <div className="flex gap-2">
           {/* <Link

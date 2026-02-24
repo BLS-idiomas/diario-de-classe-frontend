@@ -119,6 +119,7 @@ export const deleteAluno = createAsyncThunk(
 
 // GET AULAS
 export const getAulasAluno = createAsyncThunk(
+  // TODO remover
   'alunos/getAulas',
   async (id, { rejectWithValue }) => {
     try {
@@ -139,6 +140,7 @@ export const getAulasAluno = createAsyncThunk(
 
 // GET DIAS AULAS
 export const getDiasAulasAluno = createAsyncThunk(
+  // TODO remover
   'alunos/getDiasAulas',
   async (id, { rejectWithValue }) => {
     try {
@@ -159,6 +161,7 @@ export const getDiasAulasAluno = createAsyncThunk(
 
 // GET CONTRATO
 export const getContratoAluno = createAsyncThunk(
+  // TODO remover
   'alunos/getContrato',
   async (id, { rejectWithValue }) => {
     try {
@@ -179,6 +182,7 @@ export const getContratoAluno = createAsyncThunk(
 
 // GET CONTRATOS
 export const getContratosAluno = createAsyncThunk(
+  // TODO remover
   'alunos/getContratos',
   async (id, { rejectWithValue }) => {
     try {

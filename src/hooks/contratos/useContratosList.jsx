@@ -16,6 +16,11 @@ export function useContratosList({
       width: '75px',
     },
     {
+      name: 'Aluno',
+      selector: row => row.aluno,
+      sortable: true,
+    },
+    {
       name: 'Data início',
       selector: row => row.dataInicio,
       sortable: true,
@@ -75,6 +80,7 @@ export function useContratosList({
       totalReposicoes: contrato.totalReposicoes,
       totalFaltas: contrato.totalFaltas,
       totalAulasCanceladas: contrato.totalAulasCanceladas,
+      aluno: contrato.aluno?.nome || '-',
       acoes: (
         <div className="flex gap-2">
           <Link

@@ -119,6 +119,7 @@ export const deleteProfessor = createAsyncThunk(
 
 // GET AULAS
 export const getAulasProfessor = createAsyncThunk(
+  // TODO Destuir esse serviço
   'professores/getOne/aulas',
   async (id, { rejectWithValue }) => {
     try {
@@ -138,6 +139,7 @@ export const getAulasProfessor = createAsyncThunk(
 
 // GET ALUNOS
 export const getAlunosProfessor = createAsyncThunk(
+  // TODO Destuir esse serviço
   'professores/getOne/alunos',
   async (id, { rejectWithValue }) => {
     try {

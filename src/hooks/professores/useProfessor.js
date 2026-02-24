@@ -1,17 +1,14 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  getProfessor,
-  getAulasProfessor,
-  getAlunosProfessor,
-} from '@/store/slices/professoresSlice';
+import { getProfessor } from '@/store/slices/professoresSlice';
 import { STATUS } from '@/constants';
 import { STATUS_ERROR } from '@/constants/statusError';
 
 export function useProfessor(id) {
   const dispatch = useDispatch();
-  const { current, aulas, alunos, message, status, statusError, action } =
-    useSelector(state => state.professores);
+  const { current, message, status, statusError, action } = useSelector(
+    state => state.professores
+  );
   const isAction = action === 'getProfessor';
   const isLoading =
     isAction && (status === STATUS.IDLE || status === STATUS.LOADING);
@@ -22,22 +19,13 @@ export function useProfessor(id) {
     !current;
 
   useEffect(() => {
-    if (id) {
-      dispatch(getProfessor(id));
-    }
+    if (id) dispatch(getProfessor(id));
   }, [dispatch, id]);
-
-  useEffect(() => {
-    if (id && current) {
-      dispatch(getAulasProfessor(id));
-      dispatch(getAlunosProfessor(id));
-    }
-  }, [dispatch, id, current]);
 
   return {
     professor: current,
-    aulas,
-    alunos,
+    aulas: current ? current.aulas : [],
+    alunos: current ? current.alunos : [],
     message,
     isLoading,
     isSuccess,
