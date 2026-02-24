@@ -2,18 +2,12 @@ import { renderHook } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
 import { useProfessor } from './useProfessor';
-import {
-  getProfessor,
-  getAulasProfessor,
-  getAlunosProfessor,
-} from '@/store/slices/professoresSlice';
+import { getProfessor } from '@/store/slices/professoresSlice';
 import { STATUS } from '@/constants';
 
 // Mock dos módulos
 jest.mock('@/store/slices/professoresSlice', () => ({
   getProfessor: jest.fn(),
-  getAulasProfessor: jest.fn(),
-  getAlunosProfessor: jest.fn(),
 }));
 
 jest.mock('@/constants', () => ({
@@ -56,28 +50,23 @@ describe('useProfessor', () => {
   beforeEach(() => {
     jest.clearAllMocks();
 
-    // Implementações dos actions para facilitar asserções
+    // Implementação do action para facilitar asserções
     getProfessor.mockImplementation(id => ({
       type: 'professores/getProfessor',
-      payload: id,
-    }));
-    getAulasProfessor.mockImplementation(id => ({
-      type: 'professores/getAulasProfessor',
-      payload: id,
-    }));
-    getAlunosProfessor.mockImplementation(id => ({
-      type: 'professores/getAlunosProfessor',
       payload: id,
     }));
 
     mockDispatch = jest.fn();
   });
 
-  it('dispatches getProfessor, getAulasProfessor and getAlunosProfessor when id is provided', () => {
+  it('dispatches getProfessor when id is provided', () => {
     const initialState = {
-      current: { id: 123, nome: 'Teste' },
-      aulas: [{ id: 1 }],
-      alunos: [{ id: 2 }],
+      current: {
+        id: 123,
+        nome: 'Teste',
+        aulas: [{ id: 1 }],
+        alunos: [{ id: 2 }],
+      },
       message: 'ok',
       status: STATUS.IDLE,
     };
@@ -90,14 +79,6 @@ describe('useProfessor', () => {
 
     expect(mockDispatch).toHaveBeenCalledWith({
       type: 'professores/getProfessor',
-      payload: 123,
-    });
-    expect(mockDispatch).toHaveBeenCalledWith({
-      type: 'professores/getAulasProfessor',
-      payload: 123,
-    });
-    expect(mockDispatch).toHaveBeenCalledWith({
-      type: 'professores/getAlunosProfessor',
       payload: 123,
     });
   });
@@ -115,9 +96,12 @@ describe('useProfessor', () => {
 
   it('returns correct shape and flags for different statuses', () => {
     const initialState = {
-      current: { id: 5, nome: 'Ana' },
-      aulas: [{ id: 11 }],
-      alunos: [{ id: 22 }],
+      current: {
+        id: 5,
+        nome: 'Ana',
+        aulas: [{ id: 11 }],
+        alunos: [{ id: 22 }],
+      },
       message: 'all good',
       status: STATUS.SUCCESS,
       action: 'getProfessor',
@@ -133,8 +117,8 @@ describe('useProfessor', () => {
 
     expect(successResult.current).toEqual({
       professor: initialState.current,
-      aulas: initialState.aulas,
-      alunos: initialState.alunos,
+      aulas: initialState.current.aulas,
+      alunos: initialState.current.alunos,
       message: initialState.message,
       isLoading: false,
       isSuccess: true,
