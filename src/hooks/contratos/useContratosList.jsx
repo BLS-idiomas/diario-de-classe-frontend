@@ -7,6 +7,7 @@ export function useContratosList({
   dataFormatter,
   handleDeleteContrato,
   readOnly = false,
+  isAdmin = false,
 }) {
   const columns = [
     {
@@ -93,6 +94,7 @@ export function useContratosList({
           <Link
             href={`/contratos/formulario?id=${contrato.id}&mode=edit`}
             className="btn-outline btn-outline-secondary"
+            hidden={!isAdmin}
           >
             <Pencil {...iconParams} stroke="gray" />
           </Link>
@@ -100,12 +102,13 @@ export function useContratosList({
           <button
             onClick={() => handleDeleteContrato(contrato.id)}
             className="btn-outline btn-outline-danger"
+            hidden={!isAdmin}
           >
             <Trash2 {...iconParams} stroke="red" />
           </button>
         </div>
       ),
     }));
-  }, [contratos, dataFormatter, handleDeleteContrato]);
+  }, [contratos, dataFormatter, handleDeleteContrato, isAdmin]);
   return { columns, data };
 }
