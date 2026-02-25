@@ -1,3 +1,15 @@
+# [1.2.0](https://github.com/BLS-idiomas/diario-de-classe-frontend/compare/v1.1.0...v1.2.0) (2026-02-25)
+
+### Bug Fixes
+
+- **BI-126:** Correção Erro na edição de aula ([3970687](https://github.com/BLS-idiomas/diario-de-classe-frontend/commit/39706877f4a7172b642100d89f3b66dabd94fbf2))
+- **BI-130:** Verificar permissão dos professores ([d20b046](https://github.com/BLS-idiomas/diario-de-classe-frontend/commit/d20b0461e5103b4fb56406c64c7f8a09171faaa0))
+- **BI-131:** Erro no logoff ([1bf346a](https://github.com/BLS-idiomas/diario-de-classe-frontend/commit/1bf346aa452b0a0eb0204d21ad25a8d30b1aa6fd))
+
+### Features
+
+- **BI-129:** Adição do nome do professor no login ([26d2109](https://github.com/BLS-idiomas/diario-de-classe-frontend/commit/26d21093a73755862dc546769d49e5aee6570ef4))
+
 # [1.1.0](https://github.com/BLS-idiomas/diario-de-classe-frontend/compare/v1.0.0...v1.1.0) (2026-02-24)
 
 ### Features
