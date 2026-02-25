@@ -9,11 +9,12 @@ import { useDeletarContrato } from '@/hooks/contratos/useDeletarContrato';
 import { useContratosList } from '@/hooks/contratos/useContratosList';
 
 export default function Contratos() {
-  const { currentUser } = useUserAuth();
+  const { currentUser, isAdmin } = useUserAuth();
   const { contratos, isLoading } = useContratos();
   const { handleDeleteContrato } = useDeletarContrato();
   const { dataFormatter } = useFormater();
   const { columns, data } = useContratosList({
+    isAdmin: isAdmin(),
     currentUser,
     contratos,
     readOnly: false,
@@ -25,11 +26,13 @@ export default function Contratos() {
     <>
       <PageTitle>Lista de Contratos</PageTitle>
 
-      <ButtonGroup>
-        <Link href="/contratos/formulario" className="btn btn-primary">
-          Novo contrato
-        </Link>
-      </ButtonGroup>
+      {isAdmin() && (
+        <ButtonGroup>
+          <Link href="/contratos/formulario" className="btn btn-primary">
+            Novo contrato
+          </Link>
+        </ButtonGroup>
+      )}
 
       <Table
         columns={columns}

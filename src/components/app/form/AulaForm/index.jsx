@@ -70,7 +70,6 @@ export const AulaForm = ({
         <FormGroup>
           <SelectField
             required
-            disabled={isEdit}
             htmlFor="idAluno"
             label="Aluno"
             placeholder="Selecione o aluno"
@@ -80,7 +79,6 @@ export const AulaForm = ({
           />
           <SelectField
             required
-            disabled={isEdit}
             htmlFor="idProfessor"
             label="Professor"
             placeholder="Selecione o professor"

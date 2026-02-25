@@ -177,7 +177,7 @@ describe('useLogin', () => {
 
   it('should handle successful login with complete data', () => {
     const mockData = {
-      user: { nome: 'João Silva', permissao: 'admin' },
+      user: { nome: 'João', sobrenome: 'Silva', permissao: 'admin' },
       configuracao: {
         duracaoAula: 60,
         tolerancia: 10,

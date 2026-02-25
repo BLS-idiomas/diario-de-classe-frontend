@@ -1,12 +1,12 @@
 import { useState } from 'react';
 
-export function useAlunoForm({ id = null, submit }) {
+export function useAlunoForm({ id = null, submit, criador = '' }) {
   const [formData, setFormData] = useState({
     nome: '',
     sobrenome: '',
     email: '',
     telefone: '',
-    criador: '',
+    criador: criador,
     material: '',
   });
 

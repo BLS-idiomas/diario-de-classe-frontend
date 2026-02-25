@@ -1,3 +1,9 @@
+# [1.1.0](https://github.com/BLS-idiomas/diario-de-classe-frontend/compare/v1.0.0...v1.1.0) (2026-02-24)
+
+### Features
+
+- add aluno and professor columns to aulas and contratos lists ([29b785d](https://github.com/BLS-idiomas/diario-de-classe-frontend/commit/29b785ddfe1ef0de8ddf6de4cad921a0032fd915))
+
 # 1.0.0 (2026-01-19)
 
 ### Bug Fixes
