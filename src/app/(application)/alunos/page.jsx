@@ -10,7 +10,7 @@ import { useUploadAlunos } from '@/hooks/alunos/useUploadAlunos';
 import { ButtonGroup, PageTitle, Table } from '@/components';
 
 export default function Alunos() {
-  const { currentUser } = useUserAuth();
+  const { currentUser, isAdmin } = useUserAuth();
   const { alunos, isLoading } = useAlunos();
   const { handleDeleteAluno } = useDeletarAluno();
   const { telefoneFormatter, dataFormatter } = useFormater();
@@ -33,7 +33,11 @@ export default function Alunos() {
           Novo aluno
         </Link>
 
-        <button className="btn btn-secondary" onClick={handleModalUpload}>
+        <button
+          className="btn btn-secondary"
+          onClick={handleModalUpload}
+          hidden={!isAdmin}
+        >
           Baixar lista de alunos
         </button>
       </ButtonGroup>

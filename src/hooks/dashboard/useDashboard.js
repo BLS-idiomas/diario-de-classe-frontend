@@ -28,13 +28,13 @@ export function useDashboard(currentUser) {
     () =>
       professores && professores.length > 0
         ? professores
-            .filter(professor => professor.id !== currentUser.id)
+            .filter(professor => professor.id !== currentUser?.id)
             .map(professor => ({
               label: makeEmailLabel(professor),
               value: professor.id,
             }))
         : [],
-    [professores, currentUser.id]
+    [professores, currentUser?.id]
   );
   const homeCardValues = useMemo(() => {
     const { totalAlunos, totalAulas, totalContratos } = data || {};

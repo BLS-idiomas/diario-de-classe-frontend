@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { useUserAuth } from '@/providers/UserAuthProvider';
 import { useNovoAluno } from '@/hooks/alunos/useNovoAluno';
 import { useAlunoForm } from '@/hooks/alunos/useAlunoForm';
 import {
@@ -12,9 +13,11 @@ import {
 } from '@/components';
 
 export default function NovoAluno() {
+  const { currentUser } = useUserAuth();
   const { message, errors, isLoading, isSubmitting, submit } = useNovoAluno();
   const { formData, isSenhaError, handleChange, handleSubmit } = useAlunoForm({
     submit,
+    criador: currentUser?.id,
   });
 
   return (
