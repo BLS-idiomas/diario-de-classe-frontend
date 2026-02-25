@@ -47,7 +47,7 @@ export function useLogin() {
   useEffect(() => {
     if (action === 'login' && status === STATUS.SUCCESS && data && data.user) {
       dispatch(clearStatus());
-      success(`Bem-vindo, ${data.user.nome}!`);
+      success(`Bem-vindo, ${data.user.nome} ${data.user.sobrenome}!`);
       authenticate({
         currentUser: data.user,
         duracaoAula: data.configuracao.duracaoAula,
