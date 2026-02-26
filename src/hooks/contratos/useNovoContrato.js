@@ -7,12 +7,7 @@ import {
   clearCurrent,
 } from '@/store/slices/contratosSlice';
 
-export function useNovoContrato({
-  successSubmit,
-  errorSubmit,
-  clearError,
-  setFormData,
-}) {
+export function useNovoContrato({ successSubmit, errorSubmit, clearError }) {
   const dispatch = useDispatch();
   const { status, message, errors, current, action } = useSelector(
     state => state.contratos
