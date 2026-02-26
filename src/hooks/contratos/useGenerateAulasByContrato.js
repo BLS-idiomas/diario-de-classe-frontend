@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { STATUS } from '@/constants';
 import {
@@ -8,25 +8,30 @@ import {
   generateAulas,
 } from '@/store/slices/contratosSlice';
 
-export function useGenerateAulasByContrato({
-  errorSubmit,
-  clearError,
-  setFormData,
-}) {
+export function useGenerateAulasByContrato({ errorSubmit, setFormData }) {
   const dispatch = useDispatch();
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { status, message, errors, extra, action } = useSelector(
     state => state.contratos
   );
 
   const generateAulasByContrato = formData => {
-    const id = formData.contratoId;
+    setIsSubmitting(true);
+    const diasAulas = formData.diasAulas
+      .filter(dia => dia.ativo)
+      .map(dia => ({
+        diaSemana: dia.diaSemana,
+        quantidadeAulas: dia.quantidadeAulas,
+        horaInicial: dia.horaInicial,
+        horaFinal: dia.horaFinal,
+      }));
     const dataToSend = {
-      dataInicio: formData.contrato?.dataInicio,
-      dataFim: formData.contrato?.dataTermino,
-      diasAulas: formData.currentDiasAulas,
+      dataInicio: formData.dataInicio,
+      dataFim: formData.dataTermino,
+      diasAulas: diasAulas,
     };
-    clearError();
-    dispatch(generateAulas({ id, data: dataToSend }));
+
+    dispatch(generateAulas({ data: dataToSend }));
   };
 
   useEffect(() => {
@@ -49,11 +54,13 @@ export function useGenerateAulasByContrato({
       } else if (status === STATUS.FAILED) {
         errorSubmit({ message, errors });
       }
+      setIsSubmitting(false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status, extra, action, message, errors]);
 
   return {
     generateAulasByContrato,
+    isSubmitting,
   };
 }

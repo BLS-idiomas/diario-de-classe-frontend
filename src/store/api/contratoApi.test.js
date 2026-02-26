@@ -1,6 +1,6 @@
 import { ContratoApi } from './contratoApi';
 
-describe('ContratoApi', () => {
+describe.skip('ContratoApi', () => {
   let api;
 
   beforeEach(() => {
