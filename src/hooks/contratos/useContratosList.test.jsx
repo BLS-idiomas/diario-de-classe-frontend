@@ -17,12 +17,14 @@ function TestComponent({
   dataFormatter,
   handleDeleteContrato,
   readOnly = false,
+  isAdmin = false,
 }) {
   const { columns, data } = useContratosList({
     contratos,
     dataFormatter,
     handleDeleteContrato,
     readOnly,
+    isAdmin,
   });
 
   return (
@@ -150,9 +152,7 @@ describe('useContratosList hook', () => {
     expect(viewLink).toBeInTheDocument();
 
     // Check edit link
-    const editLink = actions.querySelector(
-      'a[href="/contratos/formulario?id=123&mode=edit"]'
-    );
+    const editLink = actions.querySelector('a[href="/contratos/123/editar"]');
     expect(editLink).toBeInTheDocument();
 
     // Check delete button

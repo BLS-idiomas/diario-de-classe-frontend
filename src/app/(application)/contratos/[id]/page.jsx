@@ -47,7 +47,7 @@ export default function Contrato() {
         </Link>
 
         <Link
-          href={`/contratos/formulario/?id=${params.id}&mode=edit&backUrl=/contratos/${params.id}`}
+          href={`/contratos/${params.id}/editar`}
           className="btn btn-primary"
         >
           Editar

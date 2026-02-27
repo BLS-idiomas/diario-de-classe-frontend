@@ -20,5 +20,7 @@ export function useFormater() {
     return `${dia}/${mes}/${ano}`;
   };
 
-  return { telefoneFormatter, dataFormatter };
+  const formatForInput = iso => (iso ? iso.split('T')[0] : '');
+
+  return { telefoneFormatter, dataFormatter, formatForInput };
 }

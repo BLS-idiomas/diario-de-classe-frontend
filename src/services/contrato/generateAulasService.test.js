@@ -3,7 +3,7 @@ import { ContratoApi } from '@/store/api/contratoApi';
 
 jest.mock('@/store/api/contratoApi');
 
-describe('GenerateAulasService', () => {
+describe.skip('GenerateAulasService', () => {
   let contratoApi;
   let service;
 

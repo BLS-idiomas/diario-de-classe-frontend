@@ -25,8 +25,8 @@ export class ContratoApi extends AbstractEntityApi {
     return this.post(`${this.baseEndpoint}/${id}/aulas`, data);
   }
 
-  async generateAulas(id, data) {
-    return this.post(`${this.baseEndpoint}/${id}/aulas/generate`, data);
+  async generateAulas(data) {
+    return this.post(`${this.baseEndpoint}/aulas/generate`, data);
   }
 
   async validateContrato(id) {
