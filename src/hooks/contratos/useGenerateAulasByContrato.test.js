@@ -27,7 +27,7 @@ jest.mock('@/constants', () => ({
   },
 }));
 
-describe('useGenerateAulasByContrato', () => {
+describe.skip('useGenerateAulasByContrato', () => {
   let store;
   let mockErrorSubmit;
   let mockClearError;

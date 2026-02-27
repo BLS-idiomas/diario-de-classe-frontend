@@ -92,7 +92,7 @@ export function useContratosList({
           </Link>
 
           <Link
-            href={`/contratos/formulario?id=${contrato.id}&mode=edit`}
+            href={`/contratos/${contrato.id}/editar`}
             className="btn-outline btn-outline-secondary"
             hidden={!isAdmin}
           >
