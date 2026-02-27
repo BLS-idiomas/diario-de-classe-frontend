@@ -1,3 +1,9 @@
+## [1.3.1](https://github.com/BLS-idiomas/diario-de-classe-frontend/compare/v1.3.0...v1.3.1) (2026-02-27)
+
+### Bug Fixes
+
+- **AulaForm:** update label and placeholder for observation field ([f774e66](https://github.com/BLS-idiomas/diario-de-classe-frontend/commit/f774e6697fa6b321f33f049f82a56b794ed54de0))
+
 # [1.3.0](https://github.com/BLS-idiomas/diario-de-classe-frontend/compare/v1.2.0...v1.3.0) (2026-02-27)
 
 ### Bug Fixes
