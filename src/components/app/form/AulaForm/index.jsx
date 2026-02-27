@@ -151,9 +151,10 @@ export const AulaForm = ({
         </FormGroup>
 
         <TextAreaField
+          required
           htmlFor="observacao"
-          label="Observação"
-          placeholder="Digite a observação da aula"
+          label="Conteúdo/Observação"
+          placeholder="Digite o conteúdo da aula"
           maxLength={2000}
           onChange={handleChange}
           value={formData.observacao}
