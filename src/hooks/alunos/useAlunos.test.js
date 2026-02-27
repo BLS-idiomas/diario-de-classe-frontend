@@ -4,6 +4,7 @@ import { configureStore } from '@reduxjs/toolkit';
 import { useAlunos } from './useAlunos';
 import { getAlunos } from '@/store/slices/alunosSlice';
 import { STATUS } from '@/constants';
+import { makeEmailLabel } from '@/utils/makeEmailLabel';
 
 // Mock dos módulos
 jest.mock('@/store/slices/alunosSlice', () => ({
@@ -67,6 +68,7 @@ describe('useAlunos', () => {
       alunos: [],
       status: STATUS.IDLE,
       isLoading: true,
+      alunoOptions: [],
     });
   });
 
@@ -119,10 +121,16 @@ describe('useAlunos', () => {
     const wrapper = createWrapper(store);
     const { result } = renderHook(() => useAlunos(), { wrapper });
 
+    const expectedOptions = mockAlunos.map(a => ({
+      label: makeEmailLabel(a),
+      value: a.id,
+    }));
+
     expect(result.current).toEqual({
       alunos: mockAlunos,
       status: STATUS.SUCCESS,
       isLoading: false,
+      alunoOptions: expectedOptions,
     });
   });
 
@@ -141,6 +149,7 @@ describe('useAlunos', () => {
     expect(result.current.alunos).toEqual([]);
     expect(result.current.status).toBe(STATUS.SUCCESS);
     expect(result.current.isLoading).toBe(false);
+    expect(result.current.alunoOptions).toEqual([]);
   });
 
   it('should handle failed state correctly', () => {
@@ -188,6 +197,7 @@ describe('useAlunos', () => {
     expect(result.current.alunos).toBeUndefined();
     expect(result.current.status).toBeUndefined();
     expect(result.current.isLoading).toBe(false); // undefined é falsy, então nem IDLE nem LOADING
+    expect(result.current.alunoOptions).toEqual([]);
   });
 
   it('should return large list of alunos correctly', () => {
@@ -210,5 +220,6 @@ describe('useAlunos', () => {
 
     expect(result.current.alunos).toHaveLength(100);
     expect(result.current.isLoading).toBe(false);
+    expect(result.current.alunoOptions).toHaveLength(100);
   });
 });
