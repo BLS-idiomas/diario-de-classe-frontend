@@ -51,7 +51,6 @@ export function useContratoForm({ alunos, professores, submit }) {
     }));
   };
   const setInitialDiasAulas = (diasAulas = []) => {
-    console.log(diasAulas);
     const initialDiasAulas = [
       'SEGUNDA',
       'TERCA',
