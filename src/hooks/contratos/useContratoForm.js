@@ -50,6 +50,42 @@ export function useContratoForm({ alunos, professores, submit }) {
       aulas,
     }));
   };
+  const setInitialDiasAulas = (diasAulas = []) => {
+    console.log(diasAulas);
+    const initialDiasAulas = [
+      'SEGUNDA',
+      'TERCA',
+      'QUARTA',
+      'QUINTA',
+      'SEXTA',
+      'SABADO',
+      'DOMINGO',
+    ].map(dia => ({
+      diaSemana: dia,
+      ativo: false,
+      horaInicial: '',
+      horaFinal: '',
+      quantidadeAulas: 1,
+    }));
+
+    diasAulas ||= formData.currentDiasAulas;
+
+    if (diasAulas && diasAulas.length > 0) {
+      diasAulas.forEach(diaAtual => {
+        const initialDiaAula = initialDiasAulas.find(
+          dia => dia.diaSemana === diaAtual.diaSemana
+        );
+        if (initialDiaAula) {
+          initialDiaAula.ativo = true;
+          initialDiaAula.horaInicial = diaAtual.diaSemana;
+          initialDiaAula.horaFinal = diaAtual.diaSemana;
+          initialDiaAula.quantidadeAulas = diaAtual.diaSemana;
+        }
+      });
+    }
+
+    setDiasAulas(initialDiasAulas);
+  };
   // Handles
   const handleChange = e => {
     const { name, value } = e.target;
@@ -81,6 +117,7 @@ export function useContratoForm({ alunos, professores, submit }) {
   const handleAlunoChange = e => {
     const { value } = e.target;
     handleChange(e);
+    setInitialDiasAulas;
     setAluno(
       alunos.find(aluno => aluno.id.toString() === value.toString()) || null
     );
@@ -289,44 +326,16 @@ export function useContratoForm({ alunos, professores, submit }) {
   };
   // effects
   useEffect(() => {
-    const initialDiasAulas = [
-      'SEGUNDA',
-      'TERCA',
-      'QUARTA',
-      'QUINTA',
-      'SEXTA',
-      'SABADO',
-      'DOMINGO',
-    ].map(dia => ({
-      diaSemana: dia,
-      ativo: false,
-      horaInicial: '',
-      horaFinal: '',
-      quantidadeAulas: 1,
-    }));
-
-    if (formData.currentDiasAulas && formData.currentDiasAulas.length > 0) {
-      formData.currentDiasAulas.forEach(diaAtual => {
-        const initialDiaAula = initialDiasAulas.find(
-          dia => dia.diaSemana === diaAtual.diaSemana
-        );
-        if (initialDiaAula) {
-          initialDiaAula.ativo = true;
-          initialDiaAula.horaInicial = diaAtual.diaSemana;
-          initialDiaAula.horaFinal = diaAtual.diaSemana;
-          initialDiaAula.quantidadeAulas = diaAtual.diaSemana;
-        }
-      });
-    }
-
-    setDiasAulas(initialDiasAulas);
+    setInitialDiasAulas();
   }, []);
 
   return {
     formData,
+    setFormData,
+    setInitialDiasAulas,
+    getNewStepByFormData,
     handleChange,
     handleSubmit,
-    getNewStepByFormData,
     handleAlunoChange,
     handleProfessorChange,
     handleAtivoChange,
@@ -335,6 +344,5 @@ export function useContratoForm({ alunos, professores, submit }) {
     handleDeleteAula,
     handleEditAula,
     createAula,
-    setFormData,
   };
 }
