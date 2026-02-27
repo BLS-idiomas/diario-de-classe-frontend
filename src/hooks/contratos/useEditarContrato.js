@@ -10,7 +10,6 @@ import { useRouter } from 'next/navigation';
 import { useToast } from '@/providers/ToastProvider';
 
 export function useEditarContrato(contratoId) {
-  console.log('contratoId:', contratoId);
   const dispatch = useDispatch();
   const router = useRouter();
   const { success } = useToast();
