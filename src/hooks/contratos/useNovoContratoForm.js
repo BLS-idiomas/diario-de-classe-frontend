@@ -7,13 +7,10 @@ import { useNovoContrato } from './useNovoContrato';
 import { TIPO_AULA_LABEL } from '@/constants';
 import Swal from 'sweetalert2';
 
-export function useNovoContratoForm({ alunos, professores }) {
-  const router = useRouter();
+export function useNovoContratoForm({ alunos, professores, submit }) {
   const { currentUser, settings } = useUserAuth();
-  const { success, warning } = useToast();
   const { showForm, showSuccess } = useSweetAlert();
   const tempoAula = settings.duracaoAula || 0;
-  const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
     professorId: currentUser.id || null,
     professor: currentUser || null,
@@ -27,30 +24,7 @@ export function useNovoContratoForm({ alunos, professores }) {
     currentDiasAulas: [],
     aulas: [],
   });
-  const [errors, setErrors] = useState({
-    titleError: null,
-    formErrors: {},
-  });
 
-  const successSubmit = id => {
-    success('Contrato criado com sucesso!');
-    router.push(`/contratos/${id}`);
-    return;
-  };
-  const errorSubmit = ({ message, errors }) => {
-    setErrors({ titleError: message, formErrors: errors });
-    setIsLoading(false);
-    warning('Existem erros no formulário. Verifique e tente novamente.');
-  };
-  const clearError = () => {
-    setErrors({ titleError: null, formErrors: {} });
-  };
-
-  const { submit } = useNovoContrato({
-    successSubmit,
-    errorSubmit,
-    clearError,
-  });
   // Sets
   const setAluno = aluno => {
     setFormData(prev => ({
@@ -86,8 +60,23 @@ export function useNovoContratoForm({ alunos, professores }) {
   };
   const handleSubmit = e => {
     e.preventDefault();
-    setIsLoading(true);
-    submit(formData);
+    const dataToSend = {
+      idAluno: formData.alunoId,
+      idProfessor: formData.professorId,
+      dataInicio: formData.dataInicio,
+      dataTermino: formData.dataTermino,
+      diasAulas: formData.diasAulas,
+      aulas: formData.aulas,
+    };
+
+    formData.diasAulas.forEach(diaAula => {
+      dataToSend[diaAula.diaSemana] = {
+        quantidadeAulas: diaAula.quantidadeAulas,
+        horaInicial: diaAula.horaInicial,
+        ativo: diaAula.ativo,
+      };
+    });
+    submit(dataToSend);
   };
   const handleAlunoChange = e => {
     const { value } = e.target;
@@ -334,9 +323,7 @@ export function useNovoContratoForm({ alunos, professores }) {
   }, []);
 
   return {
-    isLoading,
     formData,
-    errors,
     handleChange,
     handleSubmit,
     getNewStepByFormData,
@@ -348,7 +335,6 @@ export function useNovoContratoForm({ alunos, professores }) {
     handleDeleteAula,
     handleEditAula,
     createAula,
-    errorSubmit,
     setFormData,
   };
 }
