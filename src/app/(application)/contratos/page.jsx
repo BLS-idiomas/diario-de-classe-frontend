@@ -28,7 +28,7 @@ export default function Contratos() {
 
       {isAdmin() && (
         <ButtonGroup>
-          <Link href="/contratos/formulario" className="btn btn-primary">
+          <Link href="/contratos/novo" className="btn btn-primary">
             Novo contrato
           </Link>
         </ButtonGroup>

@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { STATUS } from '@/constants';
 import { getProfessores } from '@/store/slices/professoresSlice';
+import { makeEmailLabel } from '@/utils/makeEmailLabel';
 
 export function useProfessores() {
   const dispatch = useDispatch();
@@ -15,9 +16,18 @@ export function useProfessores() {
     action === 'getProfessores' &&
     (status === STATUS.IDLE || status === STATUS.LOADING);
 
+  const professorOptions =
+    list && list.length > 0
+      ? list.map(professor => ({
+          label: makeEmailLabel(professor),
+          value: professor.id,
+        }))
+      : [];
+
   return {
     professores: list,
     status,
     isLoading,
+    professorOptions,
   };
 }
