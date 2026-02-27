@@ -41,9 +41,9 @@ export const ContratoForm = ({
   // TODO refazer a forma que HORA FINAL das aulas da semana
   // TODO calcular hora final igual aos outros no modaç
   // TODO Quando adicionar uma aula precisa reordenar as aulas por data
-  const [showSubmit, setShowSubmit] = useState(true);
+  const [showSubmit, setShowSubmit] = useState(false);
   const [showDiasAulas, setShowDiasAulas] = useState(false);
-  const [showAulas, setShowAulas] = useState(true);
+  const [showAulas, setShowAulas] = useState(false);
 
   useEffect(() => {
     const { professor, aluno, dataInicio, dataTermino, diasAulas, aulas } =
