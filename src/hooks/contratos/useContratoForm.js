@@ -7,7 +7,7 @@ import { useNovoContrato } from './useNovoContrato';
 import { TIPO_AULA_LABEL } from '@/constants';
 import Swal from 'sweetalert2';
 
-export function useNovoContratoForm({ alunos, professores, submit }) {
+export function useContratoForm({ alunos, professores, submit }) {
   const { currentUser, settings } = useUserAuth();
   const { showForm, showSuccess } = useSweetAlert();
   const tempoAula = settings.duracaoAula || 0;

@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useAlunos } from '@/hooks/alunos/useAlunos';
 import { useProfessores } from '@/hooks/professores/useProfessores';
 import { useFormater } from '@/hooks/useFormater';
-import { useNovoContratoForm } from '@/hooks/contratos/useNovoContratoForm';
+import { useContratoForm } from '@/hooks/contratos/useContratoForm';
 import { useGenerateAulasByContrato } from '@/hooks/contratos/useGenerateAulasByContrato';
 import { useNovoContrato } from '@/hooks/contratos/useNovoContrato';
 import {
@@ -33,7 +33,7 @@ export default function NovoContrato() {
     handleEditAula,
     createAula,
     setFormData,
-  } = useNovoContratoForm({ alunos, professores, submit });
+  } = useContratoForm({ alunos, professores, submit });
   const { generateAulasByContrato, isSubmitting } = useGenerateAulasByContrato({
     setFormData,
   });
