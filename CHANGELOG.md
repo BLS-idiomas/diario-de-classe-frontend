@@ -1,3 +1,29 @@
+# [1.3.0](https://github.com/BLS-idiomas/diario-de-classe-frontend/compare/v1.2.0...v1.3.0) (2026-02-27)
+
+### Bug Fixes
+
+- Add blocked prop to ButtonsFields and update button disabled logic ([8db5c5e](https://github.com/BLS-idiomas/diario-de-classe-frontend/commit/8db5c5ef7754ccd3a4a4a767b705566f96f51d0f))
+- **BI-124:** Update link for creating new contract ([25413c8](https://github.com/BLS-idiomas/diario-de-classe-frontend/commit/25413c8bcea63244206cd4bda2139b890ba2aa28))
+- Refactor generateAulas handling to remove id parameter and update related tests ([2699cc6](https://github.com/BLS-idiomas/diario-de-classe-frontend/commit/2699cc6145fb75fbbbcfc840455e06fd8cf8e0c0))
+- remove debug log for contratoId in useEditarContrato hook ([a76b3b7](https://github.com/BLS-idiomas/diario-de-classe-frontend/commit/a76b3b7b19d518a5cf08f664ed5d350c2c1f2ac4))
+- standardize quotes for node-version in release workflow ([73b34c6](https://github.com/BLS-idiomas/diario-de-classe-frontend/commit/73b34c69d680bf04dde4eb3aadcfa2ef02b94211))
+- update edit contract links to use cleaner URL structure ([6942be9](https://github.com/BLS-idiomas/diario-de-classe-frontend/commit/6942be9a9be3ee5dbbcef7be34ff05e05279b0c5))
+- update initial state of showSubmit and showAulas to false in ContratoForm ([754869b](https://github.com/BLS-idiomas/diario-de-classe-frontend/commit/754869bb447036e0a71a70a4ff5a4d0f007fb738))
+
+### Features
+
+- add alunoOptions and professorOptions to useAlunos and useProfessores hooks for enhanced data handling ([76c44b4](https://github.com/BLS-idiomas/diario-de-classe-frontend/commit/76c44b44fe9b314304d04ab76d2eac57fea1da43))
+- Add alunoOptions and professorOptions to useAlunos and useProfessores hooks for enhanced data handling ([dd0bd04](https://github.com/BLS-idiomas/diario-de-classe-frontend/commit/dd0bd0427c2dc784a9f4288a9cf42dd72ec119b5))
+- add formatForInput function to useFormater for improved date handling ([fa5ec59](https://github.com/BLS-idiomas/diario-de-classe-frontend/commit/fa5ec59a87b3120b07b23f5790aa53e8f61e4c47))
+- Add NovoContrato component for contract creation with form handling and aula generation ([e0176fb](https://github.com/BLS-idiomas/diario-de-classe-frontend/commit/e0176fbf78a6674d7b47483ec7b2159d50748d4c))
+- Add useEditarContrato hook for managing contract editing functionality ([3603d62](https://github.com/BLS-idiomas/diario-de-classe-frontend/commit/3603d628513b0c95c9883c8584f852ced6913876))
+- implement EditarContrato component for contract editing functionality ([4121846](https://github.com/BLS-idiomas/diario-de-classe-frontend/commit/412184639c09ce2452003560b57f171b3550ce27))
+- Implement setInitialDiasAulas function for managing weekly class days in useContratoForm ([cfde963](https://github.com/BLS-idiomas/diario-de-classe-frontend/commit/cfde9630a7a85e785f75a49ca6dec21e56a6b514))
+- Implement useNovoContrato hook for contract creation ([1fcd406](https://github.com/BLS-idiomas/diario-de-classe-frontend/commit/1fcd406f67abfe27b8ecbc2b6d1dd4b579105518))
+- Refactor NovoContrato component and create ContratoForm for improved form handling and separation of concerns ([acaeafe](https://github.com/BLS-idiomas/diario-de-classe-frontend/commit/acaeafe7456c0e8a15649445b3f83c4b18bc0fde))
+- Refactor useNovoContrato to simplify parameters and add useNovoContratoForm for contract management ([6fea2fd](https://github.com/BLS-idiomas/diario-de-classe-frontend/commit/6fea2fdbe0d9b817e9bbbd1e69fce3b4897e81ef))
+- Replace useNovoContratoForm with useContratoForm for improved form handling in NovoContrato component ([182cc52](https://github.com/BLS-idiomas/diario-de-classe-frontend/commit/182cc52da63f774a5cea0e73327a51cc14312a6a))
+
 # [1.2.0](https://github.com/BLS-idiomas/diario-de-classe-frontend/compare/v1.1.0...v1.2.0) (2026-02-25)
 
 ### Bug Fixes
