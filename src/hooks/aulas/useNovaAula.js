@@ -30,7 +30,7 @@ export function useNovaAula() {
       dispatch(clearCurrent());
       dispatch(clearStatus());
       success('Aula criado com sucesso!');
-      router.push('/aulas');
+      router.push(`/aulas/${current.id}`);
     }
   }, [status, router, success, current, action, dispatch]);
 

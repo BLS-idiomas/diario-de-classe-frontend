@@ -38,7 +38,7 @@ export function useEditarAluno(alunoId) {
       dispatch(clearCurrent());
       dispatch(clearStatus());
       success('Operação realizada com sucesso!');
-      router.push('/alunos');
+      router.push(`/alunos/${current.id}`);
     }
   }, [status, router, success, current, action, dispatch]);
 

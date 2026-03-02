@@ -30,7 +30,7 @@ export function useNovoProfessor() {
       dispatch(clearCurrent());
       dispatch(clearStatus());
       success('Professor criado com sucesso!');
-      router.push('/professores');
+      router.push(`/professores/${current.id}`);
     }
   }, [status, router, success, current, action, dispatch]);
 

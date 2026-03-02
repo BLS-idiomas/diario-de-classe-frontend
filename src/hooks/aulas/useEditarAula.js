@@ -36,7 +36,7 @@ export function useEditarAula(aulaId, backUrl = null) {
       dispatch(clearCurrent());
       dispatch(clearStatus());
       success('Operação realizada com sucesso!');
-      router.push(backUrl || '/aulas');
+      router.push(backUrl || `/aulas/${current.id}`);
     }
   }, [status, router, success, current, action, dispatch, backUrl]);
 

@@ -36,7 +36,7 @@ export function useEditarProfessor(professorId) {
       dispatch(clearCurrent());
       dispatch(clearStatus());
       success('Operação realizada com sucesso!');
-      router.push('/professores');
+      router.push(`/professores/${current.id}`);
     }
   }, [status, router, success, current, action, dispatch]);
 

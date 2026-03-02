@@ -30,7 +30,7 @@ export function useNovoAluno() {
       dispatch(clearCurrent());
       dispatch(clearStatus());
       success('Aluno criado com sucesso!');
-      router.push('/alunos');
+      router.push(`/alunos/${current.id}`);
     }
   }, [status, router, success, current, action, dispatch]);
 
