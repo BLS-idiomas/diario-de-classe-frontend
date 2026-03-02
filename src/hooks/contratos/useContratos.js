@@ -6,6 +6,7 @@ import { getContratos } from '@/store/slices/contratosSlice';
 export function useContratos() {
   const dispatch = useDispatch();
   const { list, status, action } = useSelector(state => state.contratos);
+  const searchContratos = query => dispatch(getContratos({ q: query }));
 
   useEffect(() => {
     dispatch(getContratos());
@@ -19,5 +20,6 @@ export function useContratos() {
     contratos: list,
     status,
     isLoading,
+    searchContratos,
   };
 }

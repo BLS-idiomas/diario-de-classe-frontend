@@ -69,6 +69,7 @@ describe('useProfessores', () => {
       status: STATUS.IDLE,
       isLoading: true,
       professorOptions: [],
+      searchProfessores: expect.any(Function),
     });
   });
 
@@ -129,6 +130,7 @@ describe('useProfessores', () => {
       status: STATUS.SUCCESS,
       isLoading: false,
       professorOptions: expectedOptions,
+      searchProfessores: expect.any(Function),
     });
   });
 
@@ -193,5 +195,40 @@ describe('useProfessores', () => {
     expect(result.current.status).toBeUndefined();
     expect(result.current.isLoading).toBe(false); // undefined é falsy, então nem IDLE nem LOADING
     expect(result.current.professorOptions).toEqual([]);
+  });
+
+  it('should return searchProfessores function', () => {
+    const initialState = {
+      list: [],
+      status: STATUS.IDLE,
+      action: 'getProfessores',
+    };
+    const store = createMockStore(initialState);
+    store.dispatch = mockDispatch;
+
+    const wrapper = createWrapper(store);
+    const { result } = renderHook(() => useProfessores(), { wrapper });
+
+    expect(result.current.searchProfessores).toBeDefined();
+    expect(typeof result.current.searchProfessores).toBe('function');
+  });
+
+  it('should dispatch getProfessores with query when searchProfessores is called', () => {
+    const initialState = {
+      list: [],
+      status: STATUS.IDLE,
+      action: 'getProfessores',
+    };
+    const store = createMockStore(initialState);
+    store.dispatch = mockDispatch;
+
+    const wrapper = createWrapper(store);
+    const { result } = renderHook(() => useProfessores(), { wrapper });
+
+    result.current.searchProfessores('search term');
+
+    expect(mockDispatch).toHaveBeenCalledWith(
+      getProfessores({ q: 'search term' })
+    );
   });
 });

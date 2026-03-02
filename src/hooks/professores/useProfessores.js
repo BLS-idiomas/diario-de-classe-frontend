@@ -7,6 +7,7 @@ import { makeEmailLabel } from '@/utils/makeEmailLabel';
 export function useProfessores() {
   const dispatch = useDispatch();
   const { list, status, action } = useSelector(state => state.professores);
+  const searchProfessores = query => dispatch(getProfessores({ q: query }));
 
   useEffect(() => {
     dispatch(getProfessores());
@@ -29,5 +30,6 @@ export function useProfessores() {
     status,
     isLoading,
     professorOptions,
+    searchProfessores,
   };
 }

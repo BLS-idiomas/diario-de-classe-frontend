@@ -281,4 +281,37 @@ describe('useContratos', () => {
     expect(result.current.contratos[0].nomeAluno).toBe('João Silva');
     expect(result.current.contratos[0].nomeProfessor).toBe('Maria Santos');
   });
+
+  it('should return searchContratos function', () => {
+    const store = createMockStore({
+      list: [],
+      status: STATUS.IDLE,
+    });
+    store.dispatch = mockDispatch;
+
+    const { result } = renderHook(() => useContratos(), {
+      wrapper: createWrapper(store),
+    });
+
+    expect(result.current.searchContratos).toBeDefined();
+    expect(typeof result.current.searchContratos).toBe('function');
+  });
+
+  it('should dispatch getContratos with query when searchContratos is called', () => {
+    const store = createMockStore({
+      list: [],
+      status: STATUS.IDLE,
+    });
+    store.dispatch = mockDispatch;
+
+    const { result } = renderHook(() => useContratos(), {
+      wrapper: createWrapper(store),
+    });
+
+    result.current.searchContratos('contrato search');
+
+    expect(mockDispatch).toHaveBeenCalledWith(
+      getContratos({ q: 'contrato search' })
+    );
+  });
 });

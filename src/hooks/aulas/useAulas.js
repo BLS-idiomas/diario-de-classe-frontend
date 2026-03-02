@@ -6,6 +6,7 @@ import { getAulas } from '@/store/slices/aulasSlice';
 export function useAulas() {
   const dispatch = useDispatch();
   const { list, status, action } = useSelector(state => state.aulas);
+  const searchAulas = query => dispatch(getAulas({ q: query }));
 
   useEffect(() => {
     dispatch(getAulas());
@@ -19,5 +20,6 @@ export function useAulas() {
     aulas: list,
     status,
     isLoading,
+    searchAulas,
   };
 }

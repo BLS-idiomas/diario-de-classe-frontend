@@ -69,6 +69,7 @@ describe('useAlunos', () => {
       status: STATUS.IDLE,
       isLoading: true,
       alunoOptions: [],
+      searchAlunos: expect.any(Function),
     });
   });
 
@@ -131,6 +132,7 @@ describe('useAlunos', () => {
       status: STATUS.SUCCESS,
       isLoading: false,
       alunoOptions: expectedOptions,
+      searchAlunos: expect.any(Function),
     });
   });
 
@@ -221,5 +223,38 @@ describe('useAlunos', () => {
     expect(result.current.alunos).toHaveLength(100);
     expect(result.current.isLoading).toBe(false);
     expect(result.current.alunoOptions).toHaveLength(100);
+  });
+
+  it('should return searchAlunos function', () => {
+    const initialState = {
+      list: [],
+      status: STATUS.IDLE,
+      action: 'getAlunos',
+    };
+    const store = createMockStore(initialState);
+    store.dispatch = mockDispatch;
+
+    const wrapper = createWrapper(store);
+    const { result } = renderHook(() => useAlunos(), { wrapper });
+
+    expect(result.current.searchAlunos).toBeDefined();
+    expect(typeof result.current.searchAlunos).toBe('function');
+  });
+
+  it('should dispatch getAlunos with query when searchAlunos is called', () => {
+    const initialState = {
+      list: [],
+      status: STATUS.IDLE,
+      action: 'getAlunos',
+    };
+    const store = createMockStore(initialState);
+    store.dispatch = mockDispatch;
+
+    const wrapper = createWrapper(store);
+    const { result } = renderHook(() => useAlunos(), { wrapper });
+
+    result.current.searchAlunos('test query');
+
+    expect(mockDispatch).toHaveBeenCalledWith(getAlunos({ q: 'test query' }));
   });
 });

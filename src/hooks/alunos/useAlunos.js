@@ -7,6 +7,8 @@ import { makeEmailLabel } from '@/utils/makeEmailLabel';
 export function useAlunos() {
   const dispatch = useDispatch();
   const { list, status, action } = useSelector(state => state.alunos);
+  const searchAlunos = query => dispatch(getAlunos({ q: query }));
+
   const alunoOptions =
     list && list.length > 0
       ? list.map(aluno => ({
@@ -28,5 +30,6 @@ export function useAlunos() {
     status,
     isLoading,
     alunoOptions,
+    searchAlunos,
   };
 }
