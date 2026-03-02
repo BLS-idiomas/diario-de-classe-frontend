@@ -69,7 +69,7 @@ describe('useAlunos', () => {
       status: STATUS.IDLE,
       isLoading: true,
       alunoOptions: [],
-      searchAlunos: expect.any(Function),
+      searchParams: expect.any(Function),
     });
   });
 
@@ -132,7 +132,7 @@ describe('useAlunos', () => {
       status: STATUS.SUCCESS,
       isLoading: false,
       alunoOptions: expectedOptions,
-      searchAlunos: expect.any(Function),
+      searchParams: expect.any(Function),
     });
   });
 
@@ -225,7 +225,7 @@ describe('useAlunos', () => {
     expect(result.current.alunoOptions).toHaveLength(100);
   });
 
-  it('should return searchAlunos function', () => {
+  it('should return searchParams function', () => {
     const initialState = {
       list: [],
       status: STATUS.IDLE,
@@ -237,11 +237,11 @@ describe('useAlunos', () => {
     const wrapper = createWrapper(store);
     const { result } = renderHook(() => useAlunos(), { wrapper });
 
-    expect(result.current.searchAlunos).toBeDefined();
-    expect(typeof result.current.searchAlunos).toBe('function');
+    expect(result.current.searchParams).toBeDefined();
+    expect(typeof result.current.searchParams).toBe('function');
   });
 
-  it('should dispatch getAlunos with query when searchAlunos is called', () => {
+  it('should dispatch getAlunos with query when searchParams is called', () => {
     const initialState = {
       list: [],
       status: STATUS.IDLE,
@@ -253,7 +253,7 @@ describe('useAlunos', () => {
     const wrapper = createWrapper(store);
     const { result } = renderHook(() => useAlunos(), { wrapper });
 
-    result.current.searchAlunos('test query');
+    result.current.searchParams('test query');
 
     expect(mockDispatch).toHaveBeenCalledWith(getAlunos({ q: 'test query' }));
   });

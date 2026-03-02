@@ -69,7 +69,7 @@ describe('useProfessores', () => {
       status: STATUS.IDLE,
       isLoading: true,
       professorOptions: [],
-      searchProfessores: expect.any(Function),
+      searchParams: expect.any(Function),
     });
   });
 
@@ -130,7 +130,7 @@ describe('useProfessores', () => {
       status: STATUS.SUCCESS,
       isLoading: false,
       professorOptions: expectedOptions,
-      searchProfessores: expect.any(Function),
+      searchParams: expect.any(Function),
     });
   });
 
@@ -197,7 +197,7 @@ describe('useProfessores', () => {
     expect(result.current.professorOptions).toEqual([]);
   });
 
-  it('should return searchProfessores function', () => {
+  it('should return searchParams function', () => {
     const initialState = {
       list: [],
       status: STATUS.IDLE,
@@ -209,11 +209,11 @@ describe('useProfessores', () => {
     const wrapper = createWrapper(store);
     const { result } = renderHook(() => useProfessores(), { wrapper });
 
-    expect(result.current.searchProfessores).toBeDefined();
-    expect(typeof result.current.searchProfessores).toBe('function');
+    expect(result.current.searchParams).toBeDefined();
+    expect(typeof result.current.searchParams).toBe('function');
   });
 
-  it('should dispatch getProfessores with query when searchProfessores is called', () => {
+  it('should dispatch getProfessores with query when searchParams is called', () => {
     const initialState = {
       list: [],
       status: STATUS.IDLE,
@@ -225,7 +225,7 @@ describe('useProfessores', () => {
     const wrapper = createWrapper(store);
     const { result } = renderHook(() => useProfessores(), { wrapper });
 
-    result.current.searchProfessores('search term');
+    result.current.searchParams('search term');
 
     expect(mockDispatch).toHaveBeenCalledWith(
       getProfessores({ q: 'search term' })

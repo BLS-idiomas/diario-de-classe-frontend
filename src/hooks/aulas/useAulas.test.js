@@ -8,7 +8,7 @@ jest.mock('react-redux', () => ({
   useSelector: jest.fn(),
 }));
 jest.mock('@/store/slices/aulasSlice', () => ({
-  getAulas: jest.fn((...args) => ({ type: 'getAulas', ...args[0] })),
+  getAulas: jest.fn(() => ({ type: 'getAulas' })),
 }));
 
 const mockDispatch = jest.fn();
@@ -37,24 +37,26 @@ describe('useAulas', () => {
     expect(result.current.isLoading).toBe(false);
   });
 
-  it('should return searchAulas function', () => {
+  it('should return searchParams function', () => {
     useSelector.mockImplementation(cb =>
       cb({ aulas: { list: [], status: 'IDLE' } })
     );
     const { result } = renderHook(() => useAulas());
 
-    expect(result.current.searchAulas).toBeDefined();
-    expect(typeof result.current.searchAulas).toBe('function');
+    expect(result.current.searchParams).toBeDefined();
+    expect(typeof result.current.searchParams).toBe('function');
   });
 
-  it('should dispatch getAulas with query when searchAulas is called', () => {
+  it('should dispatch getAulas with query when searchParams is called', () => {
     useSelector.mockImplementation(cb =>
       cb({ aulas: { list: [], status: 'IDLE' } })
     );
     const { result } = renderHook(() => useAulas());
 
-    result.current.searchAulas('classroom search');
+    result.current.searchParams('classroom search');
 
-    expect(getAulas).toHaveBeenCalledWith({ q: 'classroom search' });
+    expect(mockDispatch).toHaveBeenCalledWith(
+      getAulas({ q: 'classroom search' })
+    );
   });
 });

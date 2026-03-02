@@ -3,11 +3,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import { STATUS } from '@/constants';
 import { getProfessores } from '@/store/slices/professoresSlice';
 import { makeEmailLabel } from '@/utils/makeEmailLabel';
+import { searchFunction } from '@/utils/searchFunction';
 
 export function useProfessores() {
   const dispatch = useDispatch();
   const { list, status, action } = useSelector(state => state.professores);
-  const searchProfessores = query => dispatch(getProfessores({ q: query }));
+  const searchParams = query =>
+    searchFunction({ dispatch, query, perform: getProfessores });
 
   useEffect(() => {
     dispatch(getProfessores());
@@ -30,6 +32,6 @@ export function useProfessores() {
     status,
     isLoading,
     professorOptions,
-    searchProfessores,
+    searchParams,
   };
 }

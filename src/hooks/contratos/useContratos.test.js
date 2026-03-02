@@ -68,6 +68,8 @@ describe('useContratos', () => {
     expect(result.current.contratos).toEqual([]);
     expect(result.current.status).toBe(STATUS.IDLE);
     expect(result.current.isLoading).toBe(true);
+    expect(result.current.searchParams).toBeDefined();
+    expect(typeof result.current.searchParams).toBe('function');
   });
 
   it('should dispatch getContratos on mount', () => {
@@ -282,7 +284,7 @@ describe('useContratos', () => {
     expect(result.current.contratos[0].nomeProfessor).toBe('Maria Santos');
   });
 
-  it('should return searchContratos function', () => {
+  it('should return searchParams function', () => {
     const store = createMockStore({
       list: [],
       status: STATUS.IDLE,
@@ -293,11 +295,11 @@ describe('useContratos', () => {
       wrapper: createWrapper(store),
     });
 
-    expect(result.current.searchContratos).toBeDefined();
-    expect(typeof result.current.searchContratos).toBe('function');
+    expect(result.current.searchParams).toBeDefined();
+    expect(typeof result.current.searchParams).toBe('function');
   });
 
-  it('should dispatch getContratos with query when searchContratos is called', () => {
+  it('should dispatch getContratos with query when searchParams is called', () => {
     const store = createMockStore({
       list: [],
       status: STATUS.IDLE,
@@ -308,7 +310,7 @@ describe('useContratos', () => {
       wrapper: createWrapper(store),
     });
 
-    result.current.searchContratos('contrato search');
+    result.current.searchParams('contrato search');
 
     expect(mockDispatch).toHaveBeenCalledWith(
       getContratos({ q: 'contrato search' })

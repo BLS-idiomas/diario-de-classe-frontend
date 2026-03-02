@@ -2,11 +2,13 @@ import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { STATUS } from '@/constants';
 import { getAulas } from '@/store/slices/aulasSlice';
+import { searchFunction } from '@/utils/searchFunction';
 
 export function useAulas() {
   const dispatch = useDispatch();
   const { list, status, action } = useSelector(state => state.aulas);
-  const searchAulas = query => dispatch(getAulas({ q: query }));
+  const searchParams = query =>
+    searchFunction({ dispatch, query, perform: getAulas });
 
   useEffect(() => {
     dispatch(getAulas());
@@ -20,6 +22,6 @@ export function useAulas() {
     aulas: list,
     status,
     isLoading,
-    searchAulas,
+    searchParams,
   };
 }

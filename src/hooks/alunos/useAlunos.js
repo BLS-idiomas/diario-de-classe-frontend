@@ -3,11 +3,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import { STATUS } from '@/constants';
 import { getAlunos } from '@/store/slices/alunosSlice';
 import { makeEmailLabel } from '@/utils/makeEmailLabel';
+import { searchFunction } from '@/utils/searchFunction';
 
 export function useAlunos() {
   const dispatch = useDispatch();
   const { list, status, action } = useSelector(state => state.alunos);
-  const searchAlunos = query => dispatch(getAlunos({ q: query }));
+  const searchParams = query =>
+    searchFunction({ dispatch, query, perform: getAlunos });
 
   const alunoOptions =
     list && list.length > 0
@@ -30,6 +32,6 @@ export function useAlunos() {
     status,
     isLoading,
     alunoOptions,
-    searchAlunos,
+    searchParams,
   };
 }
