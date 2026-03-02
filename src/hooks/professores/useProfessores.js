@@ -5,12 +5,11 @@ import { getProfessores } from '@/store/slices/professoresSlice';
 import { makeEmailLabel } from '@/utils/makeEmailLabel';
 import { searchFunction } from '@/utils/searchFunction';
 
-export function useProfessores() {
+export function useProfessores(currentUser = null) {
   const dispatch = useDispatch();
   const { list, status, action } = useSelector(state => state.professores);
   const searchParams = query =>
     searchFunction({ dispatch, query, perform: getProfessores });
-
   useEffect(() => {
     dispatch(getProfessores());
   }, [dispatch]);
@@ -21,10 +20,12 @@ export function useProfessores() {
 
   const professorOptions =
     list && list.length > 0
-      ? list.map(professor => ({
-          label: makeEmailLabel(professor),
-          value: professor.id,
-        }))
+      ? list
+          .filter(professor => professor.id !== currentUser?.id)
+          .map(professor => ({
+            label: makeEmailLabel(professor),
+            value: professor.id,
+          }))
       : [];
 
   return {
