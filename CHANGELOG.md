@@ -1,3 +1,14 @@
+# [1.4.0](https://github.com/BLS-idiomas/diario-de-classe-frontend/compare/v1.3.1...v1.4.0) (2026-03-02)
+
+### Features
+
+- add search functions inside hooks ([c912965](https://github.com/BLS-idiomas/diario-de-classe-frontend/commit/c91296559964d6b0932a0153213b746586a09f42))
+- add SearchForm component with tests for input behavior ([4892f4b](https://github.com/BLS-idiomas/diario-de-classe-frontend/commit/4892f4b497cbf7102d7e2459deb9bedc115aab0d))
+- add searchFunction utility and corresponding tests ([8bcdbc4](https://github.com/BLS-idiomas/diario-de-classe-frontend/commit/8bcdbc4dcf46cf1aa0dc9a16ec90fe93cc66ce82))
+- add seathc component ([753bf67](https://github.com/BLS-idiomas/diario-de-classe-frontend/commit/753bf6799b42b4623ec8258f16dd14dbfdfb9282))
+- refactor search functions to use searchFunction utility in hooks ([4daaaf4](https://github.com/BLS-idiomas/diario-de-classe-frontend/commit/4daaaf4c78b1cdf241f84d1f9ca718e202f295b8))
+- update usDashboard hook ([8dae386](https://github.com/BLS-idiomas/diario-de-classe-frontend/commit/8dae3861659500918947375e7a5a6eb8c7b1c8a0))
+
 ## [1.3.1](https://github.com/BLS-idiomas/diario-de-classe-frontend/compare/v1.3.0...v1.3.1) (2026-02-27)
 
 ### Bug Fixes
