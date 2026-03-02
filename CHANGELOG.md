@@ -1,3 +1,9 @@
+## [1.4.1](https://github.com/BLS-idiomas/diario-de-classe-frontend/compare/v1.4.0...v1.4.1) (2026-03-02)
+
+### Bug Fixes
+
+- redicrect adjust ([85571c2](https://github.com/BLS-idiomas/diario-de-classe-frontend/commit/85571c2c01d2afa5d2daef9fa138e9563a1011f7))
+
 # [1.4.0](https://github.com/BLS-idiomas/diario-de-classe-frontend/compare/v1.3.1...v1.4.0) (2026-03-02)
 
 ### Features
