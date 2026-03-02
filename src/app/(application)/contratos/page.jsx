@@ -26,20 +26,20 @@ export default function Contratos() {
     <>
       <PageTitle>Lista de Contratos</PageTitle>
 
-      <div className="lg:grid lg:grid-cols-2 gap-4">
-        {isAdmin() && (
-          <ButtonGroup>
-            <Link href="/contratos/novo" className="btn btn-primary">
-              Novo contrato
-            </Link>
-          </ButtonGroup>
-        )}
+      {/* <div className="lg:grid lg:grid-cols-2 gap-4"> */}
+      {isAdmin() && (
+        <ButtonGroup>
+          <Link href="/contratos/novo" className="btn btn-primary">
+            Novo contrato
+          </Link>
+        </ButtonGroup>
+      )}
 
-        <SearchForm
+      {/* <SearchForm
           placeholder="Buscar pelo nome do aluno..."
           perform={searchParams}
-        />
-      </div>
+        /> */}
+      {/* </div> */}
 
       <Table
         columns={columns}

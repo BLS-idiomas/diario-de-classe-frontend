@@ -30,18 +30,18 @@ export default function Aulas() {
     <>
       <PageTitle>Lista de aulas</PageTitle>
 
-      <div className="lg:grid lg:grid-cols-2 gap-4">
-        <ButtonGroup>
-          <Link href="/aulas/novo" className="btn btn-primary">
-            Nova aula
-          </Link>
-        </ButtonGroup>
+      {/* <div className="lg:grid lg:grid-cols-2 gap-4"> */}
+      <ButtonGroup>
+        <Link href="/aulas/novo" className="btn btn-primary">
+          Nova aula
+        </Link>
+      </ButtonGroup>
 
-        <SearchForm
+      {/* <SearchForm
           placeholder="Buscar pelo nome do aluno ou professor..."
           perform={searchParams}
-        />
-      </div>
+        /> */}
+      {/* </div> */}
 
       <Table
         columns={columns}
