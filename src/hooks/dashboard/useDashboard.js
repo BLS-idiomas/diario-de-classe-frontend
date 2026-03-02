@@ -8,13 +8,14 @@ import useSweetAlert from '../useSweetAlert';
 import { updateAula } from '@/store/slices/aulasSlice';
 import { useToast } from '@/providers/ToastProvider';
 import { clearStatus } from '@/store/slices/aulasSlice';
+import { classNameDefault } from '@/components/ui/Fields/base';
 
 export function useDashboard(currentUser) {
   const dispatch = useDispatch();
+  const aulasSlicer = useSelector(state => state.aulas);
+  const { data, status } = useSelector(state => state.dashboard);
   const { showForm } = useSweetAlert();
   const { success, error } = useToast();
-  const { data, status } = useSelector(state => state.dashboard);
-  const aulasSlicer = useSelector(state => state.aulas);
   const { professores } = useProfessores();
   const isLoading = status === STATUS.IDLE || status === STATUS.LOADING;
 
@@ -69,29 +70,59 @@ export function useDashboard(currentUser) {
   };
 
   const handleClick = async id => {
+    const aula = data?.aulas?.find(a => a.id === id);
+    const isSelected = status => (aula?.status === status ? 'selected' : '');
     const options = STATUS_AULA.map(
       status =>
-        `<option value="${status}">${STATUS_AULA_LABEL[status]}</option>`
+        `<option value="${status}"${isSelected(status)}>
+          ${STATUS_AULA_LABEL[status]}
+        </option>`
     ).join('');
 
     const result = await showForm({
-      title: 'Alterar Status da Aula',
+      title: 'Sobre a aula',
       html: `
-            <select id="swal-select" class="swal2-input" style="width: 80%; padding: 10px; font-size: 16px;">
-              ${options}
-            </select>
+            <div class="flex flex-col gap-4 ">
+              <div class="flex flex-col items-start">
+                <label htmlFor="swal-select" className="block text-sm font-medium text-gray-700 mb-2">
+                  Status da aula
+                </label>
+                <select
+                  id="swal-select"
+                  class="${classNameDefault} pr-10 appearance-none disabled:bg-gray-100 disabled:text-gray-500 disabled:cursor-not-allowed disabled:opacity-60"
+                  >
+                  ${options}
+                </select>
+              </div>
+
+              <div class="flex flex-col items-start">
+                <label htmlFor="swal-textarea" className="block text-sm font-medium text-gray-700 mb-2">
+                  Conteúdo / Observações
+                </label>
+                <textarea
+                  id="swal-textarea"
+                  class="${classNameDefault}"
+                  >
+                  ${aula?.observacao || ''}
+                </textarea>
+              </div>
+            </div>
           `,
       confirmButtonText: 'Confirmar',
       cancelButtonText: 'Cancelar',
       showCancelButton: true,
       preConfirm: () => {
         const select = document.getElementById('swal-select');
-        return select.value;
+        const textArea = document.getElementById('swal-textarea');
+        return {
+          status: select.value,
+          observacao: textArea.value,
+        };
       },
     });
 
     if (result.isConfirmed) {
-      dispatch(updateAula({ id: id, data: { status: result.value } }));
+      dispatch(updateAula({ id, data: result.value }));
     }
   };
 
