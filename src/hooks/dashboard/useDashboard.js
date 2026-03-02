@@ -2,21 +2,18 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { STATUS, STATUS_AULA, STATUS_AULA_LABEL, TIPO_AULA } from '@/constants';
 import { getDashboard } from '@/store/slices/dashboardSlice';
-import { useProfessores } from '../professores/useProfessores';
-import { makeEmailLabel } from '@/utils/makeEmailLabel';
 import useSweetAlert from '../useSweetAlert';
 import { updateAula } from '@/store/slices/aulasSlice';
 import { useToast } from '@/providers/ToastProvider';
 import { clearStatus } from '@/store/slices/aulasSlice';
 import { classNameDefault } from '@/components/ui/Fields/base';
 
-export function useDashboard(currentUser) {
+export function useDashboard() {
   const dispatch = useDispatch();
   const aulasSlicer = useSelector(state => state.aulas);
   const { data, status } = useSelector(state => state.dashboard);
   const { showForm } = useSweetAlert();
   const { success, error } = useToast();
-  const { professores } = useProfessores();
   const isLoading = status === STATUS.IDLE || status === STATUS.LOADING;
 
   const hoje = new Date();
@@ -24,19 +21,6 @@ export function useDashboard(currentUser) {
   const dataFim = new Date(hoje);
   dataFim.setMonth(dataFim.getMonth() + 6);
   const dataTerminoFormatada = dataFim.toISOString().split('T')[0];
-
-  const professorOptions = useMemo(
-    () =>
-      professores && professores.length > 0
-        ? professores
-            .filter(professor => professor.id !== currentUser?.id)
-            .map(professor => ({
-              label: makeEmailLabel(professor),
-              value: professor.id,
-            }))
-        : [],
-    [professores, currentUser?.id]
-  );
   const homeCardValues = useMemo(() => {
     const { totalAlunos, totalAulas, totalContratos } = data || {};
     return [
@@ -52,6 +36,7 @@ export function useDashboard(currentUser) {
     tipo: TIPO_AULA[0],
     minhasAulas: true,
     professorId: '',
+    alunoId: '',
   });
 
   const handleSubmit = useCallback(
@@ -159,7 +144,6 @@ export function useDashboard(currentUser) {
     status,
     isLoading,
     formData,
-    professorOptions,
     homeCardValues,
     handleSubmit,
     handleChange,

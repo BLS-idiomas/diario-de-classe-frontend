@@ -15,7 +15,9 @@ import {
   TIPO_AULA,
   TIPO_AULA_LABEL,
 } from '@/constants';
+import { useAlunos } from '@/hooks/alunos/useAlunos';
 import { useDashboard } from '@/hooks/dashboard/useDashboard';
+import { useProfessores } from '@/hooks/professores/useProfessores';
 import { useUserAuth } from '@/providers/UserAuthProvider';
 import { makeEmailLabel } from '@/utils/makeEmailLabel';
 import { makeFullNameLabel } from '@/utils/makeFullNameLabel';
@@ -145,16 +147,17 @@ const HomeInfoCard = ({
 
 export default function Home() {
   const { isAdmin, currentUser } = useUserAuth();
+  const { professorOptions } = useProfessores(currentUser);
+  const { alunoOptions } = useAlunos();
   const {
     aulas,
     isLoading,
     formData,
-    professorOptions,
     homeCardValues,
     handleSubmit,
     handleChange,
     handleClick,
-  } = useDashboard(currentUser);
+  } = useDashboard();
 
   return (
     <>
@@ -216,6 +219,25 @@ export default function Home() {
               onChange={handleChange}
               value={formData.status}
             />
+            <SelectField
+              htmlFor="alunoId"
+              label="Aluno"
+              placeholder="Selecione o aluno"
+              onChange={handleChange}
+              value={formData.alunoId}
+              options={alunoOptions}
+            />
+            {isAdmin() && !formData.minhasAulas && (
+              <SelectField
+                required
+                htmlFor="professorId"
+                label="Professor"
+                placeholder="Selecione o professor"
+                onChange={handleChange}
+                value={formData.professorId}
+                options={professorOptions}
+              />
+            )}
           </FormGroup>
 
           {isAdmin() && (
@@ -226,19 +248,6 @@ export default function Home() {
                 checked={formData.minhasAulas}
                 onChange={handleChange}
               />
-              {!formData.minhasAulas && (
-                <div className="mt-4 pt-4 border-t border-gray-300">
-                  <SelectField
-                    required
-                    htmlFor="professorId"
-                    label="Professor"
-                    placeholder="Selecione o professor"
-                    onChange={handleChange}
-                    value={formData.professorId}
-                    options={professorOptions}
-                  />
-                </div>
-              )}
             </FormGroup>
           )}
         </Form>
