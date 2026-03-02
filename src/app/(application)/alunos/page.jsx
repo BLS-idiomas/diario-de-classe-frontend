@@ -7,11 +7,11 @@ import { useDeletarAluno } from '@/hooks/alunos/useDeletarAluno';
 import { useFormater } from '@/hooks/useFormater';
 import { useAlunosList } from '@/hooks/alunos/useAlunosList';
 import { useUploadAlunos } from '@/hooks/alunos/useUploadAlunos';
-import { ButtonGroup, PageTitle, Table } from '@/components';
+import { ButtonGroup, PageTitle, SearchForm, Table } from '@/components';
 
 export default function Alunos() {
   const { currentUser, isAdmin } = useUserAuth();
-  const { alunos, isLoading } = useAlunos();
+  const { alunos, isLoading, searchParams } = useAlunos();
   const { handleDeleteAluno } = useDeletarAluno();
   const { telefoneFormatter, dataFormatter } = useFormater();
   const { handleModalUpload, isUploading } = useUploadAlunos();
@@ -28,19 +28,26 @@ export default function Alunos() {
     <>
       <PageTitle>Lista de alunos</PageTitle>
 
-      <ButtonGroup>
-        <Link href="/alunos/novo" className="btn btn-primary">
-          Novo aluno
-        </Link>
+      <div className="lg:grid lg:grid-cols-2 gap-4">
+        <ButtonGroup>
+          <Link href="/alunos/novo" className="btn btn-primary">
+            Novo aluno
+          </Link>
 
-        <button
-          className="btn btn-secondary"
-          onClick={handleModalUpload}
-          hidden={!isAdmin}
-        >
-          Baixar lista de alunos
-        </button>
-      </ButtonGroup>
+          <button
+            className="btn btn-secondary"
+            onClick={handleModalUpload}
+            hidden={!isAdmin}
+          >
+            Baixar lista de alunos
+          </button>
+        </ButtonGroup>
+
+        <SearchForm
+          placeholder="Buscar pelo nome, sobrenome, email ou telefone..."
+          perform={searchParams}
+        />
+      </div>
 
       <Table
         columns={columns}
