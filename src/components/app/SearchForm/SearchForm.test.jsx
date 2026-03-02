@@ -31,6 +31,6 @@ describe('SearchForm component', () => {
     const input = screen.getByPlaceholderText('Trim');
     await userEvent.type(input, '  x  ');
     // value stored inside state includes spaces; call count reflects each keystroke
-    expect(perform).toHaveBeenLastCalledWith('  x');
+    expect(perform).toHaveBeenLastCalledWith('x');
   });
 });

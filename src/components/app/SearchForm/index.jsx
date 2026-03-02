@@ -4,7 +4,7 @@ import { InputField } from '@/components/ui';
 export const SearchForm = ({ placeholder, perform }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const handleSearch = e => {
-    const value = e.target.value;
+    const value = e.target.value.trim();
     setSearchTerm(value);
     perform(value);
   };
