@@ -10,8 +10,8 @@ export const STATUS_AULA_LABEL = {
   AGENDADA: 'Agendada',
   // EM_ANDAMENTO: 'Em Andamento',
   CONCLUIDA: 'Concluída',
-  CANCELADA: 'Cancelada',
-  CANCELADA_POR_FALTA: 'Cancelada por Falta',
+  CANCELADA: 'Remarcada',
+  CANCELADA_POR_FALTA: 'Falta',
 };
 
 export const STATUS_AULA_ACTION_LABEL = {
