@@ -162,7 +162,7 @@ describe('useNovoProfessor', () => {
     const { waitFor } = require('@testing-library/react');
     return waitFor(() => {
       expect(mockSuccess).toHaveBeenCalledWith('Professor criado com sucesso!');
-      expect(mockPush).toHaveBeenCalledWith('/professores');
+      expect(mockPush).toHaveBeenCalledWith('/professores/1');
     });
   });
 });

@@ -112,7 +112,7 @@ describe('useNovaAula', () => {
     });
     await waitFor(() => {
       expect(mockSuccess).toHaveBeenCalledWith('Aula criado com sucesso!');
-      expect(mockPush).toHaveBeenCalledWith('/aulas');
+      expect(mockPush).toHaveBeenCalledWith('/aulas/1');
     });
   });
 

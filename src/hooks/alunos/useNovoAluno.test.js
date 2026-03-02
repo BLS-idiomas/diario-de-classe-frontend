@@ -189,7 +189,7 @@ describe('useNovoAluno', () => {
     const { waitFor } = require('@testing-library/react');
     return waitFor(() => {
       expect(mockSuccess).toHaveBeenCalledWith('Aluno criado com sucesso!');
-      expect(mockPush).toHaveBeenCalledWith('/alunos');
+      expect(mockPush).toHaveBeenCalledWith('/alunos/1');
     });
   });
 
