@@ -10,7 +10,7 @@ export const ButtonsFields = ({ isLoading, href, blocked = false }) => {
       <button
         type="submit"
         disabled={isLoading || blocked}
-        className={`btn btn-primary ${isLoading && 'blocked'}`}
+        className={`btn btn-primary ${isLoading || blocked ? 'blocked' : ''}`}
       >
         {isLoading ? 'Criando...' : 'Salvar'}
       </button>

@@ -10,7 +10,7 @@ describe('useAulasList', () => {
   const aulas = [
     {
       id: 10,
-      dataCriacao: '2025-12-21',
+      dataAula: '2025-12-21',
       horaFinal: '10:00',
       horaInicial: '09:00',
       status: 'AGENDADA',
@@ -18,7 +18,7 @@ describe('useAulasList', () => {
     },
     {
       id: 11,
-      dataCriacao: '2025-12-22',
+      dataAula: '2025-12-22',
       horaFinal: '11:00',
       horaInicial: '10:00',
       status: 'EM_ANDAMENTO',
@@ -26,7 +26,7 @@ describe('useAulasList', () => {
     },
     {
       id: 12,
-      dataCriacao: '2025-12-23',
+      dataAula: '2025-12-23',
       horaFinal: '12:00',
       horaInicial: '11:00',
       status: 'CONCLUIDA',
@@ -34,7 +34,7 @@ describe('useAulasList', () => {
     },
     {
       id: 13,
-      dataCriacao: '2025-12-24',
+      dataAula: '2025-12-24',
       horaFinal: '13:00',
       horaInicial: '12:00',
       status: 'CANCELADA',
@@ -42,7 +42,7 @@ describe('useAulasList', () => {
     },
     {
       id: 14,
-      dataCriacao: '2025-12-25',
+      dataAula: '2025-12-25',
       horaFinal: '14:00',
       horaInicial: '13:00',
       status: 'CANCELADA_POR_FALTA',
@@ -60,7 +60,7 @@ describe('useAulasList', () => {
     );
     expect(result.current.columns.some(col => col.name === 'Ações')).toBe(true);
     expect(result.current.data[0].id).toBe(1);
-    expect(result.current.data[0].dataCriacao).toBe('format:2025-12-21');
+    expect(result.current.data[0].dataAula).toBe('format:2025-12-21');
     expect(result.current.data[0].horaFinal).toBe('10:00');
     expect(result.current.data[0].horaInicial).toBe('09:00');
     expect(result.current.data[0].status).toBe(
