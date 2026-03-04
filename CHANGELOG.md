@@ -1,3 +1,14 @@
+# [1.5.0](https://github.com/BLS-idiomas/diario-de-classe-frontend/compare/v1.4.1...v1.5.0) (2026-03-04)
+
+### Bug Fixes
+
+- dataAula ([305bec0](https://github.com/BLS-idiomas/diario-de-classe-frontend/commit/305bec0605c2054567f9cda86589ae280d660b05))
+
+### Features
+
+- **BI-138:** refactor toast color ([ecf6eee](https://github.com/BLS-idiomas/diario-de-classe-frontend/commit/ecf6eee6b2aa298a27b215412e9c393cd637c9c8))
+- set default date for dataAula and dataInicio in useAulaForm and useContratoForm ([e2de9bb](https://github.com/BLS-idiomas/diario-de-classe-frontend/commit/e2de9bbb86b10c8b77ac5e587a3f3dba812baa53))
+
 ## [1.4.1](https://github.com/BLS-idiomas/diario-de-classe-frontend/compare/v1.4.0...v1.4.1) (2026-03-02)
 
 ### Bug Fixes
