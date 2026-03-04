@@ -1,11 +1,13 @@
 import { useState } from 'react';
 
 export function useAulaForm({ id = null, submit }) {
+  const hoje = new Date();
+  const dataInicioFormatada = hoje.toISOString().split('T')[0];
   const [formData, setFormData] = useState({
     idAluno: '',
     idProfessor: '',
     idContrato: '',
-    dataAula: '',
+    dataAula: dataInicioFormatada,
     horaInicial: '',
     horaFinal: '',
     tipo: 'PADRAO',
