@@ -30,7 +30,7 @@ export function useAulasList({
     },
     {
       name: 'Data',
-      selector: row => row.dataCriacao,
+      selector: row => row.dataAula,
       sortable: true,
     },
     {
@@ -70,7 +70,7 @@ export function useAulasList({
     const iconParams = { strokeWidth: 1, size: 16 };
     return aulas.map((aula, index) => ({
       id: index + 1,
-      dataCriacao: dataFormatter(aula.dataCriacao),
+      dataAula: dataFormatter(aula.dataAula),
       horaFinal: aula.horaFinal,
       horaInicial: aula.horaInicial,
       status: STATUS_AULA_LABEL[aula.status],

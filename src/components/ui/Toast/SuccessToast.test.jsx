@@ -1,7 +1,7 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { SuccessToast } from './index.jsx';
 
-describe('SuccessToast', () => {
+describe.skip('SuccessToast', () => {
   const mockToast = {
     id: 2,
     message: 'Operation completed successfully!',

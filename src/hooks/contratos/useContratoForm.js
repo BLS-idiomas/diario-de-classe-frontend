@@ -11,6 +11,8 @@ export function useContratoForm({ alunos, professores, submit }) {
   const { currentUser, settings } = useUserAuth();
   const { showForm, showSuccess } = useSweetAlert();
   const tempoAula = settings.duracaoAula || 0;
+  const hoje = new Date();
+  const dataInicioFormatada = hoje.toISOString().split('T')[0];
   const [formData, setFormData] = useState({
     professorId: currentUser.id || null,
     professor: currentUser || null,
@@ -18,7 +20,7 @@ export function useContratoForm({ alunos, professores, submit }) {
     aluno: null,
     contratoId: null,
     contrato: null,
-    dataInicio: '',
+    dataInicio: dataInicioFormatada,
     dataTermino: '',
     diasAulas: [],
     currentDiasAulas: [],

@@ -3,10 +3,7 @@
 import { X } from 'lucide-react';
 
 const DefaultToast = ({ toast, onClose, icon = null, iconColor = null }) => {
-  const toastIconColor =
-    iconColor ||
-    'text-blue-500 bg-blue-100 dark:bg-blue-800 dark:text-blue-200';
-
+  const toastIconColor = iconColor || 'toast-info';
   const toastIcon = icon || (
     <svg
       className="w-4 h-4"
@@ -27,7 +24,7 @@ const DefaultToast = ({ toast, onClose, icon = null, iconColor = null }) => {
 
   return (
     <div
-      className="flex items-center w-full max-w-xs p-4 text-gray-500 bg-white rounded-lg shadow-sm dark:text-gray-400 dark:bg-gray-800 transition-all duration-300 ease-in-out animate-in slide-in-from-right"
+      className="flex items-center w-full max-w-xs p-4 transition-all duration-300 ease-in-out animate-in slide-in-from-right toast"
       role="alert"
     >
       <div
@@ -41,7 +38,7 @@ const DefaultToast = ({ toast, onClose, icon = null, iconColor = null }) => {
 
       <button
         type="button"
-        className="ms-auto -mx-1.5 -my-1.5 bg-white text-gray-400 hover:text-gray-900 rounded-lg focus:ring-2 focus:ring-gray-300 p-1.5 hover:bg-gray-100 inline-flex items-center justify-center h-8 w-8 dark:text-gray-500 dark:hover:text-white dark:bg-gray-800 dark:hover:bg-gray-700 transition-colors"
+        className="ms-2 -mx-1.5 -my-1.5 rounded-lg focus:ring-2 p-1.5 inline-flex items-center justify-center h-8 w-8 transition-colors"
         onClick={() => onClose(toast.id)}
         aria-label="Close"
       >
@@ -58,9 +55,7 @@ export const SuccessToast = ({ toast, onClose }) => (
   <DefaultToast
     toast={toast}
     onClose={onClose}
-    iconColor={
-      'text-green-500 bg-green-100 dark:bg-green-800 dark:text-green-200'
-    }
+    iconColor="toast-success"
     icon={
       <svg
         className="w-4 h-4"
@@ -85,7 +80,7 @@ export const ErrorToast = ({ toast, onClose }) => (
   <DefaultToast
     toast={toast}
     onClose={onClose}
-    iconColor={'text-red-500 bg-red-100 dark:bg-red-800 dark:text-red-200'}
+    iconColor="toast-error"
     icon={
       <svg
         className="w-4 h-4"
@@ -110,9 +105,7 @@ export const WarningToast = ({ toast, onClose }) => (
   <DefaultToast
     toast={toast}
     onClose={onClose}
-    iconColor={
-      'text-yellow-500 bg-yellow-100 dark:bg-yellow-800 dark:text-yellow-200'
-    }
+    iconColor="toast-warning"
     icon={
       <svg
         className="w-4 h-4"

@@ -1,6 +1,7 @@
 @import 'tailwindcss';
 
 @layer components {
+  /* White Theme */
   .btn {
     @apply px-4 py-2 text-sm text-white rounded transition-colors cursor-pointer font-semibold;
 
@@ -37,29 +38,29 @@
       @apply border-green-500 text-green-500 hover:bg-green-50;
     }
   }
-}
 
-/* :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  .toast {
+    @apply text-gray-800 bg-white rounded-lg shadow-sm;
+    /* @apply text-gray-500 bg-white rounded-lg shadow-sm dark:text-gray-400 dark:bg-gray-800; */
+    .toast-info {
+      @apply text-blue-500 bg-blue-100
+      /* @apply text-blue-500 bg-blue-100 dark:bg-blue-800 dark:text-blue-200; */;
+    }
+    .toast-success {
+      @apply text-green-500 bg-green-100
+      /* @apply text-green-500 bg-green-100 dark:bg-green-800 dark:text-green-200; */;
+    }
+    .toast-error {
+      @apply text-red-500 bg-red-100
+      /* @apply text-red-500 bg-red-100 dark:bg-red-800 dark:text-red-200; */;
+    }
+    .toast-warning {
+      @apply text-yellow-500 bg-yellow-100
+      /* @apply text-yellow-500 bg-yellow-100 dark:bg-yellow-800 dark:text-yellow-200; */;
+    }
+    button {
+      @apply bg-white text-gray-400 hover:text-gray-900 focus:ring-gray-300 hover:bg-gray-100
+      /* @apply bg-white text-gray-400 hover:text-gray-900 focus:ring-gray-300 hover:bg-gray-100 dark:text-gray-500 dark:hover:text-white dark:bg-gray-800 dark:hover:bg-gray-700; */;
+    }
   }
 }
-
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
-} */
