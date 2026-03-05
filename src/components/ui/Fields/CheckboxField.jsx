@@ -14,9 +14,9 @@ export const CheckboxField = ({
 }) => {
   const checkboxClassName =
     className ||
-    'h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded';
+    'h-4 w-4 primary-color focus:ring-blue-500 border-main rounded';
   const containerClassName = inputGroupClass || 'flex items-center';
-  const labelTextClassName = labelClass || 'ml-2 block text-sm text-gray-900';
+  const labelTextClassName = labelClass || 'ml-2 block text-sm text-main';
 
   const handleChange = e => {
     if (!disabled && onChange) {

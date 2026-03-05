@@ -16,7 +16,7 @@ export const SearchForm = ({ placeholder, perform }) => {
       maxLength={200}
       minLength={3}
       value={searchTerm}
-      // inputGroupClass={'pb-4 bg-white'}
+      // inputGroupClass={'pb-4 bg-main'}
       labelClass={'d-none'}
       onChange={handleSearch}
     />

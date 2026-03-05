@@ -63,4 +63,62 @@
       /* @apply bg-white text-gray-400 hover:text-gray-900 focus:ring-gray-300 hover:bg-gray-100 dark:text-gray-500 dark:hover:text-white dark:bg-gray-800 dark:hover:bg-gray-700; */;
     }
   }
+
+  .bg-main {
+    @apply bg-white;
+  }
+  .bg-secondary {
+    @apply bg-gray-50;
+  }
+  .bg-sidebar {
+    @apply hover:bg-gray-200;
+  }
+  .text-main {
+    @apply text-gray-800;
+  }
+  .text-muted {
+    @apply text-gray-600;
+  }
+  .primary-color {
+    @apply text-blue-600;
+  }
+  .border-main {
+    @apply border-gray-200;
+  }
+  .sidebar-expanded-colors {
+    @apply bg-gray-800 text-white;
+  }
+  .input-field {
+    @apply focus:ring-blue-500 disabled:bg-gray-100 disabled:text-gray-500 disabled:opacity-60;
+  }
+
+  .dark {
+    .bg-main {
+      @apply bg-gray-900;
+    }
+    .bg-secondary {
+      @apply bg-gray-800;
+    }
+    .bg-sidebar {
+      @apply hover:bg-gray-700;
+    }
+    .text-main {
+      @apply text-white;
+    }
+    .text-muted {
+      @apply text-gray-400;
+    }
+    .primary-color {
+      @apply text-blue-400;
+    }
+    .border-main {
+      @apply border-gray-700;
+    }
+    .sidebar-expanded-colors {
+      @apply bg-gray-700 text-white;
+    }
+    .input-field {
+      @apply focus:ring-blue-400 disabled:bg-gray-100 disabled:text-gray-500 disabled:opacity-60 bg-gray-800 text-white;
+    }
+  }
 }

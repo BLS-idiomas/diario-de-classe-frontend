@@ -23,7 +23,7 @@ export const Sidebar = ({
   return (
     <aside
       aria-label="Main navigation"
-      className={`fixed left-0 top-16 bottom-0 bg-gray-50 border-r border-gray-200 transition-all duration-300 ease-in-out z-30 ${sidebarClass}`}
+      className={`fixed left-0 top-16 bottom-0 bg-secondary border-r border-main transition-all duration-300 ease-in-out z-30 ${sidebarClass}`}
     >
       <div className="flex flex-col h-full">
         {/* Conteúdo da Sidebar */}
@@ -50,7 +50,7 @@ export const Sidebar = ({
           </nav>
         </div>
         {/* Botão Toggle fixo na parte inferior */}
-        <div className="p-4 border-t border-gray-200">
+        <div className="p-4 border-t border-main">
           <button
             onClick={toggleSidebar}
             aria-expanded={!!sidebarExpanded}
@@ -58,7 +58,7 @@ export const Sidebar = ({
               sidebarExpanded ? 'Recolher sidebar' : 'Expandir sidebar'
             }
             title={sidebarExpanded ? 'Recolher' : 'Expandir'}
-            className="w-full flex items-center justify-center p-2 text-black rounded-lg"
+            className="w-full flex items-center justify-center p-2 text-main rounded-lg"
           >
             {sidebarExpanded ? (
               <>

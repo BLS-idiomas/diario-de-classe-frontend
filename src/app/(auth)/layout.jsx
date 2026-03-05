@@ -25,18 +25,18 @@ export default function AuthLayout({ children }) {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-blue-50 via-white to-indigo-50 p-4">
-      <div className="w-full max-w-6xl bg-white rounded-2xl shadow-2xl overflow-hidden">
+      <div className="w-full max-w-6xl bg-main rounded-2xl shadow-2xl overflow-hidden">
         <div className="flex flex-col lg:flex-row">
           {/* Lado Esquerdo - Imagem/Ilustração */}
           <div className="lg:w-1/2 bg-linear-to-br from-blue-600 to-indigo-700 p-12 flex flex-col justify-center items-center text-white relative overflow-hidden">
             {/* Decoração de fundo */}
-            <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -mr-32 -mt-32"></div>
-            <div className="absolute bottom-0 left-0 w-96 h-96 bg-white/5 rounded-full -ml-48 -mb-48"></div>
+            <div className="absolute top-0 right-0 w-64 h-64 bg-main/10 rounded-full -mr-32 -mt-32"></div>
+            <div className="absolute bottom-0 left-0 w-96 h-96 bg-main/5 rounded-full -ml-48 -mb-48"></div>
 
             <div className="relative z-10 text-center space-y-8">
               {/* Ícone principal */}
               <div className="flex justify-center mb-6">
-                <div className="bg-white/20 p-6 rounded-full backdrop-blur-sm">
+                <div className="bg-main/20 p-6 rounded-full backdrop-blur-sm">
                   <BookOpen size={64} strokeWidth={1.5} />
                 </div>
               </div>
@@ -51,7 +51,7 @@ export default function AuthLayout({ children }) {
               {/* Features */}
               <div className="space-y-6 text-left max-w-md mx-auto">
                 <div className="flex items-start space-x-4">
-                  <div className="bg-white/20 p-3 rounded-lg backdrop-blur-sm">
+                  <div className="bg-main/20 p-3 rounded-lg backdrop-blur-sm">
                     <GraduationCap size={24} strokeWidth={1.5} />
                   </div>
                   <div>
@@ -65,7 +65,7 @@ export default function AuthLayout({ children }) {
                 </div>
 
                 <div className="flex items-start space-x-4">
-                  <div className="bg-white/20 p-3 rounded-lg backdrop-blur-sm">
+                  <div className="bg-main/20 p-3 rounded-lg backdrop-blur-sm">
                     <Users size={24} strokeWidth={1.5} />
                   </div>
                   <div>

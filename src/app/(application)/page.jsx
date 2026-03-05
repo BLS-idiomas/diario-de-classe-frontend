@@ -1,38 +1,38 @@
 'use client';
 
 import {
-  Avatar,
-  CheckboxField,
-  Form,
-  FormGroup,
-  InputField,
-  Loading,
-  SelectField,
-} from '@/components';
-import {
   STATUS_AULA,
   STATUS_AULA_LABEL,
   TIPO_AULA,
   TIPO_AULA_LABEL,
 } from '@/constants';
+import { useUserAuth } from '@/providers/UserAuthProvider';
 import { useAlunos } from '@/hooks/alunos/useAlunos';
 import { useDashboard } from '@/hooks/dashboard/useDashboard';
 import { useProfessores } from '@/hooks/professores/useProfessores';
-import { useUserAuth } from '@/providers/UserAuthProvider';
 import { makeEmailLabel } from '@/utils/makeEmailLabel';
 import { makeFullNameLabel } from '@/utils/makeFullNameLabel';
+import {
+  Avatar,
+  Form,
+  FormGroup,
+  InputField,
+  SelectField,
+  CheckboxField,
+  Loading,
+} from '@/components';
 
 // TODO passas os componetes para arquivos separados
 const HomeCard = ({ title, value, color, isLoading }) => {
   const colorClasses = {
-    blue: 'text-blue-600',
+    blue: 'primary-color',
     green: 'text-green-600',
     purple: 'text-purple-600',
   };
-  const textColorClass = colorClasses[color] || 'text-gray-800';
+  const textColorClass = colorClasses[color] || 'text-main';
   return (
-    <div className="bg-white p-6 rounded-lg shadow-md border border-gray-200">
-      <h3 className="text-lg font-semibold text-gray-800 mb-2">{title}</h3>
+    <div className="bg-main p-6 rounded-lg shadow-md border border-main ">
+      <h3 className="text-lg font-semibold text-main mb-2">{title}</h3>
       <p className={`text-3xl font-bold ${textColorClass}`}>
         {isLoading ? '...' : value || 0}
       </p>
@@ -130,16 +130,16 @@ const HomeInfoCard = ({
   return (
     <div
       onClick={onClick}
-      className={`flex items-center gap-5 p-4 bg-gray-50 rounded-lg transition-transform duration-200 ${canEdit ? 'cursor-pointer hover:bg-gray-100 hover:scale-105' : ''}  `}
+      className={`flex items-center gap-5 p-4 bg-secondary rounded-lg transition-transform duration-200 ${canEdit ? 'cursor-pointer bg-sidebar hover:scale-105' : ''}  `}
     >
       <Avatar text={name} className="w-10 h-10" />
       <div>
-        <p className="font-medium text-gray-800">
+        <p className="font-medium text-main">
           <b>{name}</b> {action}
         </p>
 
-        <p className="text-sm text-gray-500">{professorName}</p>
-        <p className="text-sm text-gray-500">{time}</p>
+        <p className="text-sm text-muted">{professorName}</p>
+        <p className="text-sm text-muted">{time}</p>
       </div>
     </div>
   );
@@ -161,9 +161,7 @@ export default function Home() {
 
   return (
     <>
-      <h2 className="text-3xl font-bold text-gray-800 mb-8">
-        Diário de Classe
-      </h2>
+      <h2 className="text-3xl font-bold text-main mb-8">Diário de Classe</h2>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
         {homeCardValues.map(row => (
@@ -179,7 +177,7 @@ export default function Home() {
 
       <div className="mb-8">
         <Form handleSubmit={handleSubmit}>
-          <h3 className="text-xl font-semibold text-gray-800 mb-4">Filtros</h3>
+          <h3 className="text-xl font-semibold text-main mb-4">Filtros</h3>
           <FormGroup cols={2}>
             <InputField
               required
@@ -253,8 +251,8 @@ export default function Home() {
         </Form>
       </div>
 
-      <section className="bg-white p-8 rounded-lg shadow-md border border-gray-200 mb-8">
-        <h3 className="text-xl font-semibold text-gray-800 mb-4">
+      <section className="bg-main p-8 rounded-lg shadow-md border border-main mb-8">
+        <h3 className="text-xl font-semibold text-main mb-4">
           {formData.minhasAulas ? 'Minhas Aulas' : 'Todas as Aulas'}
         </h3>
 

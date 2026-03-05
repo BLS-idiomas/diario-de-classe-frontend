@@ -14,11 +14,11 @@ export function useInfoCard() {
 
     switch (type) {
       case 'header':
-        className.push('text-gray-500');
+        className.push('text-main');
       case 'bold':
         className.push('font-medium');
       default:
-        className.push('text-gray-600');
+        className.push('text-muted');
     }
 
     return className.join(' ');
@@ -26,8 +26,8 @@ export function useInfoCard() {
 
   const getBgColor = color => {
     const colors = {
-      gray: 'bg-gray-50',
-      white: 'bg-white',
+      gray: 'bg-secondary', // TODO renomear para secondary
+      white: 'bg-main', // TODO renomear para main
     };
 
     return colors[color] || colors.gray;

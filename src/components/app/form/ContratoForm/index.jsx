@@ -100,13 +100,13 @@ export const ContratoForm = ({
       </div>
 
       {/* STEP 2 - DIAS DE AULA */}
-      <div className="flex flex-col gap-4" hidden={!showDiasAulas}>
+      <div className="flex flex-col gap-4 text-muted" hidden={!showDiasAulas}>
         <p>Registre as aulas que o aluno terá em cada dia da semana.</p>
 
         <FormGroup cols={2}>
           {formData.diasAulas.map(dia => (
             <div key={dia.diaSemana} className="flex flex-col gap-2 mb-4">
-              <h4 className="text-xl font-semibold mb-2">
+              <h4 className="text-xl text-main font-semibold mb-2">
                 {DIAS_LABEL[dia.diaSemana]}
               </h4>
               <CheckboxField
@@ -151,7 +151,7 @@ export const ContratoForm = ({
 
       {/* STEP 3 - AULAS */}
       <div className="flex flex-col gap-4" hidden={!showAulas}>
-        <p>Total de {formData.aulas.length} aulas.</p>
+        <p className="text-muted">Total de {formData.aulas.length} aulas.</p>
         <div className="flex gap-4">
           <button
             type="button"
@@ -183,7 +183,7 @@ export const ContratoForm = ({
               >
                 <div className="flex flex-row  items-start gap-2 justify-between">
                   <div>
-                    <p className="text-sm text-gray-600">
+                    <p className="text-sm text-muted">
                       {(() => {
                         const date = new Date(aula.dataAula);
                         const dias = [
@@ -198,7 +198,7 @@ export const ContratoForm = ({
                         return DIAS_LABEL[dias[date.getDay()]];
                       })()}
                     </p>
-                    <p>
+                    <p className="text-main">
                       <strong>Aula:</strong> {dataFormatter(aula.dataAula)}{' '}
                       {aula.horaInicial} - {aula.horaFinal}
                     </p>
@@ -211,7 +211,7 @@ export const ContratoForm = ({
                       />
                     )}
                     {aula.observacao && (
-                      <p>
+                      <p className="text-main">
                         <strong>Observação:</strong> {aula.observacao}
                       </p>
                     )}

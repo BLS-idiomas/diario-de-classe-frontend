@@ -1,3 +1,3 @@
 export const SectionTitle = ({ children }) => {
-  return <h3 className="text-lg font-semibold mb-3">{children}</h3>;
+  return <h3 className="text-lg text-main font-semibold mb-3">{children}</h3>;
 };

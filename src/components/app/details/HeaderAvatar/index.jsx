@@ -8,8 +8,8 @@ export const HeaderAvatar = ({ entity }) => {
     <div className="flex items-center gap-4 mb-3">
       <Avatar text={nomeCompleto} />
       <div>
-        <div className="text-xl font-semibold">{nomeCompleto}</div>
-        <div className="text-sm text-gray-600">{email}</div>
+        <div className="text-xl text-main font-semibold">{nomeCompleto}</div>
+        <div className="text-sm text-muted">{email}</div>
       </div>
     </div>
   );

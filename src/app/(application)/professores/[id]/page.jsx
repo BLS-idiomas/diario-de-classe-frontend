@@ -197,9 +197,9 @@ export default function Professor() {
           professor.disponibilidades.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
               {professor.disponibilidades.map(d => (
-                <div key={d.id} className="p-3 rounded-md bg-white shadow-sm">
+                <div key={d.id} className="p-3 rounded-md bg-main shadow-sm">
                   <div className="font-medium">{d.diaSemana}</div>
-                  <div className="text-sm text-gray-600">
+                  <div className="text-sm text-muted">
                     {d.horaInicial} - {d.horaFinal}
                   </div>
                   <div
@@ -211,7 +211,7 @@ export default function Professor() {
               ))}
             </div>
           ) : (
-            <p className="text-gray-500">Sem disponibilidades cadastradas.</p>
+            <p className="text-muted">Sem disponibilidades cadastradas.</p>
           )}
         </Section>
 

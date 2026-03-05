@@ -9,7 +9,7 @@ export function Table({
   className,
 }) {
   return (
-    <div className={className || 'bg-white p-2 rounded-lg shadow-md'}>
+    <div className={className || 'bg-main p-2 rounded-lg shadow-md'}>
       <DataTable
         columns={columns}
         data={data || []}

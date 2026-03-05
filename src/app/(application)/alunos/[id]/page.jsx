@@ -69,7 +69,7 @@ export default function Aluno() {
                 <div className="text-xl font-semibold">
                   {aluno.nome} {aluno.sobrenome}
                 </div>
-                <div className="text-sm text-gray-600">{aluno.email}</div>
+                <div className="text-sm text-muted">{aluno.email}</div>
               </div>
             </div>
             {/* Stats badges */}
@@ -88,21 +88,21 @@ export default function Aluno() {
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {/* Contato */}
-              <div className="p-3 rounded-md bg-gray-50">
+              <div className="p-3 rounded-md bg-secondary">
                 <div className="text-sm text-gray-500">Contato</div>
                 <div className="mt-2 text-sm text-gray-700">
                   {telefoneFormatter(aluno?.telefone)}
                 </div>
-                <div className="mt-1 text-sm text-gray-600">{aluno?.email}</div>
+                <div className="mt-1 text-sm text-muted">{aluno?.email}</div>
               </div>
 
               {/* Acesso */}
-              <div className="p-3 rounded-md bg-gray-50">
+              <div className="p-3 rounded-md bg-secondary">
                 <div className="text-sm text-gray-500">Contrato</div>
                 <div className="mt-2">
                   Situação: {contrato ? contrato?.status : 'Sem contrato'}
                   {contrato && (
-                    <div className="text-sm text-gray-600">
+                    <div className="text-sm text-muted">
                       Vigência: de {dataFormatter(contrato?.dataInicio)} até{' '}
                       {dataFormatter(contrato?.dataTermino)}
                     </div>
@@ -111,7 +111,7 @@ export default function Aluno() {
               </div>
 
               {/* Datas */}
-              <div className="p-3 rounded-md bg-gray-50">
+              <div className="p-3 rounded-md bg-secondary">
                 <div className="text-sm text-gray-500">Datas</div>
                 <div className="mt-2 text-sm">
                   Criado: {dataFormatter(aluno?.dataCriacao)}

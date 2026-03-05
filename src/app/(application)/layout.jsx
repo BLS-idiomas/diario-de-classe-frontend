@@ -13,7 +13,7 @@ export default function ApplicationLayout({ children }) {
   } = useApplicationLayout();
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-secondary">
       <Header />
       <div className="flex pt-16 min-h-screen">
         <Sidebar

@@ -8,8 +8,8 @@ export default function Login() {
   return (
     <>
       <div className="mb-8">
-        <h2 className="text-3xl font-bold text-gray-800 mb-2">Bem-vindo!</h2>
-        <p className="text-gray-600">
+        <h2 className="text-3xl font-bold text-main mb-2">Bem-vindo!</h2>
+        <p className="text-muted">
           Entre com suas credenciais para acessar o sistema
         </p>
       </div>

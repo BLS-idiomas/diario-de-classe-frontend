@@ -94,58 +94,58 @@ describe('useInfoCard', () => {
   });
 
   describe('getClassName - column type parameter', () => {
-    it('should return text-gray-500 and font-medium and text-gray-600 for header type (fallthrough)', () => {
+    it('should return text-gray-500 and font-medium and text-muted for header type (fallthrough)', () => {
       const { result } = renderHook(() => useInfoCard());
       const column = { type: 'header' };
       const className = result.current.getClassName(0, column);
 
       expect(className).toContain('text-gray-500');
       expect(className).toContain('font-medium');
-      expect(className).toContain('text-gray-600');
+      expect(className).toContain('text-muted');
     });
 
-    it('should return font-medium and text-gray-600 for bold type (fallthrough)', () => {
+    it('should return font-medium and text-muted for bold type (fallthrough)', () => {
       const { result } = renderHook(() => useInfoCard());
       const column = { type: 'bold' };
       const className = result.current.getClassName(0, column);
 
       expect(className).toContain('font-medium');
-      expect(className).toContain('text-gray-600');
+      expect(className).toContain('text-muted');
       expect(className).not.toContain('text-gray-500');
     });
 
-    it('should return text-gray-600 for default type', () => {
+    it('should return text-muted for default type', () => {
       const { result } = renderHook(() => useInfoCard());
       const column = { type: 'default' };
       const className = result.current.getClassName(0, column);
 
-      expect(className).toContain('text-gray-600');
+      expect(className).toContain('text-muted');
       expect(className).not.toContain('text-gray-500');
       expect(className).not.toContain('font-medium');
     });
 
-    it('should return text-gray-600 for undefined type (default)', () => {
+    it('should return text-muted for undefined type (default)', () => {
       const { result } = renderHook(() => useInfoCard());
       const column = {};
       const className = result.current.getClassName(0, column);
 
-      expect(className).toContain('text-gray-600');
+      expect(className).toContain('text-muted');
     });
 
-    it('should return text-gray-600 for unknown type (default)', () => {
+    it('should return text-muted for unknown type (default)', () => {
       const { result } = renderHook(() => useInfoCard());
       const column = { type: 'unknown' };
       const className = result.current.getClassName(0, column);
 
-      expect(className).toContain('text-gray-600');
+      expect(className).toContain('text-muted');
     });
 
-    it('should return text-gray-600 for null type (default)', () => {
+    it('should return text-muted for null type (default)', () => {
       const { result } = renderHook(() => useInfoCard());
       const column = { type: null };
       const className = result.current.getClassName(0, column);
 
-      expect(className).toContain('text-gray-600');
+      expect(className).toContain('text-muted');
     });
   });
 
@@ -158,7 +158,7 @@ describe('useInfoCard', () => {
       expect(className).toContain('text-sm');
       expect(className).toContain('text-gray-500');
       expect(className).toContain('font-medium');
-      expect(className).toContain('text-gray-600');
+      expect(className).toContain('text-muted');
       // Due to fallthrough in index switch, index 0 also gets mt-2 and mt-1
       expect(className).toContain('mt-2');
       expect(className).toContain('mt-1');
@@ -173,7 +173,7 @@ describe('useInfoCard', () => {
       expect(className).toContain('mt-2');
       expect(className).toContain('mt-1');
       expect(className).toContain('font-medium');
-      expect(className).toContain('text-gray-600');
+      expect(className).toContain('text-muted');
     });
 
     it('should combine index 2 with default type correctly', () => {
@@ -183,7 +183,7 @@ describe('useInfoCard', () => {
 
       expect(className).toContain('text-sm');
       expect(className).toContain('mt-1');
-      expect(className).toContain('text-gray-600');
+      expect(className).toContain('text-muted');
       expect(className).not.toContain('mt-2');
     });
 
@@ -196,7 +196,7 @@ describe('useInfoCard', () => {
       expect(className).toContain('mt-1');
       expect(className).toContain('text-gray-500');
       expect(className).toContain('font-medium');
-      expect(className).toContain('text-gray-600');
+      expect(className).toContain('text-muted');
     });
   });
 
@@ -244,7 +244,7 @@ describe('useInfoCard', () => {
       const className = result.current.getClassName(0, {});
 
       expect(className).toContain('text-sm');
-      expect(className).toContain('text-gray-600');
+      expect(className).toContain('text-muted');
     });
 
     it('should handle null column (throws error - bug)', () => {
@@ -376,10 +376,10 @@ describe('useInfoCard', () => {
 
       // Type 'header' should fall through all cases
       const className = result.current.getClassName(2, column);
-      // Due to fallthrough: case 'header' adds 'text-gray-500', case 'bold' adds 'font-medium', default adds 'text-gray-600'
+      // Due to fallthrough: case 'header' adds 'text-gray-500', case 'bold' adds 'font-medium', default adds 'text-muted'
       expect(className).toContain('text-gray-500');
       expect(className).toContain('font-medium');
-      expect(className).toContain('text-gray-600');
+      expect(className).toContain('text-muted');
     });
 
     it('should demonstrate fallthrough for bold type (bold → default)', () => {
@@ -387,49 +387,49 @@ describe('useInfoCard', () => {
       const column = { type: 'bold' };
 
       const className = result.current.getClassName(2, column);
-      // Due to fallthrough: case 'bold' adds 'font-medium', default adds 'text-gray-600'
+      // Due to fallthrough: case 'bold' adds 'font-medium', default adds 'text-muted'
       expect(className).toContain('font-medium');
-      expect(className).toContain('text-gray-600');
+      expect(className).toContain('text-muted');
       expect(className).not.toContain('text-gray-500');
     });
   });
 
   describe('getBgColor', () => {
     describe('basic functionality', () => {
-      it('should return bg-gray-50 for gray color', () => {
+      it('should return bg-secondary for gray color', () => {
         const { result } = renderHook(() => useInfoCard());
         const bgColor = result.current.getBgColor('gray');
-        expect(bgColor).toBe('bg-gray-50');
+        expect(bgColor).toBe('bg-secondary');
       });
 
-      it('should return bg-white for white color', () => {
+      it('should return bg-main for white color', () => {
         const { result } = renderHook(() => useInfoCard());
         const bgColor = result.current.getBgColor('white');
-        expect(bgColor).toBe('bg-white');
+        expect(bgColor).toBe('bg-main');
       });
 
       it('should return default gray color for undefined', () => {
         const { result } = renderHook(() => useInfoCard());
         const bgColor = result.current.getBgColor(undefined);
-        expect(bgColor).toBe('bg-gray-50');
+        expect(bgColor).toBe('bg-secondary');
       });
 
       it('should return default gray color for null', () => {
         const { result } = renderHook(() => useInfoCard());
         const bgColor = result.current.getBgColor(null);
-        expect(bgColor).toBe('bg-gray-50');
+        expect(bgColor).toBe('bg-secondary');
       });
 
       it('should return default gray color for unknown color', () => {
         const { result } = renderHook(() => useInfoCard());
         const bgColor = result.current.getBgColor('unknown');
-        expect(bgColor).toBe('bg-gray-50');
+        expect(bgColor).toBe('bg-secondary');
       });
 
       it('should return default gray color for empty string', () => {
         const { result } = renderHook(() => useInfoCard());
         const bgColor = result.current.getBgColor('');
-        expect(bgColor).toBe('bg-gray-50');
+        expect(bgColor).toBe('bg-secondary');
       });
     });
 
@@ -438,31 +438,31 @@ describe('useInfoCard', () => {
         const { result } = renderHook(() => useInfoCard());
         // Current implementation is case-sensitive
         const bgColor = result.current.getBgColor('Gray');
-        expect(bgColor).toBe('bg-gray-50'); // Falls back to default
+        expect(bgColor).toBe('bg-secondary'); // Falls back to default
       });
 
       it('should handle numeric input', () => {
         const { result } = renderHook(() => useInfoCard());
         const bgColor = result.current.getBgColor(123);
-        expect(bgColor).toBe('bg-gray-50');
+        expect(bgColor).toBe('bg-secondary');
       });
 
       it('should handle boolean input', () => {
         const { result } = renderHook(() => useInfoCard());
         const bgColor = result.current.getBgColor(true);
-        expect(bgColor).toBe('bg-gray-50');
+        expect(bgColor).toBe('bg-secondary');
       });
 
       it('should handle object input', () => {
         const { result } = renderHook(() => useInfoCard());
         const bgColor = result.current.getBgColor({ color: 'gray' });
-        expect(bgColor).toBe('bg-gray-50');
+        expect(bgColor).toBe('bg-secondary');
       });
 
       it('should handle array input', () => {
         const { result } = renderHook(() => useInfoCard());
         const bgColor = result.current.getBgColor(['gray']);
-        expect(bgColor).toBe('bg-gray-50');
+        expect(bgColor).toBe('bg-secondary');
       });
     });
 
@@ -519,7 +519,7 @@ describe('useInfoCard', () => {
       it('should handle all defined colors', () => {
         const { result } = renderHook(() => useInfoCard());
         const availableColors = ['gray', 'white'];
-        const expectedClasses = ['bg-gray-50', 'bg-white'];
+        const expectedClasses = ['bg-secondary', 'bg-main'];
 
         availableColors.forEach((color, index) => {
           const bgColor = result.current.getBgColor(color);
