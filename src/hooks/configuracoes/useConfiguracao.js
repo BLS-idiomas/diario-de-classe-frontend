@@ -31,7 +31,6 @@ export function useConfiguracao() {
   }, [dispatch]);
 
   useEffect(() => {
-    console.log('feito', { status, action, data });
     if (status === STATUS.SUCCESS && data && action === 'updateConfiguracao') {
       dispatch(clearStatus());
       success('Operação realizada com sucesso!');
