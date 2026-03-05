@@ -137,5 +137,24 @@
         @apply hover:bg-green-300;
       }
     }
+
+    .toast {
+      @apply text-gray-400 bg-gray-800;
+      .toast-info {
+        @apply bg-blue-800 text-blue-200;
+      }
+      .toast-success {
+        @apply bg-green-800 text-green-200;
+      }
+      .toast-error {
+        @apply bg-red-800 text-red-200;
+      }
+      .toast-warning {
+        @apply bg-yellow-800 text-yellow-200;
+      }
+      button {
+        @apply text-gray-500 hover:text-white bg-gray-800 hover:bg-gray-700;
+      }
+    }
   }
 }
