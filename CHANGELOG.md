@@ -1,3 +1,17 @@
+# [1.6.0](https://github.com/BLS-idiomas/diario-de-classe-frontend/compare/v1.5.0...v1.6.0) (2026-03-05)
+
+### Features
+
+- add 'Gerenciamento' item to sidebar with admin visibility ([d83f302](https://github.com/BLS-idiomas/diario-de-classe-frontend/commit/d83f3022a7895c163597fd3ca8d7735ac1ed4a1c))
+- add action state management for get and update configuracao ([2e3fda8](https://github.com/BLS-idiomas/diario-de-classe-frontend/commit/2e3fda8c38476e5bceebbe1ef96ec29c72d33388))
+- add configuracaoSlice with get and update configuracao async thunks ([ffea6f3](https://github.com/BLS-idiomas/diario-de-classe-frontend/commit/ffea6f3b5e6659b44cd3c25db0c1aca39a33eedd))
+- add GetConfiguracaoService and UpdateConfiguracaoService with corresponding tests ([20b31d0](https://github.com/BLS-idiomas/diario-de-classe-frontend/commit/20b31d0acb1cf3b75c6f6646246e4ee459070114))
+- add useConfiguracaoForm hook with form handling and state management ([fc956e4](https://github.com/BLS-idiomas/diario-de-classe-frontend/commit/fc956e4267d5c859d5e1a0e0344ff2325e385a87))
+- create Configuracao component with form handling for system settings ([48b84e6](https://github.com/BLS-idiomas/diario-de-classe-frontend/commit/48b84e6b9799522e2ae1ce373c129cd228986f09))
+- enhance useApplicationLayout to clear errors for aulas and contratos ([38d3d23](https://github.com/BLS-idiomas/diario-de-classe-frontend/commit/38d3d23eca7616c31464fc9bf8d470c335df3e4d))
+- implement ConfiguracaoApi with CRUD operations and corresponding tests ([6144cd8](https://github.com/BLS-idiomas/diario-de-classe-frontend/commit/6144cd84d85216413ae5fa3634db1abb9bb04799))
+- implement useConfiguracao hook with state management and side effects ([e478f2d](https://github.com/BLS-idiomas/diario-de-classe-frontend/commit/e478f2d4509916a8efa08beb6d5032dbb3d17df3))
+
 # [1.5.0](https://github.com/BLS-idiomas/diario-de-classe-frontend/compare/v1.4.1...v1.5.0) (2026-03-04)
 
 ### Bug Fixes
