@@ -1,5 +1,7 @@
 @import 'tailwindcss';
 
+@import './datatable-dark.css';
+
 @layer components {
   /* White Theme */
   .btn {
