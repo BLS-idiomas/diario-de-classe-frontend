@@ -2,10 +2,9 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { STATUS, STATUS_AULA, STATUS_AULA_LABEL, TIPO_AULA } from '@/constants';
 import { getDashboard } from '@/store/slices/dashboardSlice';
-import useSweetAlert from '../useSweetAlert';
-import { updateAula } from '@/store/slices/aulasSlice';
+import { updateAula, clearStatus } from '@/store/slices/aulasSlice';
 import { useToast } from '@/providers/ToastProvider';
-import { clearStatus } from '@/store/slices/aulasSlice';
+import useSweetAlert from '@/hooks/useSweetAlert';
 import { classNameDefault } from '@/components/ui/Fields/base';
 
 export function useDashboard() {
