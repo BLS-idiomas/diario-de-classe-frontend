@@ -11,7 +11,7 @@ jest.mock('react-redux', () => ({
   useDispatch: jest.fn(() => dispatchMock),
 }));
 jest.mock('@/store/slices/authSlice', () => ({
-  logout: jest.fn(() => 'LOGOUT_ACTION'),
+  logout: jest.fn(() => ({ type: 'auth/logout' })),
 }));
 
 describe('useApplicationLayout', () => {
@@ -31,7 +31,7 @@ describe('useApplicationLayout', () => {
     removeAuthenticateMock = jest.fn();
     useSelectorMock = require('react-redux').useSelector;
     useSelectorMock.mockImplementation(fn =>
-      fn({ professores: {}, alunos: {} })
+      fn({ professores: {}, alunos: {}, aulas: {}, contratos: {} })
     );
     require('next/navigation').useRouter.mockReturnValue(routerMock);
     require('@/providers/UserAuthProvider').useUserAuth.mockReturnValue({
@@ -100,7 +100,12 @@ describe('useApplicationLayout', () => {
   it('deve chamar dispatch(logout), removeAuthenticate, error e router.push se statusError de professores for 401', () => {
     const { logout } = require('@/store/slices/authSlice');
     useSelectorMock.mockImplementation(fn =>
-      fn({ professores: { statusError: '401' }, alunos: {} })
+      fn({
+        professores: { statusError: '401' },
+        alunos: {},
+        aulas: {},
+        contratos: {},
+      })
     );
     renderHook(() => useApplicationLayout());
     expect(dispatchMock).toHaveBeenCalledWith(logout(mockRefreshToken));
@@ -112,7 +117,12 @@ describe('useApplicationLayout', () => {
   it('deve chamar dispatch(logout), removeAuthenticate, error e router.push se statusError de alunos for 401', () => {
     const { logout } = require('@/store/slices/authSlice');
     useSelectorMock.mockImplementation(fn =>
-      fn({ professores: {}, alunos: { statusError: '401' } })
+      fn({
+        professores: {},
+        alunos: { statusError: '401' },
+        aulas: {},
+        contratos: {},
+      })
     );
     renderHook(() => useApplicationLayout());
     expect(dispatchMock).toHaveBeenCalledWith(logout(mockRefreshToken));
@@ -127,11 +137,17 @@ describe('useApplicationLayout', () => {
       fn({
         professores: { statusError: '401' },
         alunos: { statusError: '401' },
+        aulas: {},
+        contratos: {},
       })
     );
     renderHook(() => useApplicationLayout());
-    expect(dispatchMock).toHaveBeenCalledTimes(1);
-    expect(dispatchMock).toHaveBeenCalledWith(logout(mockRefreshToken));
+    // Conta apenas as chamadas de logout
+    const logoutCalls = dispatchMock.mock.calls.filter(
+      ([action]) => action && action.type === 'auth/logout'
+    );
+    expect(logoutCalls).toHaveLength(1);
+    expect(logoutCalls[0][0]).toEqual(logout(mockRefreshToken));
     expect(removeAuthenticateMock).toHaveBeenCalledTimes(1);
     expect(errorMock).toHaveBeenCalledTimes(1);
     expect(routerMock.push).toHaveBeenCalledTimes(1);
@@ -143,10 +159,16 @@ describe('useApplicationLayout', () => {
       fn({
         professores: { statusError: '404' },
         alunos: { statusError: '500' },
+        aulas: {},
+        contratos: {},
       })
     );
     renderHook(() => useApplicationLayout());
-    expect(dispatchMock).not.toHaveBeenCalled();
+    // Garante que nenhuma chamada de logout foi feita
+    const logoutCalls = dispatchMock.mock.calls.filter(
+      ([action]) => action && action.type === 'auth/logout'
+    );
+    expect(logoutCalls).toHaveLength(0);
     expect(removeAuthenticateMock).not.toHaveBeenCalled();
   });
 
@@ -155,16 +177,25 @@ describe('useApplicationLayout', () => {
 
     // Inicialmente sem erro
     useSelectorMock.mockImplementation(fn =>
-      fn({ professores: {}, alunos: {} })
+      fn({ professores: {}, alunos: {}, aulas: {}, contratos: {} })
     );
 
     const { rerender } = renderHook(() => useApplicationLayout());
 
-    expect(dispatchMock).not.toHaveBeenCalled();
+    // Garante que nenhuma chamada de logout foi feita
+    const logoutCalls = dispatchMock.mock.calls.filter(
+      ([action]) => action && action.type === 'auth/logout'
+    );
+    expect(logoutCalls).toHaveLength(0);
 
     // Atualiza para ter erro 401
     useSelectorMock.mockImplementation(fn =>
-      fn({ professores: { statusError: '401' }, alunos: {} })
+      fn({
+        professores: { statusError: '401' },
+        alunos: {},
+        aulas: {},
+        contratos: {},
+      })
     );
 
     rerender();
