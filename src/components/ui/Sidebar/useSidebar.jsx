@@ -70,6 +70,12 @@ export function useSidebar(isAdmin) {
       href: '/configuracoes',
       label: 'Configurações',
       icon: <Settings strokeWidth={strokeWidth} />,
+      show: isAdmin(),
+    },
+    {
+      href: '/gerenciamento',
+      label: 'Gerenciamento',
+      icon: <Settings strokeWidth={strokeWidth} />,
       show: false,
     },
   ];
