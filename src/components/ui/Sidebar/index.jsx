@@ -50,7 +50,7 @@ export const Sidebar = ({
           </nav>
         </div>
         {/* Botão Toggle fixo na parte inferior */}
-        <div className="p-4 border-t border-main">
+        <div className="px-4 pb-4 pt-9 border-t border-main">
           <button
             onClick={toggleSidebar}
             aria-expanded={!!sidebarExpanded}
