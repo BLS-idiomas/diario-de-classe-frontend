@@ -5,8 +5,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useRouter } from 'next/navigation';
 import { useUserAuth } from '@/providers/UserAuthProvider';
 import { useToast } from '@/providers/ToastProvider';
-import { isMobileFunction } from '@/utils/isMobileFunction';
 import { logout } from '@/store/slices/authSlice';
+import { clearErrors as clearProfessoresErrors } from '@/store/slices/professoresSlice';
+import { clearErrors as clearAlunosErrors } from '@/store/slices/alunosSlice';
+import { clearErrors as clearAulasErrors } from '@/store/slices/aulasSlice';
+import { clearErrors as clearContratoErrors } from '@/store/slices/contratosSlice';
+import { isMobileFunction } from '@/utils/isMobileFunction';
 
 export function useApplicationLayout() {
   const router = useRouter();
@@ -23,9 +27,11 @@ export function useApplicationLayout() {
 
   const professoresState = useSelector(state => state.professores);
   const alunosState = useSelector(state => state.alunos);
+  const aulasState = useSelector(state => state.aulas);
+  const contratosState = useSelector(state => state.contratos);
   const states = useMemo(
-    () => [professoresState, alunosState],
-    [professoresState, alunosState]
+    () => [professoresState, alunosState, aulasState, contratosState],
+    [professoresState, alunosState, aulasState, contratosState]
   );
 
   const toggleSidebar = () => {
@@ -48,6 +54,13 @@ export function useApplicationLayout() {
       isExpanded: !sidebarExpanded.isExpanded,
     });
   };
+
+  useEffect(() => {
+    dispatch(clearProfessoresErrors());
+    dispatch(clearAlunosErrors());
+    dispatch(clearAulasErrors());
+    dispatch(clearContratoErrors());
+  }, []);
 
   useEffect(() => {
     async function checkAuth() {
