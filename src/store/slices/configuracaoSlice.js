@@ -55,6 +55,7 @@ const configuracaoSlice = createSlice({
     statusError: null,
     errors: [],
     message: null,
+    action: null,
   },
   reducers: {
     clearErrors: state => {
@@ -78,6 +79,7 @@ const configuracaoSlice = createSlice({
         state.message = null;
         state.statusError = null;
         state.data = null;
+        state.action = 'getConfiguracao';
       })
       .addCase(getConfiguracao.fulfilled, (state, action) => {
         state.status = STATUS.SUCCESS;
@@ -96,6 +98,7 @@ const configuracaoSlice = createSlice({
         state.errors = [];
         state.message = null;
         state.statusError = null;
+        state.action = 'updateConfiguracao';
       })
       .addCase(updateConfiguracao.fulfilled, (state, action) => {
         state.status = STATUS.SUCCESS;
