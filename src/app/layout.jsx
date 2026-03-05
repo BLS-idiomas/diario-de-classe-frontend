@@ -3,6 +3,7 @@ import './globals.css';
 import { ToastProvider } from '@/providers/ToastProvider';
 import { ReduxProvider } from '@/providers/ReduxyProvider';
 import { UserAuthProvider } from '@/providers/UserAuthProvider';
+import { ThemeProvider } from '@/providers/ThemeProvider';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -32,9 +33,11 @@ export default function RootLayout({ children }) {
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <ReduxProvider>
-          <ToastProvider>
-            <UserAuthProvider>{children}</UserAuthProvider>
-          </ToastProvider>
+          <ThemeProvider>
+            <ToastProvider>
+              <UserAuthProvider>{children}</UserAuthProvider>
+            </ToastProvider>
+          </ThemeProvider>
         </ReduxProvider>
       </body>
     </html>
