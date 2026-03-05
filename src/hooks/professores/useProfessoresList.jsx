@@ -72,14 +72,14 @@ export function useProfessoresList({
             href={`/professores/${prof.id}`}
             className="btn-outline btn-outline-primary"
           >
-            <Eye {...iconParams} stroke="blue" />
+            <Eye {...iconParams} stroke="currentColor" />
           </Link>
 
           <Link
             href={`/professores/${prof.id}/editar`}
             className="btn-outline btn-outline-secondary"
           >
-            <Pencil {...iconParams} stroke="gray" />
+            <Pencil {...iconParams} stroke="currentColor" />
           </Link>
 
           {currentUser?.id !== prof.id && (
@@ -87,7 +87,7 @@ export function useProfessoresList({
               onClick={() => handleDeleteProfessor(prof.id)}
               className="btn-outline btn-outline-danger"
             >
-              <Trash2 {...iconParams} stroke="red" />
+              <Trash2 {...iconParams} stroke="currentColor" />
             </button>
           )}
         </div>

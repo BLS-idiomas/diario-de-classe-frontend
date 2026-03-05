@@ -88,7 +88,7 @@ export function useContratosList({
             href={`/contratos/${contrato.id}`}
             className="btn-outline btn-outline-primary"
           >
-            <Eye {...iconParams} stroke="blue" />
+            <Eye {...iconParams} stroke="currentColore" />
           </Link>
 
           <Link
@@ -96,7 +96,7 @@ export function useContratosList({
             className="btn-outline btn-outline-secondary"
             hidden={!isAdmin}
           >
-            <Pencil {...iconParams} stroke="gray" />
+            <Pencil {...iconParams} stroke="currentColory" />
           </Link>
 
           <button
@@ -104,7 +104,7 @@ export function useContratosList({
             className="btn-outline btn-outline-danger"
             hidden={!isAdmin}
           >
-            <Trash2 {...iconParams} stroke="red" />
+            <Trash2 {...iconParams} stroke="currentColor" />
           </button>
         </div>
       ),

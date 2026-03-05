@@ -122,5 +122,20 @@
     .input-field {
       @apply focus:ring-blue-400 disabled:bg-gray-100 disabled:text-gray-500 disabled:opacity-60 bg-gray-800 text-white;
     }
+
+    .btn-outline {
+      &.btn-outline-primary {
+        @apply hover:bg-blue-300;
+      }
+      &.btn-outline-secondary {
+        @apply hover:bg-gray-300;
+      }
+      &.btn-outline-danger {
+        @apply hover:bg-red-300;
+      }
+      &.btn-outline-success {
+        @apply hover:bg-green-300;
+      }
+    }
   }
 }

@@ -83,21 +83,21 @@ export function useAulasList({
             href={`/aulas/${aula.id}`}
             className="btn-outline btn-outline-primary"
           >
-            <Eye {...iconParams} stroke="blue" />
+            <Eye {...iconParams} stroke="currentColore" />
           </Link> */}
 
           <Link
             href={`/aulas/${aula.id}/editar`}
             className="btn-outline btn-outline-secondary"
           >
-            <Pencil {...iconParams} stroke="gray" />
+            <Pencil {...iconParams} stroke="currentColory" />
           </Link>
 
           <button
             onClick={() => handleDeleteAula(aula.id)}
             className="btn-outline btn-outline-danger"
           >
-            <Trash2 {...iconParams} stroke="red" />
+            <Trash2 {...iconParams} stroke="currentColor" />
           </button>
         </div>
       ),
