@@ -8,9 +8,11 @@ import contratosReducer from './slices/contratosSlice';
 import diasAulasReducer from './slices/diasAulasSlice';
 import aulasReducer from './slices/aulasSlice';
 import dashboardReducer from './slices/dashboardSlice';
+import configuracaoReducer from './slices/configuracaoSlice';
 
 export const store = configureStore({
   reducer: {
+    configuracao: configuracaoReducer,
     dashboard: dashboardReducer,
     alunos: alunosReducer,
     professores: professoresReducer,
