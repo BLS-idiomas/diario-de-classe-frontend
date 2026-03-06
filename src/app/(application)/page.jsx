@@ -279,7 +279,7 @@ export default function Home() {
               />
             ))
           ) : (
-            <p>Nenhuma aula encontrada</p>
+            <p className="text-main">Nenhuma aula encontrada</p>
           )}
         </div>
       </section>
