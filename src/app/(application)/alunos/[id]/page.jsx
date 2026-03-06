@@ -12,19 +12,19 @@ import {
   ButtonGroup,
   Loading,
   Section,
+  HeaderAvatar,
+  BadgeGroup,
+  Badge,
+  InfoCardGroup,
+  InfoCard,
+  BlockQuoteInfo,
 } from '@/components';
 
 export default function Aluno() {
   const params = useParams();
-  const {
-    aluno,
-    aulas,
-    diasAulas,
-    contrato,
-    contratos,
-    isLoading,
-    isNotFound,
-  } = useAluno(params.id);
+  const { aluno, diasAulas, contrato, isLoading, isNotFound } = useAluno(
+    params.id
+  );
   const { telefoneFormatter, dataFormatter } = useFormater();
 
   useEffect(() => {
@@ -36,8 +36,6 @@ export default function Aluno() {
   if (isLoading || !aluno) {
     return <Loading />;
   }
-
-  // TODO fazer igual a professor
 
   return (
     <>
@@ -58,81 +56,71 @@ export default function Aluno() {
 
       <div className="mt-4 space-y-8">
         <Section>
-          <div>
-            {/* Header: avatar + name/email */}
-            <div className="flex items-center gap-4 mb-3">
-              <div className="w-14 h-14 rounded-full bg-indigo-500 text-white flex items-center justify-center text-lg font-bold">
-                {aluno.nome?.charAt(0) || '-'}
-                {aluno.sobrenome?.charAt(0) || ''}
-              </div>
-              <div>
-                <div className="text-xl font-semibold">
-                  {aluno.nome} {aluno.sobrenome}
-                </div>
-                <div className="text-sm text-muted">{aluno.email}</div>
-              </div>
-            </div>
-            {/* Stats badges */}
-            <div className="flex flex-wrap gap-2 mb-4">
-              <span className="px-2 py-1 bg-gray-100 rounded text-sm">
-                📅 {diasAulas?.length || 0} aulas por semana
-              </span>
+          {/* Header: avatar + name/email */}
+          <HeaderAvatar entity={aluno} />
+          {/* Stats badges */}
+          <BadgeGroup>
+            <Badge
+              icon="calendar"
+              color="gray"
+              text={`${diasAulas?.length || 0} aulas por semana`}
+            />
 
-              <span className="px-2 py-1 bg-blue-100 rounded text-sm">
-                🔐{' '}
-                {contrato
+            <Badge
+              icon="lock"
+              color="blue"
+              text={
+                contrato
                   ? `${contrato?.totalAulasFeitas} de ${contrato?.totalAulas}`
-                  : 'Sem contrato'}
-              </span>
-            </div>
+                  : 'Sem contrato'
+              }
+            />
+          </BadgeGroup>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              {/* Contato */}
-              <div className="p-3 rounded-md bg-secondary">
-                <div className="text-sm text-gray-500">Contato</div>
-                <div className="mt-2 text-sm text-gray-700">
-                  {telefoneFormatter(aluno?.telefone)}
-                </div>
-                <div className="mt-1 text-sm text-muted">{aluno?.email}</div>
-              </div>
+          <InfoCardGroup>
+            {/* Contato */}
+            <InfoCard
+              columns={[
+                { text: 'Contato', type: 'header' },
+                { text: telefoneFormatter(aluno.telefone) },
+                { text: aluno.email },
+              ]}
+            />
 
-              {/* Acesso */}
-              <div className="p-3 rounded-md bg-secondary">
-                <div className="text-sm text-gray-500">Contrato</div>
-                <div className="mt-2">
-                  Situação: {contrato ? contrato?.status : 'Sem contrato'}
-                  {contrato && (
-                    <div className="text-sm text-muted">
-                      Vigência: de {dataFormatter(contrato?.dataInicio)} até{' '}
-                      {dataFormatter(contrato?.dataTermino)}
-                    </div>
-                  )}
-                </div>
-              </div>
+            {/* Acesso */}
+            <InfoCard
+              columns={[
+                { text: 'Acesso', type: 'header' },
+                {
+                  text: `Situação: ${contrato ? contrato?.status : 'Sem contrato'}`,
+                  type: 'bold',
+                },
+                ...[
+                  contrato && {
+                    text: `Vigência: de ${dataFormatter(contrato?.dataInicio)} até ${dataFormatter(contrato?.dataTermino)}`,
+                  },
+                ],
+              ]}
+            />
 
-              {/* Datas */}
-              <div className="p-3 rounded-md bg-secondary">
-                <div className="text-sm text-gray-500">Datas</div>
-                <div className="mt-2 text-sm">
-                  Criado: {dataFormatter(aluno?.dataCriacao)}
-                </div>
-                <div className="text-sm">
-                  Atualizado: {dataFormatter(aluno?.dataAtualizacao)}
-                </div>
-              </div>
-            </div>
+            {/* Datas */}
+            <InfoCard
+              columns={[
+                { text: 'Datas', type: 'header' },
+                { text: `Criado: ${dataFormatter(aluno.dataCriacao)}` },
+                {
+                  text: `Atualizado: ${dataFormatter(aluno.dataAtualizacao)}`,
+                },
+              ]}
+            />
+          </InfoCardGroup>
 
-            <div className="mt-4">
-              <h4 className="font-semibold">Material</h4>
-              {aluno.material ? (
-                <blockquote className="border-l-4 pl-3 italic text-gray-700">
-                  {aluno.material}
-                </blockquote>
-              ) : (
-                <p className="text-gray-500">Nenhum material disponível.</p>
-              )}
-            </div>
-          </div>
+          <BlockQuoteInfo
+            title="Material"
+            noContent="Nenhum material disponível."
+          >
+            {aluno.material}
+          </BlockQuoteInfo>
         </Section>
       </div>
     </>
