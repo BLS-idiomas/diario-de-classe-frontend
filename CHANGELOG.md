@@ -1,3 +1,24 @@
+# [1.7.0](https://github.com/BLS-idiomas/diario-de-classe-frontend/compare/v1.6.0...v1.7.0) (2026-03-06)
+
+### Bug Fixes
+
+- **/BI-145:** update button icon colors to use currentColor for better consistency ([34db323](https://github.com/BLS-idiomas/diario-de-classe-frontend/commit/34db3234cad58a2082009ff423e5e77637ea6192))
+- **BI-146:** update pagination button styles for improved accessibility ([6a16e6e](https://github.com/BLS-idiomas/diario-de-classe-frontend/commit/6a16e6e4a14d2cc91da2e2c2c7065a10b9752b5b))
+- **BI-147 BI-152:** update dark theme styles for improved modal visibility ([eafb14f](https://github.com/BLS-idiomas/diario-de-classe-frontend/commit/eafb14fc219fe616fdf17e5586a267fb7551c0b7))
+- **BI-148:** update CheckboxField styles for consistent checkbox appearance ([fa27c72](https://github.com/BLS-idiomas/diario-de-classe-frontend/commit/fa27c720f0a90890e76b08823108944d2594c84c))
+- **BI-149:** adjust padding for toggle button in Sidebar for improved layout ([2abf0e0](https://github.com/BLS-idiomas/diario-de-classe-frontend/commit/2abf0e039d88d2f67344e3284c3bbd72adf5b665))
+- improve table row styles for better visibility and hover effects ([620b7af](https://github.com/BLS-idiomas/diario-de-classe-frontend/commit/620b7afc008aba03cb3569b5f751e954ca70a8e9))
+- update text color classes for consistency across components ([ba12e33](https://github.com/BLS-idiomas/diario-de-classe-frontend/commit/ba12e338b22091fadc7f6505db1404df90a00711))
+
+### Features
+
+- add dark mode support to DataTable with custom styles ([cacc932](https://github.com/BLS-idiomas/diario-de-classe-frontend/commit/cacc9326af00b39b683c818460d368f5e75c3e87))
+- add theme toggle button to Header component ([f4cb332](https://github.com/BLS-idiomas/diario-de-classe-frontend/commit/f4cb332c51b749d0e4fca903c5b6fe81c8ecbed0))
+- **BI-150:** enhance toast component styles for better visibility and user experience ([6d0159c](https://github.com/BLS-idiomas/diario-de-classe-frontend/commit/6d0159c5692ef29a1787cb75a994669eb6d60b77))
+- **BI-151:** update AuthLayout and globals.css for new login gradient background ([2e8719f](https://github.com/BLS-idiomas/diario-de-classe-frontend/commit/2e8719ff8aa4a8c51268d557ee78436ffd7493bb))
+- implement ThemeProvider with theme toggling and persistence ([bcc36b8](https://github.com/BLS-idiomas/diario-de-classe-frontend/commit/bcc36b8dc6650788c1177c9b37d9bd8ce6832397))
+- refactor Aluno component to use new UI components for improved layout and readability ([9693b34](https://github.com/BLS-idiomas/diario-de-classe-frontend/commit/9693b3487aef8bb96ca45f1d44f753d11b797c7f))
+
 # [1.6.0](https://github.com/BLS-idiomas/diario-de-classe-frontend/compare/v1.5.0...v1.6.0) (2026-03-05)
 
 ### Features
