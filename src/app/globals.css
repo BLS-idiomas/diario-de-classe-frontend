@@ -75,6 +75,9 @@
   .bg-sidebar {
     @apply hover:bg-gray-200;
   }
+  .bg-login-gradient {
+    @apply bg-linear-to-br from-blue-50 via-white to-indigo-50;
+  }
   .text-main {
     @apply text-gray-800;
   }
@@ -103,6 +106,9 @@
     }
     .bg-sidebar {
       @apply hover:bg-gray-700;
+    }
+    .bg-login-gradient {
+      @apply bg-linear-to-br from-gray-800 via-gray-900 to-black;
     }
     .text-main {
       @apply text-white;
@@ -161,7 +167,7 @@
       background-color: var(--color-gray-800) !important;
       color: var(--color-white) !important;
     }
-    #swal2-title {
+    .swal2-title {
       color: var(--color-white) !important;
     }
   }

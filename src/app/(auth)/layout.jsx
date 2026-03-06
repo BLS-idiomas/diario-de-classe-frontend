@@ -24,7 +24,7 @@ export default function AuthLayout({ children }) {
   }, []);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-blue-50 via-white to-indigo-50 p-4">
+    <div className="min-h-screen flex items-center justify-center bg-login-gradient p-4">
       <div className="w-full max-w-6xl bg-main rounded-2xl shadow-2xl overflow-hidden">
         <div className="flex flex-col lg:flex-row">
           {/* Lado Esquerdo - Imagem/Ilustração */}
