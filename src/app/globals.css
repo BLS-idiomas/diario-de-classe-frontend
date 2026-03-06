@@ -170,5 +170,15 @@
     .swal2-title {
       color: var(--color-white) !important;
     }
+
+    #pagination-first-page,
+    #pagination-previous-page,
+    #pagination-next-page,
+    #pagination-last-page {
+      fill: var(--color-white) !important;
+      &[aria-disabled='true'] {
+        fill: var(--color-gray-700) !important;
+      }
+    }
   }
 }
