@@ -37,10 +37,14 @@ export function Table({
             style: {
               backgroundColor: '#1f2937', // bg-gray-900 // => 1f2937
               borderBottom: '1px solid #374151', // border-gray-700
+              color: 'var(--color-gray-400)',
             },
             stripedStyle: {
               color: 'var(--color-gray-300)',
               backgroundColor: 'var(--color-gray-900)', // bg-gray-800
+            },
+            highlightOnHoverStyle: {
+              color: 'var(--color-white)',
             },
           },
           pagination: {
