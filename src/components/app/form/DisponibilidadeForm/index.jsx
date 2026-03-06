@@ -26,7 +26,7 @@ export const DisponibilidadeForm = ({
       {Object.keys(formData).map(diaSemana => (
         <div key={diaSemana} className="mb-4">
           <div className="flex gap-5">
-            <h4 className="text-xl text-main ont-semibold mb-2">
+            <h4 className="text-xl text-main font-semibold mb-2">
               {DIAS_LABEL[diaSemana]}
             </h4>
             <CheckboxField

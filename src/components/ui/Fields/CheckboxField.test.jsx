@@ -273,7 +273,7 @@ describe('CheckboxField', () => {
       const checkbox = screen.getByRole('checkbox');
       expect(checkbox).toHaveClass('h-4');
       expect(checkbox).toHaveClass('w-4');
-      expect(checkbox).toHaveClass('text-blue-600');
+      expect(checkbox).toHaveClass('text-white');
     });
 
     it('should apply custom inputGroupClass', () => {

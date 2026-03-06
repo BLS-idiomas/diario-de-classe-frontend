@@ -55,7 +55,7 @@ describe('Sidebar', () => {
     );
     const homeItem = screen.getByText('Home').closest('a');
     // O item ativo deve ter o texto azul
-    expect(homeItem.querySelector('span')).toHaveClass('text-blue-600');
+    expect(homeItem.querySelector('span')).toHaveClass('primary-color');
   });
 
   it('chama toggleSidebar ao clicar no botão', () => {

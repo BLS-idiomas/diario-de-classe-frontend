@@ -66,12 +66,7 @@ describe('Login Page', () => {
 
       const title = screen.getByText('Bem-vindo!');
       expect(title).toBeInTheDocument();
-      expect(title).toHaveClass(
-        'text-3xl',
-        'font-bold',
-        'text-gray-800',
-        'mb-2'
-      );
+      expect(title).toHaveClass('text-3xl', 'font-bold', 'text-main', 'mb-2');
     });
 
     it('renders the subtitle with instructions', () => {

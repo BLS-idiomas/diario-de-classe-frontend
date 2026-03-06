@@ -48,7 +48,10 @@ describe('SectionTitle', () => {
     it('should have all required classes', () => {
       const { container } = render(<SectionTitle>Title</SectionTitle>);
       const title = container.firstChild;
-      expect(title.className).toBe('text-lg font-semibold mb-3');
+      expect(title).toHaveClass('text-lg');
+      expect(title).toHaveClass('text-main');
+      expect(title).toHaveClass('font-semibold');
+      expect(title).toHaveClass('mb-3');
     });
   });
 

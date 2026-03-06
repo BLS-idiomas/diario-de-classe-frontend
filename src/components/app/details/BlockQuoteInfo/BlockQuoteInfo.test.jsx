@@ -170,15 +170,15 @@ describe('BlockQuoteInfo', () => {
       expect(blockquote).toHaveClass('border-l-4');
       expect(blockquote).toHaveClass('pl-3');
       expect(blockquote).toHaveClass('italic');
-      expect(blockquote).toHaveClass('text-gray-700');
+      expect(blockquote).toHaveClass('text-main');
     });
 
-    it('should have text-gray-500 class on noContent paragraph', () => {
+    it('should have text-muted class on noContent paragraph', () => {
       const { container } = render(
         <BlockQuoteInfo title="Title" noContent="No content" />
       );
       const paragraph = container.querySelector('p');
-      expect(paragraph).toHaveClass('text-gray-500');
+      expect(paragraph).toHaveClass('text-muted');
     });
   });
 

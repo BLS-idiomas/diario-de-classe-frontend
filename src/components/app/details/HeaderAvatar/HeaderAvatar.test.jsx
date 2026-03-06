@@ -87,7 +87,7 @@ describe('HeaderAvatar', () => {
 
     const emailElement = screen.getByText('carlos.lima@example.com');
     expect(emailElement).toHaveClass('text-sm');
-    expect(emailElement).toHaveClass('text-gray-600');
+    expect(emailElement).toHaveClass('text-muted');
   });
 
   it('should render with proper layout structure', () => {
@@ -316,7 +316,7 @@ describe('HeaderAvatar', () => {
 
       const emailElement = screen.getByText('camila@example.com');
       expect(emailElement.className).toContain('text-sm');
-      expect(emailElement.className).toContain('text-gray-600');
+      expect(emailElement.className).toContain('text-muted');
     });
   });
 });

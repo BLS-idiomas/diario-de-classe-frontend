@@ -8,7 +8,7 @@ describe('Footer', () => {
     const { getByText, container } = render(<Footer />);
     const ano = new Date().getFullYear();
     expect(getByText(new RegExp(`${ano}`))).toBeInTheDocument();
-    expect(container.querySelector('footer')).toHaveClass('bg-gray-50');
+    expect(container.querySelector('footer')).toHaveClass('bg-secondary');
   });
 
   it('displays version from package.json', () => {
@@ -24,9 +24,9 @@ describe('Footer', () => {
   it('applies correct styling classes', () => {
     const { container } = render(<Footer />);
     const footer = container.querySelector('footer');
-    expect(footer).toHaveClass('bg-gray-50');
+    expect(footer).toHaveClass('bg-secondary');
     expect(footer).toHaveClass('border-t');
-    expect(footer).toHaveClass('border-gray-200');
+    expect(footer).toHaveClass('border-main');
     expect(footer).toHaveClass('py-6');
   });
 });

@@ -24,7 +24,7 @@ describe('Form', () => {
       </Form>
     );
     const form = getByTestId('form-default-class');
-    expect(form).toHaveClass('bg-white', 'shadow-md', 'rounded-lg', 'p-6');
+    expect(form).toHaveClass('bg-main', 'shadow-md', 'rounded-lg', 'p-6');
   });
 
   it('uses custom className if provided', () => {

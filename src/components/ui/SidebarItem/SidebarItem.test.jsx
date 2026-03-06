@@ -26,7 +26,7 @@ describe('SidebarItem', () => {
       <SidebarItem {...defaultProps} active={true} />
     );
     // O span do ícone deve ter a classe de texto azul
-    expect(container.querySelector('span.text-blue-600')).toBeInTheDocument();
+    expect(container.querySelector('span.primary-color')).toBeInTheDocument();
   });
 
   it('should not have active class when not active', () => {
@@ -35,7 +35,7 @@ describe('SidebarItem', () => {
     );
     // O span do ícone não deve ter a classe de texto azul
     expect(
-      container.querySelector('span.text-blue-600')
+      container.querySelector('span.primary-color')
     ).not.toBeInTheDocument();
   });
 

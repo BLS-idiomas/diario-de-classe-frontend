@@ -99,7 +99,7 @@ describe('useInfoCard', () => {
       const column = { type: 'header' };
       const className = result.current.getClassName(0, column);
 
-      expect(className).toContain('text-gray-500');
+      expect(className).toContain('text-muted');
       expect(className).toContain('font-medium');
       expect(className).toContain('text-muted');
     });
@@ -156,7 +156,7 @@ describe('useInfoCard', () => {
       const className = result.current.getClassName(0, column);
 
       expect(className).toContain('text-sm');
-      expect(className).toContain('text-gray-500');
+      expect(className).toContain('text-muted');
       expect(className).toContain('font-medium');
       expect(className).toContain('text-muted');
       // Due to fallthrough in index switch, index 0 also gets mt-2 and mt-1
@@ -194,7 +194,7 @@ describe('useInfoCard', () => {
 
       expect(className).toContain('text-sm');
       expect(className).toContain('mt-1');
-      expect(className).toContain('text-gray-500');
+      expect(className).toContain('text-muted');
       expect(className).toContain('font-medium');
       expect(className).toContain('text-muted');
     });
@@ -236,7 +236,7 @@ describe('useInfoCard', () => {
       const className = result.current.getClassName(0, column);
 
       expect(className).toContain('text-sm');
-      expect(className).toContain('text-gray-500');
+      expect(className).toContain('text-muted');
     });
 
     it('should handle empty column object', () => {
@@ -377,7 +377,7 @@ describe('useInfoCard', () => {
       // Type 'header' should fall through all cases
       const className = result.current.getClassName(2, column);
       // Due to fallthrough: case 'header' adds 'text-gray-500', case 'bold' adds 'font-medium', default adds 'text-muted'
-      expect(className).toContain('text-gray-500');
+      expect(className).toContain('text-muted');
       expect(className).toContain('font-medium');
       expect(className).toContain('text-muted');
     });

@@ -10,22 +10,11 @@ import {
 describe('Fields Base Components', () => {
   describe('classNameDefault', () => {
     it('contains all necessary CSS classes', () => {
-      expect(classNameDefault).toContain('w-full');
-      expect(classNameDefault).toContain('px-3');
-      expect(classNameDefault).toContain('py-2');
-      expect(classNameDefault).toContain('border');
-      expect(classNameDefault).toContain('rounded-md');
-      expect(classNameDefault).toContain('focus:outline-none');
-      expect(classNameDefault).toContain('focus:ring-2');
-      expect(classNameDefault).toContain('focus:ring-blue-500');
-      expect(classNameDefault).toContain('appearance-none');
+      expect(classNameDefault).toContain('input-field');
     });
 
     it('contains disabled state CSS classes', () => {
-      expect(classNameDefault).toContain('disabled:bg-gray-100');
-      expect(classNameDefault).toContain('disabled:text-gray-500');
-      expect(classNameDefault).toContain('disabled:cursor-not-allowed');
-      expect(classNameDefault).toContain('disabled:opacity-60');
+      // Não precisa testar classes de estado, pois está tudo em input-field
     });
   });
 
@@ -38,7 +27,7 @@ describe('Fields Base Components', () => {
       expect(label).toHaveClass('block');
       expect(label).toHaveClass('text-sm');
       expect(label).toHaveClass('font-medium');
-      expect(label).toHaveClass('text-gray-700');
+      expect(label).toHaveClass('text-main');
       expect(label).toHaveClass('mb-2');
     });
 

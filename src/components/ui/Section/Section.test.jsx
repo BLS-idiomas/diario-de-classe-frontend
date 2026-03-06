@@ -18,7 +18,7 @@ describe('Section component', () => {
     const section = container.querySelector('section');
 
     expect(section).toBeInTheDocument();
-    expect(section).toHaveClass('bg-white');
+    expect(section).toHaveClass('bg-main');
     expect(section).toHaveClass('rounded-md');
     expect(section).toHaveClass('p-4');
     expect(section).toHaveClass('shadow-sm');
