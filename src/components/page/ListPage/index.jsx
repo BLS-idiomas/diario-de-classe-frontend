@@ -1,6 +1,6 @@
 import { SearchForm } from '@/components/app';
 import { Table } from '@/components/ui';
-import Link from 'next/link';
+import { ButtonsPage } from '../shared';
 
 export const ListPage = ({
   title,
@@ -18,16 +18,11 @@ export const ListPage = ({
       <h1 className="page-title">{title}</h1>
 
       <div className="lg:grid lg:grid-cols-2 gap-4">
-        {hasButton && (
-          <div className="button-group">
-            {buttons.map(({ href, label, type }) => (
-              <Link key={href} href={href} className={`btn btn-${type}`}>
-                {label}
-              </Link>
-            ))}
-            {extraButton}
-          </div>
-        )}
+        <ButtonsPage
+          hasButton={hasButton}
+          buttons={buttons}
+          extraButton={extraButton}
+        />
 
         {Boolean(search) && (
           <SearchForm
