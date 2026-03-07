@@ -29,9 +29,8 @@ import {
 
 export default function MeuPerfil() {
   const { currentUser } = useUserAuth();
-  const { professor, aulas, alunos, isLoading, isNotFound } = useProfessor(
-    currentUser.id
-  );
+  const professor = currentUser;
+  const { aulas, alunos, isLoading, isNotFound } = useProfessor(currentUser.id);
   const { telefoneFormatter, dataFormatter } = useFormater();
 
   const { columns: columnsAlunos, data: dataAlunos } = useAlunosList({
