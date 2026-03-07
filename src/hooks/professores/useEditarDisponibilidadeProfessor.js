@@ -20,6 +20,7 @@ export function useEditarDisponibilidadeProfessor(professor) {
     'SABADO',
     'DOMINGO',
   ];
+  // TODO Disponibilidade Default tem que ser igual a da configuração
   const isLoading =
     action === 'updateDisponibilidadeProfessor' && status === STATUS.LOADING;
   const [editMode, setEditMode] = useState(false);
@@ -29,10 +30,10 @@ export function useEditarDisponibilidadeProfessor(professor) {
       disponibilidadesMap[dia] = {
         id: null,
         diaSemana: dia,
-        horaInicial: null,
-        horaFinal: null,
-        ativo: null,
-        userId: null,
+        horaInicial: '08:00',
+        horaFinal: '18:00',
+        ativo: false,
+        userId: professor.id,
       };
     });
     return disponibilidadesMap;

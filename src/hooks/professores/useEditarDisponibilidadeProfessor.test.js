@@ -88,10 +88,10 @@ describe('useEditarDisponibilidadeProfessor', () => {
         expect(result.current.formData[dia]).toBeDefined();
         expect(result.current.formData[dia].diaSemana).toBe(dia);
         expect(result.current.formData[dia].id).toBeNull();
-        expect(result.current.formData[dia].horaInicial).toBeNull();
-        expect(result.current.formData[dia].horaFinal).toBeNull();
-        expect(result.current.formData[dia].ativo).toBeNull();
-        expect(result.current.formData[dia].userId).toBeNull();
+        expect(result.current.formData[dia].horaInicial).toBe('08:00');
+        expect(result.current.formData[dia].horaFinal).toBe('18:00');
+        expect(result.current.formData[dia].ativo).toBe(false);
+        expect(result.current.formData[dia].userId).toBe(mockProfessor.id);
       });
     });
 
