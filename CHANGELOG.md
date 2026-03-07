@@ -1,3 +1,10 @@
+## [1.7.1](https://github.com/BLS-idiomas/diario-de-classe-frontend/compare/v1.7.0...v1.7.1) (2026-03-07)
+
+### Bug Fixes
+
+- set default availability times and user ID in useEditarDisponibilidadeProfessor hook ([8cee797](https://github.com/BLS-idiomas/diario-de-classe-frontend/commit/8cee7972109c643eeefa8316b149dd7de6e4a04f))
+- update "Nenhuma aula encontrada" text color for better visibility ([51dcf36](https://github.com/BLS-idiomas/diario-de-classe-frontend/commit/51dcf363a85745c9feb7155a1b89b8a66735ddbb))
+
 # [1.7.0](https://github.com/BLS-idiomas/diario-de-classe-frontend/compare/v1.6.0...v1.7.0) (2026-03-06)
 
 ### Bug Fixes
