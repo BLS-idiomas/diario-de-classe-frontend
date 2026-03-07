@@ -11,32 +11,22 @@ export const ListPage = ({
   data,
   isLoading,
   notFoundMessage,
-}) => {
-  const hasButton = buttons.length > 0 || Boolean(extraButton);
-  return (
-    <>
-      <h1 className="page-title">{title}</h1>
+}) => (
+  <>
+    <h1 className="page-title">{title}</h1>
 
-      <div className="lg:grid lg:grid-cols-2 gap-4">
-        <ButtonsPage
-          hasButton={hasButton}
-          buttons={buttons}
-          extraButton={extraButton}
-        />
+    <div className="lg:grid lg:grid-cols-2 gap-4">
+      <ButtonsPage buttons={buttons} extraButton={extraButton} />
 
-        {Boolean(search) && (
-          <SearchForm
-            placeholder={search.title}
-            perform={search.searchParams}
-          />
-        )}
-      </div>
-      <Table
-        columns={columns}
-        data={data}
-        isLoading={isLoading}
-        notFoundMessage={notFoundMessage}
-      />
-    </>
-  );
-};
+      {Boolean(search) && (
+        <SearchForm placeholder={search.title} perform={search.searchParams} />
+      )}
+    </div>
+    <Table
+      columns={columns}
+      data={data}
+      isLoading={isLoading}
+      notFoundMessage={notFoundMessage}
+    />
+  </>
+);

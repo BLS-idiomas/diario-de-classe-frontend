@@ -6,22 +6,13 @@ export const FormPage = ({
   buttons,
   extraButton,
   children,
-}) => {
-  const hasButton = buttons.length > 0 || extraButton;
-  return (
-    <>
-      <div className="mb-6">
-        <h1 className="page-title">{title}</h1>
-        <p className="text-muted">{subTitle}</p>
-      </div>
-
-      <ButtonsPage
-        buttons={buttons}
-        extraButton={extraButton}
-        hasButton={hasButton}
-      />
-
-      {children}
-    </>
-  );
-};
+}) => (
+  <>
+    <div className="mb-6">
+      <h1 className="page-title">{title}</h1>
+      <p className="text-muted">{subTitle}</p>
+    </div>
+    <ButtonsPage buttons={buttons} extraButton={extraButton} />
+    {children}
+  </>
+);

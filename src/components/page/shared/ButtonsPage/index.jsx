@@ -1,6 +1,7 @@
 import Link from 'next/link';
 
-export const ButtonsPage = ({ hasButton, buttons, extraButton }) => {
+export const ButtonsPage = ({ buttons, extraButton }) => {
+  const hasButton = buttons.length > 0 || Boolean(extraButton);
   if (!hasButton) return null;
   return (
     <div className="button-group">
