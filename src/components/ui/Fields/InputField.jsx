@@ -11,6 +11,7 @@ export const InputField = ({
   inputGroupClass,
   labelClass,
   className,
+  icon, // novo prop opcional
   ...props
 }) => {
   type ||= 'text';
@@ -23,17 +24,24 @@ export const InputField = ({
       inputGroupClass={inputGroupClass}
       labelClass={labelClass}
     >
-      <input
-        type={type}
-        id={htmlFor}
-        name={htmlFor}
-        required={required}
-        value={value || ''}
-        onChange={onChange}
-        className={className}
-        placeholder={placeholder}
-        {...props}
-      />
+      <div className="relative">
+        {icon && (
+          <span className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-400">
+            {icon}
+          </span>
+        )}
+        <input
+          type={type}
+          id={htmlFor}
+          name={htmlFor}
+          required={required}
+          value={value || ''}
+          onChange={onChange}
+          className={icon ? className + ' pl-10' : className}
+          placeholder={placeholder}
+          {...props}
+        />
+      </div>
     </BaseField>
   );
 };
