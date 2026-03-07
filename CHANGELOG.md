@@ -1,3 +1,9 @@
+## [1.7.3](https://github.com/BLS-idiomas/diario-de-classe-frontend/compare/v1.7.2...v1.7.3) (2026-03-07)
+
+### Bug Fixes
+
+- **BI-156:** streamline variable assignment in MeuPerfil component for clarity ([c75bdf6](https://github.com/BLS-idiomas/diario-de-classe-frontend/commit/c75bdf67fd2fecff223dae10bc98ca44e4ddbb60))
+
 ## [1.7.2](https://github.com/BLS-idiomas/diario-de-classe-frontend/compare/v1.7.1...v1.7.2) (2026-03-07)
 
 ### Bug Fixes
