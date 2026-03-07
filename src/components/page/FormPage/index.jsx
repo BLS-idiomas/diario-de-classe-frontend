@@ -1,9 +1,3 @@
-import {
-  ButtonGroup,
-  PageContent,
-  PageSubTitle,
-  PageTitle,
-} from '@/components/ui';
 import { ButtonsPage } from '../shared';
 
 export const FormPage = ({
@@ -16,11 +10,10 @@ export const FormPage = ({
   const hasButton = buttons.length > 0 || extraButton;
   return (
     <>
-      <PageContent>
-        <PageTitle>{title}</PageTitle>
-
-        <PageSubTitle>{subTitle}</PageSubTitle>
-      </PageContent>
+      <div className="mb-6">
+        <h1 className="page-title">{title}</h1>
+        <p className="text-muted">{subTitle}</p>
+      </div>
 
       <ButtonsPage
         buttons={buttons}
