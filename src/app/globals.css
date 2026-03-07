@@ -96,6 +96,12 @@
   .input-field {
     @apply focus:ring-blue-500 disabled:bg-gray-100 disabled:text-gray-500 disabled:opacity-60;
   }
+  .page-title {
+    @apply text-xl font-bold mb-4 text-gray-800;
+  }
+  .button-group {
+    @apply flex flex-wrap gap-2 mb-3;
+  }
 
   [data-theme='dark'] {
     .bg-main {
@@ -127,6 +133,9 @@
     }
     .input-field {
       @apply focus:ring-blue-400 disabled:bg-gray-100 disabled:text-gray-500 disabled:opacity-60 bg-gray-800 text-white;
+    }
+    .page-title {
+      @apply text-white;
     }
 
     .btn-outline {

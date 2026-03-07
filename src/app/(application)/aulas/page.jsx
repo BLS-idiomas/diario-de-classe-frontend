@@ -1,12 +1,10 @@
 'use client';
-
-import Link from 'next/link';
 import { useUserAuth } from '@/providers/UserAuthProvider';
 import { useAulas } from '@/hooks/aulas/useAulas';
 import { useDeletarAula } from '@/hooks/aulas/useDeletarAula';
 import { useFormater } from '@/hooks/useFormater';
 import { useAulasList } from '@/hooks/aulas/useAulasList';
-import { ButtonGroup, PageTitle, SearchForm, Table } from '@/components';
+import { ListPage } from '@/components';
 import { useEditarAndamentoAula } from '@/hooks/aulas/useEditarAndamentoAula';
 
 export default function Aulas() {
@@ -27,28 +25,23 @@ export default function Aulas() {
   });
 
   return (
-    <>
-      <PageTitle>Lista de aulas</PageTitle>
-
-      {/* <div className="lg:grid lg:grid-cols-2 gap-4"> */}
-      <ButtonGroup>
-        <Link href="/aulas/novo" className="btn btn-primary">
-          Nova aula
-        </Link>
-      </ButtonGroup>
-
-      {/* <SearchForm
-          placeholder="Buscar pelo nome do aluno ou professor..."
-          perform={searchParams}
-        /> */}
-      {/* </div> */}
-
-      <Table
-        columns={columns}
-        data={data}
-        isLoading={isLoading}
-        notFoundMessage="Nenhum aula encontrado."
-      />
-    </>
+    <ListPage
+      title="Lista de aulas"
+      buttons={[
+        {
+          href: '/aulas/novo',
+          label: 'Nova aula',
+          type: 'primary',
+        },
+      ]}
+      // search={{
+      //   title: 'Buscar pelo nome do aluno ou professor...',
+      //   searchParams: searchParams,
+      // }}
+      columns={columns}
+      data={data}
+      isLoading={isLoading || isLoadingSubmit}
+      notFoundMessage="Nenhuma aula encontrada."
+    />
   );
 }
