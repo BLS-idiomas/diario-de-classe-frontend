@@ -1,19 +1,10 @@
 'use client';
-
 import { useEffect } from 'react';
-import Link from 'next/link';
 import { notFound, useParams } from 'next/navigation';
 import { useUserAuth } from '@/providers/UserAuthProvider';
 import { useEditarAluno } from '@/hooks/alunos/useEditarAluno';
 import { useAlunoForm } from '@/hooks/alunos/useAlunoForm';
-import {
-  ButtonGroup,
-  PageContent,
-  PageSubTitle,
-  PageTitle,
-  AlunoForm,
-  Loading,
-} from '@/components';
+import { AlunoForm, Loading, FormPage } from '@/components';
 
 export default function EditarAluno() {
   const params = useParams();
@@ -44,18 +35,17 @@ export default function EditarAluno() {
   }
 
   return (
-    <>
-      <PageContent>
-        <PageTitle>Editar Aluno</PageTitle>
-
-        <PageSubTitle>Atualize os dados do aluno</PageSubTitle>
-      </PageContent>
-      <ButtonGroup>
-        <Link href={`/alunos/${params.id}`} className="btn btn-secondary">
-          ← Voltar
-        </Link>
-      </ButtonGroup>
-
+    <FormPage
+      title="Editar Aluno"
+      subTitle="Atualize os dados do aluno"
+      buttons={[
+        {
+          href: `/alunos/${params.id}`,
+          label: '← Voltar',
+          type: 'secondary',
+        },
+      ]}
+    >
       <AlunoForm
         handleSubmit={handleSubmit}
         handleChange={handleChange}
@@ -66,6 +56,6 @@ export default function EditarAluno() {
         errors={errors}
         isEdit
       />
-    </>
+    </FormPage>
   );
 }

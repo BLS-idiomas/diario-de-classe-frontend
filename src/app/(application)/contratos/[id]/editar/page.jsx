@@ -1,6 +1,4 @@
 'use client';
-
-import Link from 'next/link';
 import { useEffect } from 'react';
 import { notFound, useParams } from 'next/navigation';
 import { useAlunos } from '@/hooks/alunos/useAlunos';
@@ -9,14 +7,7 @@ import { useFormater } from '@/hooks/useFormater';
 import { useContratoForm } from '@/hooks/contratos/useContratoForm';
 import { useGenerateAulasByContrato } from '@/hooks/contratos/useGenerateAulasByContrato';
 import { useEditarContrato } from '@/hooks/contratos/useEditarContrato';
-import {
-  ButtonGroup,
-  PageContent,
-  PageSubTitle,
-  PageTitle,
-  ContratoForm,
-  Loading,
-} from '@/components';
+import { ContratoForm, Loading, FormPage } from '@/components';
 
 export default function EditarContrato() {
   const params = useParams();
@@ -82,21 +73,17 @@ export default function EditarContrato() {
   }
 
   return (
-    <>
-      <PageContent>
-        <PageTitle>Novo Contrato</PageTitle>
-
-        <PageSubTitle>
-          Preencha os dados para criar um novo contrato
-        </PageSubTitle>
-      </PageContent>
-
-      <ButtonGroup>
-        <Link href="/contratos" className="btn btn-secondary">
-          ← Voltar
-        </Link>
-      </ButtonGroup>
-
+    <FormPage
+      title="Editar Contrato"
+      subTitle="Atualize os dados do contrato"
+      buttons={[
+        {
+          href: `/contratos/${params.id}`,
+          label: '← Voltar',
+          type: 'secondary',
+        },
+      ]}
+    >
       <ContratoForm
         alunoOptions={alunoOptions}
         professorOptions={professorOptions}
@@ -118,6 +105,6 @@ export default function EditarContrato() {
         createAula={createAula}
         dataFormatter={dataFormatter}
       />
-    </>
+    </FormPage>
   );
 }

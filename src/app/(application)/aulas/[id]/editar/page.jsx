@@ -1,19 +1,10 @@
 'use client';
-
 import { useEffect } from 'react';
-import Link from 'next/link';
 import { useParams, useSearchParams } from 'next/navigation';
 import { STATUS_ERROR } from '@/constants';
 import { useEditarAula } from '@/hooks/aulas/useEditarAula';
 import { useAulaForm } from '@/hooks/aulas/useAulaForm';
-import {
-  ButtonGroup,
-  PageContent,
-  PageSubTitle,
-  PageTitle,
-  AulaForm,
-  Loading,
-} from '@/components';
+import { AulaForm, Loading, FormPage } from '@/components';
 
 export default function EditarAula() {
   const params = useParams();
@@ -51,19 +42,17 @@ export default function EditarAula() {
   }
 
   return (
-    <>
-      <PageContent>
-        <PageTitle>Editar Aula</PageTitle>
-
-        <PageSubTitle>Atualize os dados da aula</PageSubTitle>
-      </PageContent>
-      <ButtonGroup>
-        {/* `/aulas/${params.id}` */}
-        <Link href={backUrl || `/aulas`} className="btn btn-secondary">
-          ← Voltar
-        </Link>
-      </ButtonGroup>
-
+    <FormPage
+      title="Editar Aula"
+      subTitle="Atualize os dados da aula"
+      buttons={[
+        {
+          href: backUrl || `/aulas`,
+          label: '← Voltar',
+          type: 'secondary',
+        },
+      ]}
+    >
       <AulaForm
         handleSubmit={handleSubmit}
         handleChange={handleChange}
@@ -73,6 +62,6 @@ export default function EditarAula() {
         errors={errors}
         isEdit
       />
-    </>
+    </FormPage>
   );
 }

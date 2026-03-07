@@ -1,16 +1,8 @@
 'use client';
-
-import Link from 'next/link';
 import { useUserAuth } from '@/providers/UserAuthProvider';
 import { useNovoAluno } from '@/hooks/alunos/useNovoAluno';
 import { useAlunoForm } from '@/hooks/alunos/useAlunoForm';
-import {
-  ButtonGroup,
-  PageContent,
-  PageSubTitle,
-  PageTitle,
-  AlunoForm,
-} from '@/components';
+import { AlunoForm, FormPage } from '@/components';
 
 export default function NovoAluno() {
   const { currentUser } = useUserAuth();
@@ -21,19 +13,17 @@ export default function NovoAluno() {
   });
 
   return (
-    <>
-      <PageContent>
-        <PageTitle>Novo aluno</PageTitle>
-
-        <PageSubTitle>Preencha os dados para criar um novo aluno</PageSubTitle>
-      </PageContent>
-
-      <ButtonGroup>
-        <Link href="/alunos" className="btn btn-secondary">
-          ← Voltar
-        </Link>
-      </ButtonGroup>
-
+    <FormPage
+      title="Novo Aluno"
+      subTitle="Preencha os dados para criar um novo aluno"
+      buttons={[
+        {
+          href: '/alunos',
+          label: '← Voltar',
+          type: 'secondary',
+        },
+      ]}
+    >
       <AlunoForm
         handleSubmit={handleSubmit}
         handleChange={handleChange}
@@ -44,6 +34,6 @@ export default function NovoAluno() {
         message={message}
         errors={errors}
       />
-    </>
+    </FormPage>
   );
 }

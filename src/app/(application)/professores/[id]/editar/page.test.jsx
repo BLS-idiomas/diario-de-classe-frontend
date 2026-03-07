@@ -55,6 +55,15 @@ jest.mock('@/components', () => ({
       <button type="submit">Salvar</button>
     </form>
   ),
+  FormPage: ({ title, subTitle, buttons, extraButton, children }) => (
+    <div data-testid="form-page">
+      <div data-testid="form-page-title">{title}</div>
+      <div data-testid="form-page-subtitle">{subTitle}</div>
+      <div data-testid="form-page-buttons">{JSON.stringify(buttons)}</div>
+      <div data-testid="form-page-extra-button">{extraButton}</div>
+      {children}
+    </div>
+  ),
 }));
 
 describe('EditarProfessor Page', () => {
@@ -117,36 +126,31 @@ describe('EditarProfessor Page', () => {
 
   it('renders the page with all main components', () => {
     render(<EditarProfessor />);
-
-    expect(screen.getByTestId('page-content')).toBeInTheDocument();
-    expect(screen.getByTestId('page-title')).toBeInTheDocument();
-    expect(screen.getByTestId('page-subtitle')).toBeInTheDocument();
-    expect(screen.getByTestId('button-group')).toBeInTheDocument();
+    expect(screen.getByTestId('form-page')).toBeInTheDocument();
+    expect(screen.getByTestId('form-page-title')).toBeInTheDocument();
+    expect(screen.getByTestId('form-page-subtitle')).toBeInTheDocument();
     expect(screen.getByTestId('professor-form')).toBeInTheDocument();
   });
 
   it('renders the page title correctly', () => {
     render(<EditarProfessor />);
-
-    expect(screen.getByTestId('page-title')).toHaveTextContent(
+    expect(screen.getByTestId('form-page-title')).toHaveTextContent(
       'Editar Professor'
     );
   });
 
   it('renders the page subtitle correctly', () => {
     render(<EditarProfessor />);
-
-    expect(screen.getByTestId('page-subtitle')).toHaveTextContent(
+    expect(screen.getByTestId('form-page-subtitle')).toHaveTextContent(
       'Atualize os dados do professor'
     );
   });
 
   it('renders the "Voltar" button with correct link', () => {
     render(<EditarProfessor />);
-
-    const link = screen.getByRole('link', { name: /voltar/i });
-    expect(link).toBeInTheDocument();
-    expect(link).toHaveAttribute('href', `/professores/${mockParams.id}`);
+    const buttons = screen.getByTestId('form-page-buttons');
+    expect(buttons).toHaveTextContent(`/professores/${mockParams.id}`);
+    expect(buttons).toHaveTextContent('← Voltar');
   });
 
   it('passes isEdit prop to ProfessorForm', () => {

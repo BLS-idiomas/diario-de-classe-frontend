@@ -13,6 +13,7 @@ import {
   PageTitle,
   ProfessorForm,
   Loading,
+  FormPage,
 } from '@/components';
 
 export default function EditarProfessor() {
@@ -46,18 +47,17 @@ export default function EditarProfessor() {
   }
 
   return (
-    <>
-      <PageContent>
-        <PageTitle>Editar Professor</PageTitle>
-
-        <PageSubTitle>Atualize os dados do professor</PageSubTitle>
-      </PageContent>
-      <ButtonGroup>
-        <Link href={`/professores/${params.id}`} className="btn btn-secondary">
-          ← Voltar
-        </Link>
-      </ButtonGroup>
-
+    <FormPage
+      title="Editar Professor"
+      subTitle="Atualize os dados do professor"
+      buttons={[
+        {
+          href: `/professores/${params.id}`,
+          label: '← Voltar',
+          type: 'secondary',
+        },
+      ]}
+    >
       <ProfessorForm
         handleSubmit={handleSubmit}
         handleChange={handleChange}
@@ -68,6 +68,6 @@ export default function EditarProfessor() {
         errors={errors}
         isEdit
       />
-    </>
+    </FormPage>
   );
 }

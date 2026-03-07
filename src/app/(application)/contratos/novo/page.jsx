@@ -1,19 +1,11 @@
 'use client';
-
-import Link from 'next/link';
 import { useAlunos } from '@/hooks/alunos/useAlunos';
 import { useProfessores } from '@/hooks/professores/useProfessores';
 import { useFormater } from '@/hooks/useFormater';
 import { useContratoForm } from '@/hooks/contratos/useContratoForm';
 import { useGenerateAulasByContrato } from '@/hooks/contratos/useGenerateAulasByContrato';
 import { useNovoContrato } from '@/hooks/contratos/useNovoContrato';
-import {
-  ButtonGroup,
-  PageContent,
-  PageSubTitle,
-  PageTitle,
-  ContratoForm,
-} from '@/components';
+import { ContratoForm, FormPage } from '@/components';
 
 export default function NovoContrato() {
   const { alunos, alunoOptions } = useAlunos();
@@ -40,21 +32,17 @@ export default function NovoContrato() {
   const handleGenerateAulasByContrato = () => generateAulasByContrato(formData);
 
   return (
-    <>
-      <PageContent>
-        <PageTitle>Novo Contrato</PageTitle>
-
-        <PageSubTitle>
-          Preencha os dados para criar um novo contrato
-        </PageSubTitle>
-      </PageContent>
-
-      <ButtonGroup>
-        <Link href="/contratos" className="btn btn-secondary">
-          ← Voltar
-        </Link>
-      </ButtonGroup>
-
+    <FormPage
+      title="Novo Contrato"
+      subTitle="Preencha os dados para criar um novo contrato"
+      buttons={[
+        {
+          href: '/contratos',
+          label: '← Voltar',
+          type: 'secondary',
+        },
+      ]}
+    >
       <ContratoForm
         alunoOptions={alunoOptions}
         professorOptions={professorOptions}
@@ -76,6 +64,6 @@ export default function NovoContrato() {
         createAula={createAula}
         dataFormatter={dataFormatter}
       />
-    </>
+    </FormPage>
   );
 }
