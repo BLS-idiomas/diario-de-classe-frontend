@@ -1,3 +1,9 @@
+## [1.7.2](https://github.com/BLS-idiomas/diario-de-classe-frontend/compare/v1.7.1...v1.7.2) (2026-03-07)
+
+### Bug Fixes
+
+- correct color property typos in icon components across multiple hooks ([a71fe32](https://github.com/BLS-idiomas/diario-de-classe-frontend/commit/a71fe32cd83bfea42b9ad31a644548e89a23da6a))
+
 ## [1.7.1](https://github.com/BLS-idiomas/diario-de-classe-frontend/compare/v1.7.0...v1.7.1) (2026-03-07)
 
 ### Bug Fixes
