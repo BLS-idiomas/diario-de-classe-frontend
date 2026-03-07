@@ -52,7 +52,7 @@ export function useSidebar(isAdmin) {
       href: '/relatorios',
       label: 'Relatórios',
       icon: <NotebookTabs strokeWidth={strokeWidth} />,
-      show: false,
+      show: isAdmin(),
     },
     {
       href: '/exemplo',
