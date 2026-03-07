@@ -70,14 +70,14 @@ export function useAlunosList({
             href={`/alunos/${aluno.id}`}
             className="btn-outline btn-outline-primary"
           >
-            <Eye {...iconParams} stroke="currentColore" />
+            <Eye {...iconParams} stroke="currentColor" />
           </Link>
 
           <Link
             href={`/alunos/${aluno.id}/editar`}
             className="btn-outline btn-outline-secondary"
           >
-            <Pencil {...iconParams} stroke="currentColory" />
+            <Pencil {...iconParams} stroke="currentColor" />
           </Link>
 
           <button

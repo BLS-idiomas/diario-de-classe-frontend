@@ -88,7 +88,7 @@ export function useContratosList({
             href={`/contratos/${contrato.id}`}
             className="btn-outline btn-outline-primary"
           >
-            <Eye {...iconParams} stroke="currentColore" />
+            <Eye {...iconParams} stroke="currentColor" />
           </Link>
 
           <Link
@@ -96,7 +96,7 @@ export function useContratosList({
             className="btn-outline btn-outline-secondary"
             hidden={!isAdmin}
           >
-            <Pencil {...iconParams} stroke="currentColory" />
+            <Pencil {...iconParams} stroke="currentColor" />
           </Link>
 
           <button

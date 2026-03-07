@@ -83,14 +83,14 @@ export function useAulasList({
             href={`/aulas/${aula.id}`}
             className="btn-outline btn-outline-primary"
           >
-            <Eye {...iconParams} stroke="currentColore" />
+            <Eye {...iconParams} stroke="currentColor" />
           </Link> */}
 
           <Link
             href={`/aulas/${aula.id}/editar`}
             className="btn-outline btn-outline-secondary"
           >
-            <Pencil {...iconParams} stroke="currentColory" />
+            <Pencil {...iconParams} stroke="currentColor" />
           </Link>
 
           <button
