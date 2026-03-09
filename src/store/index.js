@@ -9,9 +9,11 @@ import diasAulasReducer from './slices/diasAulasSlice';
 import aulasReducer from './slices/aulasSlice';
 import dashboardReducer from './slices/dashboardSlice';
 import configuracaoReducer from './slices/configuracaoSlice';
+import relatorioReducer from './slices/relatorioSlice';
 
 export const store = configureStore({
   reducer: {
+    relatorio: relatorioReducer,
     configuracao: configuracaoReducer,
     dashboard: dashboardReducer,
     alunos: alunosReducer,
