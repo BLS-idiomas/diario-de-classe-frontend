@@ -55,11 +55,18 @@ export const ContratoForm = ({
   }, [formData]);
 
   return (
-    <Form handleSubmit={handleSubmit}>
-      <FormError title={message} errors={errors} />
+    <Form
+      handleSubmit={handleSubmit}
+      props={{ 'data-testid': 'contrato-form' }}
+    >
+      <FormError
+        title={message}
+        errors={errors}
+        dataTestId="contrato-form-error"
+      />
 
       <div className="grid gap-6">
-        <FormGroup col={2}>
+        <FormGroup col={2} dataTestId="contrato-form-group">
           {/* STEP 1 - SELECIONE O ALUNO E PROFESSOR */}
           <SelectField
             required
@@ -103,7 +110,7 @@ export const ContratoForm = ({
       <div className="flex flex-col gap-4 text-muted" hidden={!showDiasAulas}>
         <p>Registre as aulas que o aluno terá em cada dia da semana.</p>
 
-        <FormGroup cols={2}>
+        <FormGroup cols={2} dataTestId="contrato-form-group">
           {formData.diasAulas.map(dia => (
             <div key={dia.diaSemana} className="flex flex-col gap-2 mb-4">
               <h4 className="text-xl text-main font-semibold mb-2">

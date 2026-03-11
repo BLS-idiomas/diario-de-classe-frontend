@@ -63,11 +63,11 @@ export const AulaForm = ({
   }, [contratos, dataFormatter, formData.idAluno]);
 
   return (
-    <Form handleSubmit={handleSubmit}>
-      <FormError title={message} errors={errors} />
+    <Form handleSubmit={handleSubmit} props={{ 'data-testid': 'aula-form' }}>
+      <FormError title={message} errors={errors} dataTestId="aula-form-error" />
 
       <div className="grid gap-6">
-        <FormGroup>
+        <FormGroup dataTestId="aula-form-group">
           <SelectField
             required
             htmlFor="idAluno"
@@ -108,7 +108,7 @@ export const AulaForm = ({
           />
         </FormGroup>
 
-        <FormGroup cols={isEdit ? 4 : 3}>
+        <FormGroup cols={isEdit ? 4 : 3} dataTestId="aula-form-group">
           <InputField
             required
             htmlFor="dataAula"

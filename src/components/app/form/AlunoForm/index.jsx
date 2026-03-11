@@ -18,11 +18,15 @@ export const AlunoForm = ({
 }) => {
   const { isAdmin } = useUserAuth();
   return (
-    <Form handleSubmit={handleSubmit}>
-      <FormError title={message} errors={errors} />
+    <Form handleSubmit={handleSubmit} props={{ 'data-testid': 'aluno-form' }}>
+      <FormError
+        title={message}
+        errors={errors}
+        dataTestId="aluno-form-error"
+      />
 
       <div className="grid gap-6">
-        <FormGroup>
+        <FormGroup dataTestId="aluno-form-group">
           {/* Nome */}
           <InputField
             required
