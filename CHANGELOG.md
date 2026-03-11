@@ -1,3 +1,19 @@
+# [1.8.0](https://github.com/BLS-idiomas/diario-de-classe-frontend/compare/v1.7.3...v1.8.0) (2026-03-11)
+
+### Bug Fixes
+
+- safely access professor.id in disponibilidadesMap ([adfc0b9](https://github.com/BLS-idiomas/diario-de-classe-frontend/commit/adfc0b96a11fb1c8bbdd38ebfa685d4262dce6ce))
+- update 'Relatórios' sidebar item visibility based on admin status ([d5dd5b9](https://github.com/BLS-idiomas/diario-de-classe-frontend/commit/d5dd5b9213556322db36ab847a0b5cb071f1f51a))
+
+### Features
+
+- add GetRelatorioService and GetRelatorioByReportService for report retrieval ([8b19224](https://github.com/BLS-idiomas/diario-de-classe-frontend/commit/8b19224b731dc5963e357e68ab0d030d39088c7a))
+- add Relatorios component to display reports heading ([138efbb](https://github.com/BLS-idiomas/diario-de-classe-frontend/commit/138efbb5c38a57210ad0ff8c0a1c85fc5aa53bb6))
+- add relatorioSlice with async thunks for report retrieval and export ([29b805e](https://github.com/BLS-idiomas/diario-de-classe-frontend/commit/29b805e4300f69697f065258ab6f6c93334b6b32))
+- hide Relatórios sidebar item for non-admin users ([34df897](https://github.com/BLS-idiomas/diario-de-classe-frontend/commit/34df897471d08cd7714f7e7977158be1db35cf43))
+- implement RelatorioApi with CRUD operation restrictions and corresponding tests ([33f3047](https://github.com/BLS-idiomas/diario-de-classe-frontend/commit/33f3047afb5c764f66c6855fc66bf1875f35d791))
+- implement RelatoriosPage with filtering and report generation functionality ([1137845](https://github.com/BLS-idiomas/diario-de-classe-frontend/commit/1137845fff88dfcefc5d91e6a29318c4cb12f9d8))
+
 ## [1.7.3](https://github.com/BLS-idiomas/diario-de-classe-frontend/compare/v1.7.2...v1.7.3) (2026-03-07)
 
 ### Bug Fixes
