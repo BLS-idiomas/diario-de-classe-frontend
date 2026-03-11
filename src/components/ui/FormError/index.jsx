@@ -1,11 +1,11 @@
-export const FormError = ({ title, errors }) => {
+export const FormError = ({ title, errors, dataTestId = 'form-error' }) => {
   if (!title) {
     return <></>;
   }
   return (
     <div
       className="bg-red-50 border border-red-200 rounded-md p-4 mb-6"
-      data-testid="form-error"
+      data-testid={dataTestId}
     >
       <h3 className="text-red-800 font-medium mb-2">{title}:</h3>
       <ul className="list-disc list-inside space-y-1">

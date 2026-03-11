@@ -1,4 +1,9 @@
-export const FormGroup = ({ children, cols = 2, className = '' }) => {
+export const FormGroup = ({
+  children,
+  cols = 2,
+  className = '',
+  dataTestId = 'form-group',
+}) => {
   let colsClass = '';
   className ||= 'gap-6';
   if (cols === 6) colsClass = 'md:grid-cols-3 lg:grid-cols-6';
@@ -9,7 +14,7 @@ export const FormGroup = ({ children, cols = 2, className = '' }) => {
   return (
     <div
       className={`grid grid-cols-1 ${colsClass} ${className}`}
-      data-testid="form-group"
+      data-testid={dataTestId}
     >
       {children}
     </div>
