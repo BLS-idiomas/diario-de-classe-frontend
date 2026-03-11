@@ -5,6 +5,7 @@ import {
   updateContrato,
   clearStatus,
   getContrato,
+  clearCurrent,
 } from '@/store/slices/contratosSlice';
 import { useRouter } from 'next/navigation';
 import { useToast } from '@/providers/ToastProvider';

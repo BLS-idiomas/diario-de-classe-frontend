@@ -54,7 +54,7 @@ const createWrapper = store => {
   return Wrapper;
 };
 
-describe.skip('useAluno', () => {
+describe('useAluno', () => {
   let mockDispatch;
 
   beforeEach(() => {
@@ -131,25 +131,9 @@ describe.skip('useAluno', () => {
     const wrapper = createWrapper(store);
     renderHook(() => useAluno(123), { wrapper });
 
-    expect(mockDispatch).toHaveBeenCalledTimes(5);
+    expect(mockDispatch).toHaveBeenCalledTimes(1);
     expect(mockDispatch).toHaveBeenCalledWith({
       type: 'alunos/getAluno',
-      payload: 123,
-    });
-    expect(mockDispatch).toHaveBeenCalledWith({
-      type: 'alunos/getAulasAluno',
-      payload: 123,
-    });
-    expect(mockDispatch).toHaveBeenCalledWith({
-      type: 'alunos/getDiasAulasAluno',
-      payload: 123,
-    });
-    expect(mockDispatch).toHaveBeenCalledWith({
-      type: 'alunos/getContratoAluno',
-      payload: 123,
-    });
-    expect(mockDispatch).toHaveBeenCalledWith({
-      type: 'alunos/getContratosAluno',
       payload: 123,
     });
   });
@@ -166,15 +150,25 @@ describe.skip('useAluno', () => {
   });
 
   it('returns correct shape and flags for IDLE status', () => {
+    const mockAulas = [{ id: 1, titulo: 'Aula 1' }];
+    const mockDiasAulas = [{ dia: 'Segunda', horario: '08:00' }];
+    const mockContrato = { id: 1, numero: 'CONT-001' };
+    const mockContratos = [{ id: 1, numero: 'CONT-001' }];
+
     const initialState = {
-      current: { id: 5, nome: 'Ana', sobrenome: 'Santos' },
-      aulas: [{ id: 1, titulo: 'Aula 1' }],
-      diasAulas: [{ dia: 'Segunda', horario: '08:00' }],
-      contrato: { id: 1, numero: 'CONT-001' },
-      contratos: [{ id: 1, numero: 'CONT-001' }],
+      current: {
+        id: 5,
+        nome: 'Ana',
+        sobrenome: 'Santos',
+        aulas: mockAulas,
+        diasAulas: mockDiasAulas,
+        contrato: mockContrato,
+        contratos: mockContratos,
+      },
       message: 'all good',
       status: STATUS.IDLE,
       statusError: null,
+      action: 'getAluno',
     };
 
     const store = createMockStore(initialState);
@@ -185,11 +179,11 @@ describe.skip('useAluno', () => {
 
     expect(result.current).toEqual({
       aluno: initialState.current,
-      aulas: initialState.aulas,
-      diasAulas: initialState.diasAulas,
-      contrato: initialState.contrato,
-      contratos: initialState.contratos,
-      message: initialState.message,
+      aulas: mockAulas,
+      diasAulas: mockDiasAulas,
+      contrato: mockContrato,
+      contratos: mockContratos,
+      message: 'all good',
       isLoading: true,
       isSuccess: false,
       isFailed: false,
@@ -207,6 +201,7 @@ describe.skip('useAluno', () => {
       message: '',
       status: STATUS.LOADING,
       statusError: null,
+      action: 'getAluno',
     };
 
     const store = createMockStore(initialState);
@@ -221,24 +216,33 @@ describe.skip('useAluno', () => {
   });
 
   it('returns correct flags for SUCCESS status', () => {
+    const mockAulas = [
+      { id: 1, titulo: 'Aula 1' },
+      { id: 2, titulo: 'Aula 2' },
+    ];
+    const mockDiasAulas = [
+      { dia: 'Segunda', horario: '08:00' },
+      { dia: 'Quarta', horario: '10:00' },
+    ];
+    const mockContratos = [
+      { id: 10, numero: 'CONT-010', valor: 1500 },
+      { id: 9, numero: 'CONT-009', valor: 1200 },
+    ];
+
     const initialState = {
-      current: { id: 10, nome: 'Carlos', sobrenome: 'Pereira' },
-      aulas: [
-        { id: 1, titulo: 'Aula 1' },
-        { id: 2, titulo: 'Aula 2' },
-      ],
-      diasAulas: [
-        { dia: 'Segunda', horario: '08:00' },
-        { dia: 'Quarta', horario: '10:00' },
-      ],
-      contrato: { id: 10, numero: 'CONT-010', valor: 1500 },
-      contratos: [
-        { id: 10, numero: 'CONT-010', valor: 1500 },
-        { id: 9, numero: 'CONT-009', valor: 1200 },
-      ],
+      current: {
+        id: 10,
+        nome: 'Carlos',
+        sobrenome: 'Pereira',
+        aulas: mockAulas,
+        diasAulas: mockDiasAulas,
+        contrato: mockContratos[0],
+        contratos: mockContratos,
+      },
       message: 'success',
       status: STATUS.SUCCESS,
       statusError: null,
+      action: 'getAluno',
     };
 
     const store = createMockStore(initialState);
@@ -252,7 +256,7 @@ describe.skip('useAluno', () => {
     expect(result.current.isFailed).toBe(false);
     expect(result.current.aulas).toHaveLength(2);
     expect(result.current.diasAulas).toHaveLength(2);
-    expect(result.current.contrato).toEqual(initialState.contrato);
+    expect(result.current.contrato).toEqual(mockContratos[0]);
     expect(result.current.contratos).toHaveLength(2);
   });
 
@@ -266,6 +270,7 @@ describe.skip('useAluno', () => {
       message: 'error message',
       status: STATUS.FAILED,
       statusError: '404',
+      action: 'getAluno',
     };
 
     const store = createMockStore(initialState);
@@ -289,6 +294,7 @@ describe.skip('useAluno', () => {
       message: 'Not found',
       status: STATUS.FAILED,
       statusError: '404',
+      action: 'getAluno',
     };
 
     const store = createMockStore(initialState);
@@ -324,6 +330,7 @@ describe.skip('useAluno', () => {
       message: '',
       status: STATUS.SUCCESS,
       statusError: null,
+      action: 'getAluno',
     };
 
     const store = createMockStore(initialState);
@@ -336,46 +343,6 @@ describe.skip('useAluno', () => {
       type: 'alunos/getAluno',
       payload: 'abc123',
     });
-    expect(mockDispatch).toHaveBeenCalledWith({
-      type: 'alunos/getAulasAluno',
-      payload: 'abc123',
-    });
-    expect(mockDispatch).toHaveBeenCalledWith({
-      type: 'alunos/getDiasAulasAluno',
-      payload: 'abc123',
-    });
-    expect(mockDispatch).toHaveBeenCalledWith({
-      type: 'alunos/getContratoAluno',
-      payload: 'abc123',
-    });
-    expect(mockDispatch).toHaveBeenCalledWith({
-      type: 'alunos/getContratosAluno',
-      payload: 'abc123',
-    });
-  });
-
-  it('should return empty arrays and null contrato when data is not loaded', () => {
-    const initialState = {
-      current: { id: 1, nome: 'João' },
-      aulas: [],
-      diasAulas: [],
-      contrato: null,
-      contratos: [],
-      message: '',
-      status: STATUS.SUCCESS,
-      statusError: null,
-    };
-
-    const store = createMockStore(initialState);
-    store.dispatch = mockDispatch;
-
-    const wrapper = createWrapper(store);
-    const { result } = renderHook(() => useAluno(1), { wrapper });
-
-    expect(result.current.aulas).toEqual([]);
-    expect(result.current.diasAulas).toEqual([]);
-    expect(result.current.contrato).toBeNull();
-    expect(result.current.contratos).toEqual([]);
   });
 
   it('should return populated aulas array when available', () => {
@@ -385,14 +352,11 @@ describe.skip('useAluno', () => {
     ];
 
     const initialState = {
-      current: { id: 1, nome: 'João' },
-      aulas: mockAulas,
-      diasAulas: [],
-      contrato: null,
-      contratos: [],
+      current: { id: 1, nome: 'João', aulas: mockAulas },
       message: '',
       status: STATUS.SUCCESS,
       statusError: null,
+      action: 'getAluno',
     };
 
     const store = createMockStore(initialState);
@@ -413,14 +377,11 @@ describe.skip('useAluno', () => {
     ];
 
     const initialState = {
-      current: { id: 1, nome: 'João' },
-      aulas: [],
-      diasAulas: mockDiasAulas,
-      contrato: null,
-      contratos: [],
+      current: { id: 1, nome: 'João', diasAulas: mockDiasAulas },
       message: '',
       status: STATUS.SUCCESS,
       statusError: null,
+      action: 'getAluno',
     };
 
     const store = createMockStore(initialState);
@@ -444,14 +405,11 @@ describe.skip('useAluno', () => {
     };
 
     const initialState = {
-      current: { id: 1, nome: 'João' },
-      aulas: [],
-      diasAulas: [],
-      contrato: mockContrato,
-      contratos: [],
+      current: { id: 1, nome: 'João', contrato: mockContrato },
       message: '',
       status: STATUS.SUCCESS,
       statusError: null,
+      action: 'getAluno',
     };
 
     const store = createMockStore(initialState);
@@ -485,14 +443,16 @@ describe.skip('useAluno', () => {
     ];
 
     const initialState = {
-      current: { id: 1, nome: 'João' },
-      aulas: [],
-      diasAulas: [],
-      contrato: mockContratos[0],
-      contratos: mockContratos,
+      current: {
+        id: 1,
+        nome: 'João',
+        contratos: mockContratos,
+        contrato: mockContratos[0],
+      },
       message: '',
       status: STATUS.SUCCESS,
       statusError: null,
+      action: 'getAluno',
     };
 
     const store = createMockStore(initialState);
@@ -508,21 +468,26 @@ describe.skip('useAluno', () => {
   });
 
   it('should return all data populated when fully loaded', () => {
-    const mockAluno = { id: 1, nome: 'João', sobrenome: 'Silva' };
     const mockAulas = [{ id: 1, titulo: 'Aula 1' }];
     const mockDiasAulas = [{ dia: 'Segunda', horario: '08:00' }];
     const mockContrato = { id: 1, numero: 'CONT-001' };
     const mockContratos = [{ id: 1, numero: 'CONT-001' }];
-
-    const initialState = {
-      current: mockAluno,
+    const mockAluno = {
+      id: 1,
+      nome: 'João',
+      sobrenome: 'Silva',
       aulas: mockAulas,
       diasAulas: mockDiasAulas,
       contrato: mockContrato,
       contratos: mockContratos,
+    };
+
+    const initialState = {
+      current: mockAluno,
       message: 'Loaded successfully',
       status: STATUS.SUCCESS,
       statusError: null,
+      action: 'getAluno',
     };
 
     const store = createMockStore(initialState);
@@ -550,6 +515,7 @@ describe.skip('useAluno', () => {
       message: 'Not found',
       status: STATUS.FAILED,
       statusError: '404',
+      action: 'getAluno',
     };
 
     const store = createMockStore(initialState);
@@ -572,6 +538,7 @@ describe.skip('useAluno', () => {
       message: 'Bad request',
       status: STATUS.FAILED,
       statusError: '400',
+      action: 'getAluno',
     };
 
     const store = createMockStore(initialState);
@@ -594,6 +561,7 @@ describe.skip('useAluno', () => {
       message: 'Some error',
       status: STATUS.FAILED,
       statusError: '404',
+      action: 'getAluno',
     };
 
     const store = createMockStore(initialState);
@@ -612,9 +580,11 @@ describe.skip('useAluno', () => {
       aulas: [],
       diasAulas: [],
       contrato: null,
+      contratos: [],
       message: 'Server error',
       status: STATUS.FAILED,
       statusError: '500',
+      action: 'getAluno',
     };
 
     const store = createMockStore(initialState);

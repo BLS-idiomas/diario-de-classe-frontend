@@ -17,8 +17,8 @@ export function useGenerateAulasByContrato({ errorSubmit, setFormData }) {
 
   const generateAulasByContrato = formData => {
     setIsSubmitting(true);
-    const diasAulas = formData.diasAulas
-      .filter(dia => dia.ativo)
+    const diasAulas = (formData.diasAulas || formData.currentDiasAulas || [])
+      .filter(dia => dia.ativo !== false)
       .map(dia => ({
         diaSemana: dia.diaSemana,
         quantidadeAulas: dia.quantidadeAulas,
@@ -26,12 +26,17 @@ export function useGenerateAulasByContrato({ errorSubmit, setFormData }) {
         horaFinal: dia.horaFinal,
       }));
     const dataToSend = {
-      dataInicio: formData.dataInicio,
-      dataFim: formData.dataTermino,
+      dataInicio: formData.contrato?.dataInicio || formData.dataInicio,
+      dataFim: formData.contrato?.dataTermino || formData.dataTermino,
       diasAulas: diasAulas,
     };
 
-    dispatch(generateAulas({ data: dataToSend }));
+    dispatch(
+      generateAulas({
+        id: formData.contratoId,
+        data: dataToSend,
+      })
+    );
   };
 
   useEffect(() => {

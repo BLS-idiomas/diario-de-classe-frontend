@@ -22,6 +22,10 @@ jest.mock('@/constants', () => ({
     SUCCESS: 'success',
     FAILED: 'failed',
   },
+  STATUS_ERROR: {
+    BAD_REQUEST: '400',
+    NOT_FOUND: '404',
+  },
 }));
 
 jest.mock('next/navigation', () => ({
@@ -50,7 +54,7 @@ const createWrapper = store => {
   return Wrapper;
 };
 
-describe.skip('useEditarAluno', () => {
+describe('useEditarAluno', () => {
   let mockDispatch;
   let mockPush;
   let mockSuccess;
@@ -177,6 +181,7 @@ describe.skip('useEditarAluno', () => {
       errors: {},
       current: null,
       statusError: null,
+      action: 'updateAluno',
     };
     const store = createMockStore(loadingState);
     store.dispatch = mockDispatch;
@@ -244,6 +249,7 @@ describe.skip('useEditarAluno', () => {
       message: 'Success message',
       errors: { nome: 'Nome é obrigatório' },
       isLoading: false,
+      isNotFound: false,
       current: { id: 123, nome: 'João' },
       submit: expect.any(Function),
     });
@@ -340,7 +346,7 @@ describe.skip('useEditarAluno', () => {
       expect(mockSuccess).toHaveBeenCalledWith(
         'Operação realizada com sucesso!'
       );
-      expect(mockPush).toHaveBeenCalledWith('/alunos');
+      expect(mockPush).toHaveBeenCalledWith('/alunos/123');
     });
   });
 

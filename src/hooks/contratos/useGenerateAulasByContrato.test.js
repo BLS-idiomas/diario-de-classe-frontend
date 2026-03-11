@@ -27,10 +27,9 @@ jest.mock('@/constants', () => ({
   },
 }));
 
-describe.skip('useGenerateAulasByContrato', () => {
+describe('useGenerateAulasByContrato', () => {
   let store;
   let mockErrorSubmit;
-  let mockClearError;
   let mockSetFormData;
 
   const createMockStore = (initialState = {}) => {
@@ -59,7 +58,6 @@ describe.skip('useGenerateAulasByContrato', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockErrorSubmit = jest.fn();
-    mockClearError = jest.fn();
     mockSetFormData = jest.fn();
 
     generateAulas.mockReturnValue({
@@ -79,7 +77,7 @@ describe.skip('useGenerateAulasByContrato', () => {
         () =>
           useGenerateAulasByContrato({
             errorSubmit: mockErrorSubmit,
-            clearError: mockClearError,
+
             setFormData: mockSetFormData,
           }),
         { wrapper }
@@ -95,7 +93,7 @@ describe.skip('useGenerateAulasByContrato', () => {
         () =>
           useGenerateAulasByContrato({
             errorSubmit: mockErrorSubmit,
-            clearError: mockClearError,
+
             setFormData: mockSetFormData,
           }),
         { wrapper }
@@ -112,7 +110,7 @@ describe.skip('useGenerateAulasByContrato', () => {
         () =>
           useGenerateAulasByContrato({
             errorSubmit: mockErrorSubmit,
-            clearError: mockClearError,
+
             setFormData: mockSetFormData,
           }),
         { wrapper }
@@ -132,7 +130,6 @@ describe.skip('useGenerateAulasByContrato', () => {
 
       result.current.generateAulasByContrato(formData);
 
-      expect(mockClearError).toHaveBeenCalled();
       expect(generateAulas).toHaveBeenCalledWith({
         id: 123,
         data: {
@@ -141,32 +138,6 @@ describe.skip('useGenerateAulasByContrato', () => {
           diasAulas: formData.currentDiasAulas,
         },
       });
-    });
-
-    it('should call clearError before dispatching', () => {
-      const { result } = renderHook(
-        () =>
-          useGenerateAulasByContrato({
-            errorSubmit: mockErrorSubmit,
-            clearError: mockClearError,
-            setFormData: mockSetFormData,
-          }),
-        { wrapper }
-      );
-
-      const formData = {
-        contratoId: 456,
-        contrato: {
-          dataInicio: '2024-02-01',
-          dataTermino: '2024-11-30',
-        },
-        currentDiasAulas: [],
-      };
-
-      result.current.generateAulasByContrato(formData);
-
-      expect(mockClearError).toHaveBeenCalled();
-      expect(generateAulas).toHaveBeenCalled();
     });
   });
 
@@ -197,7 +168,7 @@ describe.skip('useGenerateAulasByContrato', () => {
         () =>
           useGenerateAulasByContrato({
             errorSubmit: mockErrorSubmit,
-            clearError: mockClearError,
+
             setFormData: mockSetFormData,
           }),
         { wrapper }
@@ -229,7 +200,7 @@ describe.skip('useGenerateAulasByContrato', () => {
         () =>
           useGenerateAulasByContrato({
             errorSubmit: mockErrorSubmit,
-            clearError: mockClearError,
+
             setFormData: mockSetFormData,
           }),
         { wrapper }
@@ -261,7 +232,7 @@ describe.skip('useGenerateAulasByContrato', () => {
         () =>
           useGenerateAulasByContrato({
             errorSubmit: mockErrorSubmit,
-            clearError: mockClearError,
+
             setFormData: mockSetFormData,
           }),
         { wrapper }
@@ -286,7 +257,7 @@ describe.skip('useGenerateAulasByContrato', () => {
         () =>
           useGenerateAulasByContrato({
             errorSubmit: mockErrorSubmit,
-            clearError: mockClearError,
+
             setFormData: mockSetFormData,
           }),
         { wrapper }
@@ -308,7 +279,7 @@ describe.skip('useGenerateAulasByContrato', () => {
         () =>
           useGenerateAulasByContrato({
             errorSubmit: mockErrorSubmit,
-            clearError: mockClearError,
+
             setFormData: mockSetFormData,
           }),
         { wrapper }
@@ -330,7 +301,7 @@ describe.skip('useGenerateAulasByContrato', () => {
         () =>
           useGenerateAulasByContrato({
             errorSubmit: mockErrorSubmit,
-            clearError: mockClearError,
+
             setFormData: mockSetFormData,
           }),
         { wrapper }
@@ -357,7 +328,7 @@ describe.skip('useGenerateAulasByContrato', () => {
         () =>
           useGenerateAulasByContrato({
             errorSubmit: mockErrorSubmit,
-            clearError: mockClearError,
+
             setFormData: mockSetFormData,
           }),
         { wrapper }
@@ -380,7 +351,7 @@ describe.skip('useGenerateAulasByContrato', () => {
         () =>
           useGenerateAulasByContrato({
             errorSubmit: mockErrorSubmit,
-            clearError: mockClearError,
+
             setFormData: mockSetFormData,
           }),
         { wrapper }
@@ -408,7 +379,7 @@ describe.skip('useGenerateAulasByContrato', () => {
         () =>
           useGenerateAulasByContrato({
             errorSubmit: mockErrorSubmit,
-            clearError: mockClearError,
+
             setFormData: mockSetFormData,
           }),
         { wrapper }

@@ -9,6 +9,7 @@ import {
   getRelatorios,
   getRelatorioByReport,
   clearStatus,
+  clearFile,
 } from '@/store/slices/relatorioSlice';
 
 export function useRelatorios() {
