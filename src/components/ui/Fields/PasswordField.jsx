@@ -44,6 +44,7 @@ export const PasswordField = ({
           onChange={onChange}
           className={`${className} pr-10`}
           placeholder={placeholder}
+          data-testid="password-field"
           {...props}
         />
         <button

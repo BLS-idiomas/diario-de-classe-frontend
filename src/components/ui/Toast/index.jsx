@@ -26,6 +26,7 @@ const DefaultToast = ({ toast, onClose, icon = null, iconColor = null }) => {
     <div
       className="flex items-center w-full max-w-xs p-4 transition-all duration-300 ease-in-out animate-in slide-in-from-right toast"
       role="alert"
+      data-testid="toast"
     >
       <div
         className={`inline-flex items-center justify-center shrink-0 w-8 h-8 rounded-lg ${toastIconColor}`}

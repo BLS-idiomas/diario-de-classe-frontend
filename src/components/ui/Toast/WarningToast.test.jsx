@@ -1,7 +1,7 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { WarningToast } from './index.jsx';
 
-describe.skip('WarningToast', () => {
+describe('WarningToast', () => {
   const mockToast = {
     id: 4,
     message: 'Please verify your data before proceeding',
@@ -28,12 +28,7 @@ describe.skip('WarningToast', () => {
     render(<WarningToast toast={mockToast} onClose={mockOnClose} />);
 
     const iconContainer = screen.getByRole('alert').querySelector('div > div');
-    expect(iconContainer).toHaveClass(
-      'text-yellow-500',
-      'bg-yellow-100',
-      'dark:bg-yellow-800',
-      'dark:text-yellow-200'
-    );
+    expect(iconContainer).toHaveClass('toast-warning');
   });
 
   it('should render the exclamation mark icon', () => {
@@ -80,12 +75,12 @@ describe.skip('WarningToast', () => {
       'w-full',
       'max-w-xs',
       'p-4',
-      'text-gray-500',
-      'bg-white',
-      'rounded-lg',
-      'shadow-sm',
-      'dark:text-gray-400',
-      'dark:bg-gray-800'
+      'transition-all',
+      'duration-300',
+      'ease-in-out',
+      'animate-in',
+      'slide-in-from-right',
+      'toast'
     );
   });
 
@@ -169,9 +164,9 @@ describe.skip('WarningToast', () => {
 
     expect(screen.getByText(securityWarning.message)).toBeInTheDocument();
 
-    // Verifica se ainda mantém as classes de warning (amarelo)
+    // Verifica se ainda mantém as classes de warning
     const iconContainer = screen.getByRole('alert').querySelector('div > div');
-    expect(iconContainer).toHaveClass('text-yellow-500', 'bg-yellow-100');
+    expect(iconContainer).toHaveClass('toast-warning');
   });
 
   it('should maintain proper contrast for accessibility', () => {
@@ -179,11 +174,8 @@ describe.skip('WarningToast', () => {
 
     const iconContainer = screen.getByRole('alert').querySelector('div > div');
 
-    // Verifica se as cores têm contraste adequado para dark mode
-    expect(iconContainer).toHaveClass(
-      'dark:bg-yellow-800',
-      'dark:text-yellow-200'
-    );
+    // Verifica se as cores têm contraste adequado (usando a classe toast-warning)
+    expect(iconContainer).toHaveClass('toast-warning');
   });
 
   it('should handle close button interactions properly', () => {
@@ -191,12 +183,20 @@ describe.skip('WarningToast', () => {
 
     const closeButton = screen.getByLabelText('Close');
 
-    // Verifica se o botão tem as classes de hover e focus
+    // Verifica se o botão tem as classes básicas e transition
     expect(closeButton).toHaveClass(
-      'hover:text-gray-900',
-      'hover:bg-gray-100',
+      'ms-2',
+      '-mx-1.5',
+      '-my-1.5',
+      'rounded-lg',
       'focus:ring-2',
-      'focus:ring-gray-300'
+      'p-1.5',
+      'inline-flex',
+      'items-center',
+      'justify-center',
+      'h-8',
+      'w-8',
+      'transition-colors'
     );
 
     // Testa múltiplos cliques

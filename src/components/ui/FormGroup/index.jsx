@@ -7,7 +7,10 @@ export const FormGroup = ({ children, cols = 2, className = '' }) => {
   if (cols === 3) colsClass = 'md:grid-cols-2 lg:grid-cols-3';
   if (cols === 2) colsClass = 'md:grid-cols-2';
   return (
-    <div className={`grid grid-cols-1 ${colsClass} ${className}`}>
+    <div
+      className={`grid grid-cols-1 ${colsClass} ${className}`}
+      data-testid="form-group"
+    >
       {children}
     </div>
   );

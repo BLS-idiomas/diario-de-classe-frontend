@@ -36,6 +36,7 @@ export const SelectField = ({
           value={value}
           onChange={onChange}
           className={`${className} pr-10 appearance-none disabled:bg-gray-100 disabled:text-gray-500 disabled:cursor-not-allowed disabled:opacity-60`}
+          data-testid="select-field"
           {...props}
         >
           {options.map(option => (

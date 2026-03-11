@@ -1,7 +1,7 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { InfoToast } from './index.jsx';
 
-describe.skip('InfoToast', () => {
+describe('InfoToast', () => {
   const mockToast = {
     id: 1,
     message: 'This is an info message',
@@ -26,12 +26,7 @@ describe.skip('InfoToast', () => {
     render(<InfoToast toast={mockToast} onClose={mockOnClose} />);
 
     const iconContainer = screen.getByRole('alert').querySelector('div > div');
-    expect(iconContainer).toHaveClass(
-      'text-blue-500',
-      'bg-blue-100',
-      'dark:bg-blue-800',
-      'dark:text-blue-200'
-    );
+    expect(iconContainer).toHaveClass('toast-info');
   });
 
   it('should render the default fire icon', () => {
@@ -72,15 +67,12 @@ describe.skip('InfoToast', () => {
       'w-full',
       'max-w-xs',
       'p-4',
-      'text-gray-500',
-      'bg-white',
-      'rounded-lg',
-      'shadow-sm',
-      'dark:text-gray-400',
-      'dark:bg-gray-800',
       'transition-all',
       'duration-300',
-      'ease-in-out'
+      'ease-in-out',
+      'animate-in',
+      'slide-in-from-right',
+      'toast'
     );
   });
 
@@ -89,17 +81,17 @@ describe.skip('InfoToast', () => {
 
     const closeButton = screen.getByLabelText('Close');
     expect(closeButton).toHaveClass(
-      'ms-auto',
+      'ms-2',
       '-mx-1.5',
       '-my-1.5',
-      'bg-white',
-      'text-gray-400',
-      'hover:text-gray-900',
       'rounded-lg',
       'focus:ring-2',
-      'focus:ring-gray-300',
       'p-1.5',
-      'hover:bg-gray-100',
+      'inline-flex',
+      'items-center',
+      'justify-center',
+      'h-8',
+      'w-8',
       'transition-colors'
     );
   });

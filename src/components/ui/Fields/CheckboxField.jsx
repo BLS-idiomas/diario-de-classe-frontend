@@ -35,6 +35,7 @@ export const CheckboxField = ({
         required={required}
         disabled={disabled}
         className={checkboxClassName}
+        data-testid="checkbox-field"
         {...props}
       />
       <LabelField htmlFor={htmlFor} className={labelTextClassName}>

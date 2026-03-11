@@ -56,7 +56,10 @@ export function Table({
         }
       : {};
   return (
-    <div className={className || 'bg-main p-2 rounded-lg shadow-md'}>
+    <div
+      className={className || 'bg-main p-2 rounded-lg shadow-md'}
+      data-testid="table"
+    >
       <DataTable
         columns={columns}
         data={data || []}
