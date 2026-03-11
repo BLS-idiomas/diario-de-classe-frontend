@@ -1,22 +1,21 @@
 import { render } from '@testing-library/react';
-import NovoProfessor from './page';
-import { useNovoProfessor } from '@/hooks/professores/useNovoProfessor';
+import NovaAula from './page';
+import { useNovaAula } from '@/hooks/aulas/useNovaAula';
 import { useUserAuth } from '@/providers/UserAuthProvider';
 
-jest.mock('@/hooks/professores/useNovoProfessor');
+jest.mock('@/hooks/aulas/useNovaAula');
 jest.mock('@/providers/UserAuthProvider');
 jest.mock('@/components');
 
-describe('Novo Professor Page', () => {
+describe('Nova Aula Page', () => {
   beforeEach(() => {
     jest.clearAllMocks();
 
     useUserAuth.mockReturnValue({
-      currentUser: { id: 1, nome: 'Admin' },
-      isAdmin: true,
+      currentUser: { id: 1, nome: 'Professor' },
     });
 
-    useNovoProfessor.mockReturnValue({
+    useNovaAula.mockReturnValue({
       formData: {},
       handleChange: jest.fn(),
       handleSubmit: jest.fn(),
@@ -25,13 +24,13 @@ describe('Novo Professor Page', () => {
     });
   });
 
-  it('renders novo professor form page', () => {
-    render(<NovoProfessor />);
-    expect(useNovoProfessor).toHaveBeenCalled();
+  it('renders nova aula form page', () => {
+    render(<NovaAula />);
+    expect(useNovaAula).toHaveBeenCalled();
   });
 
   it('displays loading state', () => {
-    useNovoProfessor.mockReturnValue({
+    useNovaAula.mockReturnValue({
       formData: {},
       handleChange: jest.fn(),
       handleSubmit: jest.fn(),
@@ -39,7 +38,7 @@ describe('Novo Professor Page', () => {
       errors: [],
     });
 
-    render(<NovoProfessor />);
-    expect(useNovoProfessor).toHaveBeenCalled();
+    render(<NovaAula />);
+    expect(useNovaAula).toHaveBeenCalled();
   });
 });
