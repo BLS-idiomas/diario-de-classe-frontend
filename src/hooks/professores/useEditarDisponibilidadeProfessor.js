@@ -33,7 +33,7 @@ export function useEditarDisponibilidadeProfessor(professor) {
         horaInicial: '08:00',
         horaFinal: '18:00',
         ativo: false,
-        userId: professor.id,
+        userId: professor?.id,
       };
     });
     return disponibilidadesMap;
