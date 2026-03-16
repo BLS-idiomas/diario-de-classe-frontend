@@ -6,7 +6,7 @@ jest.mock('@/providers/UserAuthProvider', () => ({
     currentUser: { id: 1, permissao: 'admin' },
   }),
 }));
-import { PERMISSAO } from '@/constants';
+import { PERMISSAO, IDIOMA } from '@/constants';
 
 // Mock dos componentes
 jest.mock('@/components', () => ({
@@ -107,6 +107,8 @@ describe('ProfessorForm', () => {
       telefone: '',
       senha: '',
       repetirSenha: '',
+      idioma: IDIOMA.INGLES,
+      idiomas: [IDIOMA.INGLES],
       permissao: PERMISSAO.MEMBER,
     },
     message: null,
@@ -132,6 +134,7 @@ describe('ProfessorForm', () => {
     expect(screen.getByTestId('password-senha')).toBeInTheDocument();
     expect(screen.getByTestId('password-repetirSenha')).toBeInTheDocument();
     expect(screen.getByTestId('select-permissao')).toBeInTheDocument();
+    expect(screen.getByTestId('select-idioma')).toBeInTheDocument();
     expect(screen.getByTestId('buttons-fields')).toBeInTheDocument();
   });
 
@@ -144,6 +147,7 @@ describe('ProfessorForm', () => {
     expect(screen.getByText('Senha *')).toBeInTheDocument();
     expect(screen.getByText('Repetir Senha *')).toBeInTheDocument();
     expect(screen.getByText('Permissão *')).toBeInTheDocument();
+    expect(screen.getByText('Idioma *')).toBeInTheDocument();
   });
 
   it('renders password fields as not required in edit mode', () => {
@@ -242,6 +246,15 @@ describe('ProfessorForm', () => {
     expect(screen.getByText('Administrador')).toBeInTheDocument();
   });
 
+  it('renders select with correct idioma options', () => {
+    render(<ProfessorForm {...defaultProps} />);
+
+    const idiomSelect = screen.getByLabelText(/idioma/i);
+    expect(idiomSelect).toBeInTheDocument();
+    expect(screen.getByText('Inglês')).toBeInTheDocument();
+    expect(screen.getByText('Espanhol')).toBeInTheDocument();
+  });
+
   it('renders input fields with correct values from formData', () => {
     const props = {
       ...defaultProps,
@@ -252,6 +265,8 @@ describe('ProfessorForm', () => {
         telefone: '11999999999',
         senha: 'senha123',
         repetirSenha: 'senha123',
+        idioma: IDIOMA.ESPANHOL,
+        idiomas: [IDIOMA.ESPANHOL],
         permissao: PERMISSAO.ADMIN,
       },
     };
@@ -263,6 +278,10 @@ describe('ProfessorForm', () => {
     expect(screen.getByDisplayValue('joao@example.com')).toBeInTheDocument();
     expect(screen.getByDisplayValue('11999999999')).toBeInTheDocument();
     expect(screen.getAllByDisplayValue('senha123')).toHaveLength(2);
+
+    // Verifica se o select de idioma tem o valor correto
+    const idiomSelect = screen.getByLabelText(/idioma/i);
+    expect(idiomSelect).toHaveValue(IDIOMA.ESPANHOL);
 
     // Verifica se o select tem o valor correto
     const select = screen.getByLabelText(/permissão/i);

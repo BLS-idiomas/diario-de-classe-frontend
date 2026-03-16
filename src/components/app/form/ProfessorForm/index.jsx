@@ -1,4 +1,4 @@
-import { PERMISSAO } from '@/constants';
+import { PERMISSAO, IDIOMA_ARRAY, IDIOMA_LABEL } from '@/constants';
 import {
   ButtonsFields,
   Form,
@@ -125,6 +125,18 @@ export const ProfessorForm = ({
             { value: PERMISSAO.MEMBER, label: 'Professor' },
             { value: PERMISSAO.ADMIN, label: 'Administrador' },
           ]}
+        />
+
+        <SelectField
+          required
+          htmlFor="idioma"
+          label="Idioma"
+          onChange={handleChange}
+          value={formData.idioma}
+          options={IDIOMA_ARRAY.map(idioma => ({
+            value: idioma,
+            label: IDIOMA_LABEL[idioma],
+          }))}
         />
       </FormGroup>
 

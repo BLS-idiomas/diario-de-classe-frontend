@@ -25,6 +25,7 @@ import {
   BlockQuoteInfo,
   DisponibilidadeForm,
 } from '@/components';
+import { IDIOMA_LABEL } from '@/constants';
 
 export default function Professor() {
   const params = useParams();
@@ -148,7 +149,15 @@ export default function Professor() {
               text={`${(professor.disponibilidades || []).filter(d => d.ativo).length} aulas por semana`}
             />
 
-            <Badge icon="lock" color="blue" text={professor.permissao} />
+            <Badge icon="lock" color="gray" text={professor.permissao} />
+
+            {professor.idiomas && professor.idiomas.length > 0 && (
+              <Badge
+                icon="star"
+                color="blue"
+                text={IDIOMA_LABEL[professor.idiomas[0]]}
+              />
+            )}
           </BadgeGroup>
 
           <InfoCardGroup>

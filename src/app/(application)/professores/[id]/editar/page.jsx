@@ -1,20 +1,12 @@
 'use client';
 
 import { useEffect } from 'react';
-import Link from 'next/link';
 import { notFound, useParams } from 'next/navigation';
 import { useEditarProfessor } from '@/hooks/professores/useEditarProfessor';
 import { useProfessorForm } from '@/hooks/professores/useProfessorForm';
 import { STATUS_ERROR } from '@/constants/statusError';
-import {
-  ButtonGroup,
-  PageContent,
-  PageSubTitle,
-  PageTitle,
-  ProfessorForm,
-  Loading,
-  FormPage,
-} from '@/components';
+import { ProfessorForm, Loading, FormPage } from '@/components';
+import { IDIOMA } from '@/constants';
 
 export default function EditarProfessor() {
   const params = useParams();
@@ -29,6 +21,8 @@ export default function EditarProfessor() {
         ...current,
         senha: '',
         repetirSenha: '',
+        idioma: current?.idiomas.length ? current.idiomas[0] : IDIOMA.INGLES,
+        idiomas: current?.idiomas.length ? current.idiomas : [IDIOMA.INGLES],
       });
     }
   }, [current, setFormData]);

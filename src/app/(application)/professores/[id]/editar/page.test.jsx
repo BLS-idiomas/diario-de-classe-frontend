@@ -2,6 +2,7 @@ import { render, screen, waitFor } from '@testing-library/react';
 import { notFound } from 'next/navigation';
 import EditarProfessor from './page';
 import { STATUS_ERROR } from '@/constants/statusError';
+import { IDIOMA } from '@/constants';
 
 // Mock dos hooks
 jest.mock('@/hooks/professores/useEditarProfessor');
@@ -81,6 +82,7 @@ describe('EditarProfessor Page', () => {
     email: 'joao@example.com',
     telefone: '11999999999',
     permissao: 'admin',
+    idiomas: [IDIOMA.INGLES],
   };
 
   const mockFormData = {
@@ -91,6 +93,8 @@ describe('EditarProfessor Page', () => {
     permissao: 'admin',
     senha: '',
     repetirSenha: '',
+    idioma: IDIOMA.INGLES,
+    idiomas: [IDIOMA.INGLES],
   };
 
   beforeEach(() => {
@@ -202,6 +206,38 @@ describe('EditarProfessor Page', () => {
         ...mockCurrent,
         senha: '',
         repetirSenha: '',
+        idioma: IDIOMA.INGLES,
+        idiomas: [IDIOMA.INGLES],
+      });
+    });
+  });
+
+  it('defaults idioma to IDIOMA.INGLES when professor has no idiomas', () => {
+    const {
+      useEditarProfessor,
+    } = require('@/hooks/professores/useEditarProfessor');
+    const currentWithoutIdiomas = {
+      ...mockCurrent,
+      idiomas: [],
+    };
+    useEditarProfessor.mockReturnValue({
+      message: null,
+      errors: null,
+      isLoading: false,
+      current: currentWithoutIdiomas,
+      statusError: null,
+      submit: mockSubmit,
+    });
+
+    render(<EditarProfessor />);
+
+    waitFor(() => {
+      expect(mockSetFormData).toHaveBeenCalledWith({
+        ...currentWithoutIdiomas,
+        senha: '',
+        repetirSenha: '',
+        idioma: IDIOMA.INGLES,
+        idiomas: [IDIOMA.INGLES],
       });
     });
   });
