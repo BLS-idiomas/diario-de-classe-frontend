@@ -11,15 +11,17 @@ export const SearchForm = ({ placeholder, perform }) => {
   };
 
   return (
-    <InputField
-      htmlFor="search"
-      placeholder={placeholder}
-      maxLength={200}
-      minLength={3}
-      value={searchTerm}
-      labelClass={'d-none'}
-      onChange={handleSearch}
-      icon={<LucideSearch className="w-5 h-5" />}
-    />
+    <div data-testid="search-form">
+      <InputField
+        htmlFor="search"
+        placeholder={placeholder}
+        maxLength={200}
+        minLength={3}
+        value={searchTerm}
+        labelClass={'d-none'}
+        onChange={handleSearch}
+        icon={<LucideSearch className="w-5 h-5" />}
+      />
+    </div>
   );
 };

@@ -29,6 +29,7 @@ export const TextAreaField = ({
         onChange={onChange}
         className={className}
         placeholder={placeholder}
+        data-testid="textarea-field"
         {...props}
       />
     </BaseField>

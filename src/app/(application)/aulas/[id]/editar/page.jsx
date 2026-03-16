@@ -1,6 +1,6 @@
 'use client';
 import { useEffect } from 'react';
-import { useParams, useSearchParams } from 'next/navigation';
+import { useParams, useSearchParams, notFound } from 'next/navigation';
 import { STATUS_ERROR } from '@/constants';
 import { useEditarAula } from '@/hooks/aulas/useEditarAula';
 import { useAulaForm } from '@/hooks/aulas/useAulaForm';

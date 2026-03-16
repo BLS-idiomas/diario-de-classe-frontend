@@ -1,6 +1,6 @@
 export const BlockQuoteInfo = ({ title, noContent, children }) => {
   return (
-    <div className="mt-4">
+    <div className="mt-4" data-testid="block-quote-info">
       <h4 className="font-semibold text-main">{title}</h4>
       {children ? (
         <blockquote className="border-l-4 pl-3 italic text-main">

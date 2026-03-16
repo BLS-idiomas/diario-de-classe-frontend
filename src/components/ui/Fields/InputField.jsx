@@ -39,6 +39,7 @@ export const InputField = ({
           onChange={onChange}
           className={icon ? className + ' pl-10' : className}
           placeholder={placeholder}
+          data-testid="input-field"
           {...props}
         />
       </div>

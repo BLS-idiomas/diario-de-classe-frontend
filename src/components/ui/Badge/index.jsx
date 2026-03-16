@@ -19,7 +19,10 @@ export const Badge = ({ icon, text, color }) => {
   const iconToUse = icons[icon] || icons.info;
   const colorClass = colors[color] || colors.blue;
   return (
-    <span className={`px-2 py-1 ${colorClass} rounded text-sm`}>
+    <span
+      className={`px-2 py-1 ${colorClass} rounded text-sm`}
+      data-testid="badge"
+    >
       {iconToUse} {text}
     </span>
   );

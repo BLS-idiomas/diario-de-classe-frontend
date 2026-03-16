@@ -1,7 +1,7 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { ErrorToast } from './index.jsx';
 
-describe.skip('ErrorToast', () => {
+describe('ErrorToast', () => {
   const mockToast = {
     id: 3,
     message: 'An error occurred while processing your request',
@@ -28,12 +28,7 @@ describe.skip('ErrorToast', () => {
     render(<ErrorToast toast={mockToast} onClose={mockOnClose} />);
 
     const iconContainer = screen.getByRole('alert').querySelector('div > div');
-    expect(iconContainer).toHaveClass(
-      'text-red-500',
-      'bg-red-100',
-      'dark:bg-red-800',
-      'dark:text-red-200'
-    );
+    expect(iconContainer).toHaveClass('toast-error');
   });
 
   it('should render the X mark icon', () => {
@@ -80,12 +75,12 @@ describe.skip('ErrorToast', () => {
       'w-full',
       'max-w-xs',
       'p-4',
-      'text-gray-500',
-      'bg-white',
-      'rounded-lg',
-      'shadow-sm',
-      'dark:text-gray-400',
-      'dark:bg-gray-800'
+      'transition-all',
+      'duration-300',
+      'ease-in-out',
+      'animate-in',
+      'slide-in-from-right',
+      'toast'
     );
   });
 
@@ -184,6 +179,19 @@ describe.skip('ErrorToast', () => {
     // Verifica se o botão de fechar é acessível
     const closeButton = screen.getByLabelText('Close');
     expect(closeButton).toHaveAttribute('type', 'button');
-    expect(closeButton).toHaveClass('focus:ring-2', 'focus:ring-gray-300');
+    expect(closeButton).toHaveClass(
+      'ms-2',
+      '-mx-1.5',
+      '-my-1.5',
+      'rounded-lg',
+      'focus:ring-2',
+      'p-1.5',
+      'inline-flex',
+      'items-center',
+      'justify-center',
+      'h-8',
+      'w-8',
+      'transition-colors'
+    );
   });
 });

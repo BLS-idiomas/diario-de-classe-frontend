@@ -24,6 +24,7 @@ export const Sidebar = ({
     <aside
       aria-label="Main navigation"
       className={`fixed left-0 top-16 bottom-0 bg-secondary border-r border-main transition-all duration-300 ease-in-out z-30 ${sidebarClass}`}
+      data-testid="sidebar"
     >
       <div className="flex flex-col h-full">
         {/* Conteúdo da Sidebar */}

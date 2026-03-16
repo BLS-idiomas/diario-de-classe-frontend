@@ -5,7 +5,7 @@ export const HeaderAvatar = ({ entity }) => {
   const { email } = entity;
   // TODO melhora cor da sidebar
   return (
-    <div className="flex items-center gap-4 mb-3">
+    <div className="flex items-center gap-4 mb-3" data-testid="header-avatar">
       <Avatar text={nomeCompleto} />
       <div>
         <div className="text-xl text-main font-semibold">{nomeCompleto}</div>

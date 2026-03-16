@@ -7,7 +7,10 @@ export const Header = () => {
   const { logoutUser } = useLogout();
   const { toggleTheme, theme } = useTheme();
   return (
-    <header className="fixed top-0 left-0 right-0 h-16 bg-main border-b border-main shadow-sm z-40">
+    <header
+      className="fixed top-0 left-0 right-0 h-16 bg-main border-b border-main shadow-sm z-40"
+      data-testid="header"
+    >
       <div className="flex items-center justify-between h-full px-6">
         <div className="flex items-center gap-3">
           <div>

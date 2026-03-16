@@ -10,7 +10,7 @@ import { useEditarDisponibilidadeProfessor } from '@/hooks/professores/useEditar
 // Mocks
 jest.mock('next/navigation', () => ({
   notFound: jest.fn(),
-  useParams: jest.fn(),
+  useParams: jest.fn(() => ({ id: '1' })),
 }));
 
 jest.mock('@/hooks/professores/useProfessor');

@@ -12,6 +12,7 @@ export const SidebarItem = ({
     <Link
       href={href}
       className="group flex items-center space-x-3 p-3 rounded-lg bg-sidebar transition-colors"
+      data-testid="sidebar-item"
     >
       <div className="w-3 h-3 flex items-center justify-center relative">
         <span className={`${active ? 'primary-color' : 'text-main'} text-sm`}>

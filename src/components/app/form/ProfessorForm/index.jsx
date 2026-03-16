@@ -29,13 +29,17 @@ export const ProfessorForm = ({
   const showPasswordFields = getShowPasswordFields();
   // TODO adicionar uma seção para dias aulas, outra para informações básicas e outras para disponibvildiade na criação
   return (
-    <Form handleSubmit={handleSubmit}>
+    <Form
+      handleSubmit={handleSubmit}
+      props={{ 'data-testid': 'professor-form' }}
+    >
       <FormError
         title={message || (isSenhaError ? 'As senhas não coincidem' : '')}
         errors={errors}
+        dataTestId="professor-form-error"
       />
 
-      <FormGroup>
+      <FormGroup dataTestId="professor-form-group">
         {/* Nome */}
         <InputField
           required

@@ -1,6 +1,6 @@
 import { ContratoApi } from './contratoApi';
 
-describe.skip('ContratoApi', () => {
+describe('ContratoApi', () => {
   let api;
 
   beforeEach(() => {
@@ -403,15 +403,18 @@ describe.skip('ContratoApi', () => {
     expect(typeof api.generateAulas).toBe('function');
   });
 
-  it('should call generateAulas with correct id and data', async () => {
-    const testId = 202;
-    const testData = { startDate: '2024-01-01', endDate: '2024-12-31' };
+  it('should call generateAulas with correct data', async () => {
+    const testData = {
+      contratoId: 202,
+      startDate: '2024-01-01',
+      endDate: '2024-12-31',
+    };
     api.post = jest.fn().mockResolvedValue({ data: [] });
 
-    await api.generateAulas(testId, testData);
+    await api.generateAulas(testData);
 
     expect(api.post).toHaveBeenCalledWith(
-      `${api.baseEndpoint}/${testId}/aulas/generate`,
+      `${api.baseEndpoint}/aulas/generate`,
       testData
     );
   });

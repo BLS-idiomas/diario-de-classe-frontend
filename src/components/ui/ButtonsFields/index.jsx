@@ -2,7 +2,7 @@ import Link from 'next/link';
 
 export const ButtonsFields = ({ isLoading, href, blocked = false }) => {
   return (
-    <div className="flex justify-end gap-4 mt-8">
+    <div className="flex justify-end gap-4 mt-8" data-testid="buttons-fields">
       <Link href={href} className="btn btn-secondary">
         Cancelar
       </Link>

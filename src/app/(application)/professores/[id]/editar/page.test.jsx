@@ -10,7 +10,7 @@ jest.mock('@/hooks/professores/useProfessorForm');
 // Mock do Next.js
 jest.mock('next/navigation', () => ({
   notFound: jest.fn(),
-  useParams: jest.fn(),
+  useParams: jest.fn(() => ({ id: '123' })),
 }));
 
 jest.mock('next/link', () => {
@@ -96,15 +96,12 @@ describe('EditarProfessor Page', () => {
   beforeEach(() => {
     jest.clearAllMocks();
 
-    const { useParams } = require('next/navigation');
     const {
       useEditarProfessor,
     } = require('@/hooks/professores/useEditarProfessor');
     const {
       useProfessorForm,
     } = require('@/hooks/professores/useProfessorForm');
-
-    useParams.mockReturnValue(mockParams);
 
     useEditarProfessor.mockReturnValue({
       message: null,

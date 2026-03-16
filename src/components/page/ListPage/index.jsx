@@ -13,20 +13,27 @@ export const ListPage = ({
   notFoundMessage,
 }) => (
   <>
-    <h1 className="page-title">{title}</h1>
+    <h1 className="page-title" data-testid="list-page-title">
+      {title}
+    </h1>
 
-    <div className="lg:grid lg:grid-cols-2 gap-4">
+    <div
+      className="lg:grid lg:grid-cols-2 gap-4"
+      data-testid="list-page-controls"
+    >
       <ButtonsPage buttons={buttons} extraButton={extraButton} />
 
       {Boolean(search) && (
         <SearchForm placeholder={search.title} perform={search.searchParams} />
       )}
     </div>
-    <Table
-      columns={columns}
-      data={data}
-      isLoading={isLoading}
-      notFoundMessage={notFoundMessage}
-    />
+    <div data-testid="list-page-table">
+      <Table
+        columns={columns}
+        data={data}
+        isLoading={isLoading}
+        notFoundMessage={notFoundMessage}
+      />
+    </div>
   </>
 );
