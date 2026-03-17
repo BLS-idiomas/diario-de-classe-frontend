@@ -3,6 +3,7 @@
 import { useEffect } from 'react';
 import Link from 'next/link';
 import { notFound, useParams } from 'next/navigation';
+import { IDIOMA_LABEL, getDiaConstantFromLabel } from '@/constants';
 import { useFormater } from '@/hooks/useFormater';
 import { useProfessor } from '@/hooks/professores/useProfessor';
 import { useAlunosList } from '@/hooks/alunos/useAlunosList';
@@ -24,8 +25,8 @@ import {
   SectionTitle,
   BlockQuoteInfo,
   DisponibilidadeForm,
+  DisponibilidadeCard,
 } from '@/components';
-import { IDIOMA_LABEL } from '@/constants';
 
 export default function Professor() {
   const params = useParams();
@@ -54,7 +55,6 @@ export default function Professor() {
     errors,
     setDisponibilidadesHandle,
     handleChange,
-    handleCheckboxChange,
     handleSubmit,
     setEditMode,
   } = useEditarDisponibilidadeProfessor(professor);
@@ -104,7 +104,6 @@ export default function Professor() {
           message={message}
           errors={errors}
           formData={formData}
-          handleCheckboxChange={handleCheckboxChange}
           handleChange={handleChange}
           isLoading={isLoading}
           setEditMode={setEditMode}
@@ -205,19 +204,19 @@ export default function Professor() {
           {professor.disponibilidades &&
           professor.disponibilidades.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-              {professor.disponibilidades.map(d => (
-                <div key={d.id} className="p-3 rounded-md bg-main shadow-sm">
-                  <div className="font-medium">{d.diaSemana}</div>
-                  <div className="text-sm text-muted">
-                    {d.horaInicial} - {d.horaFinal}
-                  </div>
-                  <div
-                    className={`mt-2 inline-block px-2 py-0.5 text-xs rounded-full ${d.ativo ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}
-                  >
-                    {d.ativo ? 'Ativo' : 'Inativo'}
-                  </div>
-                </div>
-              ))}
+              {professor.disponibilidades.map(d => {
+                const diaConstant = getDiaConstantFromLabel(d.diaSemana);
+                return (
+                  <DisponibilidadeCard
+                    key={d.diaSemana + '-view'}
+                    formData={{
+                      [diaConstant]: { ...d, diaSemana: diaConstant },
+                    }}
+                    dia={diaConstant}
+                    isEdit={false}
+                  />
+                );
+              })}
             </div>
           ) : (
             <p className="text-muted">Sem disponibilidades cadastradas.</p>

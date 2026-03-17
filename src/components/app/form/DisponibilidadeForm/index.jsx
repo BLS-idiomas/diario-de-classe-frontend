@@ -1,18 +1,10 @@
-import { DIAS_LABEL } from '@/constants';
-import {
-  CheckboxField,
-  Form,
-  FormError,
-  FormGroup,
-  InputField,
-} from '@/components/ui';
+import { Form, FormError, DisponibilidadeCard } from '@/components/';
 
 export const DisponibilidadeForm = ({
   handleSubmit,
   message,
   errors,
   formData,
-  handleCheckboxChange,
   handleChange,
   isLoading,
   setEditMode,
@@ -23,40 +15,19 @@ export const DisponibilidadeForm = ({
       props={{ 'data-testid': 'disponibilidade-form' }}
     >
       <FormError title={message} errors={errors} />
-      {Object.keys(formData).map(diaSemana => (
-        <div key={diaSemana} className="mb-4">
-          <div className="flex gap-5">
-            <h4 className="text-xl text-main font-semibold mb-2">
-              {DIAS_LABEL[diaSemana]}
-            </h4>
-            <CheckboxField
-              htmlFor={`${diaSemana}.ativo`}
-              label="Ativo"
-              checked={formData[diaSemana]?.ativo || false}
-              onChange={handleCheckboxChange}
-            />
-          </div>
-          <FormGroup cols={2}>
-            <InputField
-              disabled={!formData[diaSemana]?.ativo}
-              htmlFor={`${diaSemana}.horaInicial`}
-              label="Hora inicial"
-              type="time"
-              onChange={handleChange}
-              value={formData[diaSemana]?.horaInicial}
-            />
 
-            <InputField
-              disabled={!formData[diaSemana]?.ativo}
-              htmlFor={`${diaSemana}.horaFinal`}
-              label="Hora final"
-              type="time"
-              onChange={handleChange}
-              value={formData[diaSemana]?.horaFinal}
-            />
-          </FormGroup>
-        </div>
-      ))}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+        {Object.keys(formData).map(dia => (
+          <DisponibilidadeCard
+            key={dia + '-edit'}
+            formData={formData}
+            dia={dia}
+            handleChange={handleChange}
+            isEdit={true}
+          />
+        ))}
+      </div>
+
       <div className="flex justify-end gap-4 mt-8">
         <button
           onClick={() => setEditMode(false)}

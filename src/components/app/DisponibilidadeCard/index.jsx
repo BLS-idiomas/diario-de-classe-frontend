@@ -20,6 +20,10 @@ export const DisponibilidadeCard = ({
     setEditMode(!editMode);
   };
 
+  if (!formData || !formData[dia]) {
+    return null;
+  }
+
   const { diaSemana, horaInicial, horaFinal, ativo } = formData[dia];
   return (
     <div
