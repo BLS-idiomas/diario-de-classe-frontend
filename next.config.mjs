@@ -14,7 +14,9 @@ const nextConfig = withPWA({
 });
 
 // Adiciona configuração turbopack vazia para Next.js 16
-export default {
+const config = {
   ...nextConfig,
   turbopack: {},
 };
+
+export default config;
