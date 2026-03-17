@@ -170,7 +170,7 @@ describe('AlunoForm', () => {
 
   it('passes href prop to ButtonsFields', () => {
     render(<AlunoForm {...defaultProps} />);
-    expect(screen.getByText('Cancelar')).toHaveAttribute('href', '/aulas');
+    expect(screen.getByText('Cancelar')).toHaveAttribute('href', '/alunos');
   });
 
   it('renders all input placeholders correctly', () => {

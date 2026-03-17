@@ -87,7 +87,7 @@ export const AlunoForm = ({
       </div>
 
       {/* Botões */}
-      <ButtonsFields isLoading={isLoading} href="/aulas" />
+      <ButtonsFields isLoading={isLoading} href="/alunos" />
     </Form>
   );
 };
