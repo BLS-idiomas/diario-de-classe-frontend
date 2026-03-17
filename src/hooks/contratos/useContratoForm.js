@@ -82,8 +82,8 @@ export function useContratoForm({
         );
         if (initialDiaAula) {
           initialDiaAula.ativo = true;
-          initialDiaAula.horaInicial = diaAtual.diaSemana;
-          initialDiaAula.horaFinal = diaAtual.diaSemana;
+          initialDiaAula.horaInicial = diaAtual.horaInicial;
+          initialDiaAula.horaFinal = diaAtual.horaFinal;
           initialDiaAula.quantidadeAulas = diaAtual.quantidadeAulas;
         }
       });
