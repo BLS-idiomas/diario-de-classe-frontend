@@ -1,3 +1,9 @@
+## [1.9.3](https://github.com/BLS-idiomas/diario-de-classe-frontend/compare/v1.9.2...v1.9.3) (2026-03-17)
+
+### Bug Fixes
+
+- update day retrieval to use getUTCDay for accurate day mapping ([7aa4303](https://github.com/BLS-idiomas/diario-de-classe-frontend/commit/7aa430318436f5dfa6bd859473348b5d6a09541e))
+
 ## [1.9.2](https://github.com/BLS-idiomas/diario-de-classe-frontend/compare/v1.9.1...v1.9.2) (2026-03-17)
 
 ### Bug Fixes
