@@ -1,3 +1,13 @@
+# [1.11.0](https://github.com/BLS-idiomas/diario-de-classe-frontend/compare/v1.10.0...v1.11.0) (2026-03-17)
+
+### Bug Fixes
+
+- update backUrl in EditarAula to navigate to the correct aula ID ([b5dc4c5](https://github.com/BLS-idiomas/diario-de-classe-frontend/commit/b5dc4c54ed489aad1b7abe26eabd51ce88c44f08))
+
+### Features
+
+- add unit tests for Aula page and update useAula hook ([6ce04d5](https://github.com/BLS-idiomas/diario-de-classe-frontend/commit/6ce04d59b72351f125aef91b7813924bcad67820))
+
 # [1.10.0](https://github.com/BLS-idiomas/diario-de-classe-frontend/compare/v1.9.3...v1.10.0) (2026-03-17)
 
 ### Bug Fixes
