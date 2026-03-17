@@ -41,7 +41,7 @@ export default function EditarContrato() {
       const idProfessor =
         current.aulas.length > 0
           ? current.aulas[current.aulas.length - 1].idProfessor
-          : null;
+          : formData?.professorId;
       const data = {
         alunoId: current.idAluno,
         aluno: alunos.find(aluno => aluno.id === current.idAluno) || null,
@@ -52,7 +52,9 @@ export default function EditarContrato() {
         contrato: current,
         professorId: idProfessor,
         professor:
-          professores.find(professor => professor.id === idProfessor) || null,
+          professores.find(professor => professor.id === idProfessor) ||
+          formData?.professor ||
+          null,
         diasAulas: [],
         currentDiasAulas: [],
         aulas: current.aulas,
