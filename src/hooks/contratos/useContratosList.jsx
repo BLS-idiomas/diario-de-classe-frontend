@@ -1,3 +1,4 @@
+import { IDIOMA_LABEL } from '@/constants';
 import { Eye, Pencil, Trash2 } from 'lucide-react';
 import Link from 'next/link';
 import { useMemo } from 'react';
@@ -19,6 +20,11 @@ export function useContratosList({
     {
       name: 'Aluno',
       selector: row => row.aluno,
+      sortable: true,
+    },
+    {
+      name: 'Idioma',
+      selector: row => row.idioma,
       sortable: true,
     },
     {
@@ -74,6 +80,7 @@ export function useContratosList({
     const iconParams = { strokeWidth: 1, size: 16 };
     return contratos.map((contrato, index) => ({
       id: parseInt(index) + 1,
+      idioma: IDIOMA_LABEL[contrato.idioma] || '-',
       dataInicio: dataFormatter(contrato.dataInicio),
       dataTermino: dataFormatter(contrato.dataTermino),
       totalAulas: contrato.totalAulas,

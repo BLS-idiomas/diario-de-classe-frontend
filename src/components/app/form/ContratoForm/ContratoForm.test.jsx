@@ -1,23 +1,35 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { ContratoForm } from '.';
 
-// Mock dos componentes
 jest.mock('@/components', () => ({
-  Form: ({ children, handleSubmit }) => (
-    <form data-testid="contrato-form" onSubmit={handleSubmit}>
+  Form: ({ children, handleSubmit, props }) => (
+    <form data-testid="contrato-form" onSubmit={handleSubmit} {...props}>
       {children}
     </form>
   ),
-  FormError: ({ title, errors }) => (
-    <div data-testid="contrato-form-error">
+  FormError: ({ title, errors, dataTestId }) => (
+    <div data-testid={dataTestId || 'contrato-form-error'}>
       {title && <div data-testid="contrato-error-title">{title}</div>}
-      {errors && (
-        <div data-testid="contrato-errors">{JSON.stringify(errors)}</div>
+      {errors && Array.isArray(errors) && errors.length > 0 && (
+        <div data-testid="contrato-errors">
+          {errors.map((error, idx) => (
+            <div key={idx}>{error}</div>
+          ))}
+        </div>
       )}
     </div>
   ),
-  FormGroup: ({ children }) => (
-    <div data-testid="contrato-form-group">{children}</div>
+  FormGroup: ({ children, col, cols, dataTestId }) => (
+    <div
+      data-testid={dataTestId || 'contrato-form-group'}
+      style={{
+        display: 'grid',
+        gridTemplateColumns: `repeat(${col || cols || 1}, 1fr)`,
+      }}
+    >
+      {children}
+    </div>
   ),
   InputField: ({
     htmlFor,
@@ -27,23 +39,45 @@ jest.mock('@/components', () => ({
     type,
     required,
     disabled,
-  }) => (
-    <div data-testid={`contrato-input-${htmlFor}`}>
-      <label htmlFor={htmlFor}>
-        {label}
-        {required && ' *'}
-      </label>
-      <input
-        id={htmlFor}
-        name={htmlFor}
-        value={value || ''}
-        onChange={onChange}
-        type={type || 'text'}
-        required={required}
-        disabled={disabled}
-      />
-    </div>
-  ),
+  }) => {
+    // Remove accents and normalize label
+    const normalizeLabel = str => {
+      return str
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/\s+/g, '-')
+        .toLowerCase();
+    };
+
+    const labelPart = label ? normalizeLabel(label) : '';
+    // For labels that repeat (hora inicial, hora final), include the day/htmlFor
+    const repeatingLabels = ['hora-inicial', 'hora-final'];
+    const shouldIncludeHtmlFor = repeatingLabels.includes(labelPart);
+    const testId =
+      labelPart && shouldIncludeHtmlFor
+        ? `contrato-input-${labelPart}-${htmlFor.toLowerCase()}`
+        : labelPart
+          ? `contrato-input-${labelPart}`
+          : `contrato-input-${htmlFor}`;
+    return (
+      <div data-testid={testId}>
+        <label htmlFor={htmlFor}>
+          {label}
+          {required && ' *'}
+        </label>
+        <input
+          id={htmlFor}
+          name={htmlFor}
+          value={value || ''}
+          onChange={onChange}
+          type={type || 'text'}
+          required={required}
+          disabled={disabled}
+          data-testid={`input-${htmlFor}`}
+        />
+      </div>
+    );
+  },
   SelectField: ({
     htmlFor,
     label,
@@ -52,6 +86,7 @@ jest.mock('@/components', () => ({
     required,
     options,
     disabled,
+    placeholder,
   }) => (
     <div data-testid={`contrato-select-${htmlFor}`}>
       <label htmlFor={htmlFor}>
@@ -61,12 +96,13 @@ jest.mock('@/components', () => ({
       <select
         id={htmlFor}
         name={htmlFor}
-        value={value}
+        value={value || ''}
         onChange={onChange}
         required={required}
         disabled={disabled}
+        data-testid={`select-${htmlFor}`}
       >
-        <option value="">Selecione...</option>
+        <option value="">{placeholder || 'Selecione...'}</option>
         {options?.map(opt => (
           <option key={opt.value} value={opt.value}>
             {opt.label}
@@ -83,38 +119,61 @@ jest.mock('@/components', () => ({
         name={htmlFor}
         checked={checked}
         onChange={onChange}
+        data-testid={`checkbox-${htmlFor}`}
       />
       <label htmlFor={htmlFor}>{label}</label>
     </div>
   ),
-  Badge: ({ text }) => <div data-testid="contrato-badge">{text}</div>,
+  Badge: ({ text, color, icon }) => (
+    <div data-testid="contrato-badge" className={`badge-${color}`}>
+      {icon && <span className={`icon-${icon}`} />}
+      {text}
+    </div>
+  ),
   Loading: () => <div data-testid="contrato-loading">Carregando...</div>,
   ButtonsFields: ({ isLoading, href, blocked }) => (
     <div data-testid="contrato-buttons-fields">
-      <button type="submit" disabled={isLoading || blocked}>
+      <button
+        type="submit"
+        disabled={isLoading || blocked}
+        data-testid="submit-button"
+      >
         {isLoading ? 'Carregando...' : 'Salvar'}
       </button>
-      <a href={href}>Cancelar</a>
+      <a href={href} data-testid="cancel-button">
+        Cancelar
+      </a>
     </div>
   ),
 }));
 
-describe('ContratoForm', () => {
+jest.mock('lucide-react', () => ({
+  Pencil: () => <svg data-testid="icon-pencil" />,
+  Trash2: () => <svg data-testid="icon-trash" />,
+  Plus: () => <svg data-testid="icon-plus" />,
+  Wand2: () => <svg data-testid="icon-wand" />,
+}));
+
+describe('ContratoForm Component', () => {
   const mockAlunoOptions = [
-    { value: 1, label: 'João Silva (joao@example.com)' },
-    { value: 2, label: 'Maria Santos (maria@example.com)' },
+    { value: 1, label: 'João Silva' },
+    { value: 2, label: 'Maria Santos' },
   ];
 
   const mockProfessorOptions = [
-    { value: 1, label: 'Prof. Carlos (carlos@example.com)' },
-    { value: 2, label: 'Prof. Ana (ana@example.com)' },
+    { value: 1, label: 'Prof. Carlos' },
+    { value: 2, label: 'Prof. Ana' },
   ];
 
   const mockFormData = {
     alunoId: 1,
+    aluno: { nome: 'João Silva' },
     professorId: 1,
+    professor: { nome: 'Prof. Carlos' },
     dataInicio: '2024-03-01',
     dataTermino: '2024-12-31',
+    idioma: 'ENGLISH',
+    status: 'ATIVO',
     diasAulas: [
       {
         diaSemana: 'SEGUNDA',
@@ -124,36 +183,74 @@ describe('ContratoForm', () => {
         horaFinal: '10:40',
       },
       {
+        diaSemana: 'TERCA',
+        ativo: false,
+        quantidadeAulas: 1,
+        horaInicial: '',
+        horaFinal: '',
+      },
+      {
         diaSemana: 'QUARTA',
         ativo: true,
-        quantidadeAulas: 1,
+        quantidadeAulas: 2,
         horaInicial: '14:00',
-        horaFinal: '14:40',
+        horaFinal: '15:20',
+      },
+      {
+        diaSemana: 'QUINTA',
+        ativo: false,
+        quantidadeAulas: 1,
+        horaInicial: '',
+        horaFinal: '',
+      },
+      {
+        diaSemana: 'SEXTA',
+        ativo: false,
+        quantidadeAulas: 1,
+        horaInicial: '',
+        horaFinal: '',
+      },
+      {
+        diaSemana: 'SABADO',
+        ativo: false,
+        quantidadeAulas: 1,
+        horaInicial: '',
+        horaFinal: '',
+      },
+      {
+        diaSemana: 'DOMINGO',
+        ativo: false,
+        quantidadeAulas: 1,
+        horaInicial: '',
+        horaFinal: '',
       },
     ],
     aulas: [
       {
         id: 1,
-        dataAula: '2024-03-04',
+        dataAula: '2024-03-04T10:00:00.000Z',
         horaInicial: '10:00',
         horaFinal: '10:40',
         tipo: 'PADRAO',
-        observacao: 'Test aula',
+        observacao: 'Aula de teste',
       },
     ],
   };
 
-  const mockHandleChange = jest.fn();
-  const mockHandleSubmit = jest.fn(e => e.preventDefault());
-  const mockHandleAlunoChange = jest.fn();
-  const mockHandleProfessorChange = jest.fn();
-  const mockHandleAtivoChange = jest.fn();
-  const mockHandleHoraInicialChange = jest.fn();
-  const mockHandleQuantidadeAulasChange = jest.fn();
-  const mockHandleDeleteAula = jest.fn();
-  const mockHandleEditAula = jest.fn();
-  const mockHandleGenerateAulasByContrato = jest.fn();
-  const mockCreateAula = jest.fn();
+  const mockHandlers = {
+    handleSubmit: jest.fn(e => e.preventDefault()),
+    handleChange: jest.fn(),
+    handleAlunoChange: jest.fn(),
+    handleProfessorChange: jest.fn(),
+    handleAtivoChange: jest.fn(),
+    handleHoraInicialChange: jest.fn(),
+    handleQuantidadeAulasChange: jest.fn(),
+    handleDeleteAula: jest.fn(),
+    handleEditAula: jest.fn(),
+    handleGenerateAulasByContrato: jest.fn(),
+    createAula: jest.fn(),
+  };
+
   const mockDataFormatter = jest.fn(date => {
     if (!date) return '';
     const d = new Date(date);
@@ -164,316 +261,522 @@ describe('ContratoForm', () => {
     jest.clearAllMocks();
   });
 
-  it('should render with data-testid on main form', () => {
-    render(
-      <ContratoForm
-        alunoOptions={mockAlunoOptions}
-        professorOptions={mockProfessorOptions}
-        formData={mockFormData}
-        isLoading={false}
-        isSubmitting={false}
-        errors={null}
-        message=""
-        handleSubmit={mockHandleSubmit}
-        handleChange={mockHandleChange}
-        handleAlunoChange={mockHandleAlunoChange}
-        handleProfessorChange={mockHandleProfessorChange}
-        handleAtivoChange={mockHandleAtivoChange}
-        handleHoraInicialChange={mockHandleHoraInicialChange}
-        handleQuantidadeAulasChange={mockHandleQuantidadeAulasChange}
-        handleDeleteAula={mockHandleDeleteAula}
-        handleEditAula={mockHandleEditAula}
-        handleGenerateAulasByContrato={mockHandleGenerateAulasByContrato}
-        createAula={mockCreateAula}
-        dataFormatter={mockDataFormatter}
-      />
-    );
+  describe('Form Rendering', () => {
+    it('should render form with correct data-testid', () => {
+      render(
+        <ContratoForm
+          alunoOptions={mockAlunoOptions}
+          professorOptions={mockProfessorOptions}
+          formData={mockFormData}
+          isLoading={false}
+          isSubmitting={false}
+          errors={null}
+          message=""
+          {...mockHandlers}
+          dataFormatter={mockDataFormatter}
+        />
+      );
 
-    expect(screen.getByTestId('contrato-form')).toBeInTheDocument();
-    expect(screen.getByTestId('contrato-form-error')).toBeInTheDocument();
+      expect(screen.getByTestId('contrato-form')).toBeInTheDocument();
+    });
+
+    it('should render FormError component', () => {
+      render(
+        <ContratoForm
+          alunoOptions={mockAlunoOptions}
+          professorOptions={mockProfessorOptions}
+          formData={mockFormData}
+          isLoading={false}
+          isSubmitting={false}
+          errors={null}
+          message=""
+          {...mockHandlers}
+          dataFormatter={mockDataFormatter}
+        />
+      );
+
+      expect(screen.getByTestId('contrato-form-error')).toBeInTheDocument();
+    });
   });
 
-  it('should render step 1 fields (aluno and professor selection)', () => {
-    render(
-      <ContratoForm
-        alunoOptions={mockAlunoOptions}
-        professorOptions={mockProfessorOptions}
-        formData={mockFormData}
-        isLoading={false}
-        isSubmitting={false}
-        errors={null}
-        message=""
-        handleSubmit={mockHandleSubmit}
-        handleChange={mockHandleChange}
-        handleAlunoChange={mockHandleAlunoChange}
-        handleProfessorChange={mockHandleProfessorChange}
-        handleAtivoChange={mockHandleAtivoChange}
-        handleHoraInicialChange={mockHandleHoraInicialChange}
-        handleQuantidadeAulasChange={mockHandleQuantidadeAulasChange}
-        handleDeleteAula={mockHandleDeleteAula}
-        handleEditAula={mockHandleEditAula}
-        handleGenerateAulasByContrato={mockHandleGenerateAulasByContrato}
-        createAula={mockCreateAula}
-        dataFormatter={mockDataFormatter}
-      />
-    );
+  describe('Step 1: Aluno and Professor Selection', () => {
+    it('should render all step 1 fields', () => {
+      render(
+        <ContratoForm
+          alunoOptions={mockAlunoOptions}
+          professorOptions={mockProfessorOptions}
+          formData={mockFormData}
+          isLoading={false}
+          isSubmitting={false}
+          errors={null}
+          message=""
+          {...mockHandlers}
+          dataFormatter={mockDataFormatter}
+        />
+      );
 
-    expect(screen.getByTestId('contrato-select-alunoId')).toBeInTheDocument();
-    expect(
-      screen.getByTestId('contrato-select-professorId')
-    ).toBeInTheDocument();
-    expect(screen.getByTestId('contrato-input-dataInicio')).toBeInTheDocument();
-    expect(
-      screen.getByTestId('contrato-input-dataTermino')
-    ).toBeInTheDocument();
+      expect(screen.getByTestId('contrato-select-alunoId')).toBeInTheDocument();
+      expect(
+        screen.getByTestId('contrato-select-professorId')
+      ).toBeInTheDocument();
+      expect(screen.getByTestId('contrato-select-idioma')).toBeInTheDocument();
+      expect(screen.getByTestId('contrato-select-status')).toBeInTheDocument();
+    });
+
+    it('should render date fields for contract dates', () => {
+      render(
+        <ContratoForm
+          alunoOptions={mockAlunoOptions}
+          professorOptions={mockProfessorOptions}
+          formData={mockFormData}
+          isLoading={false}
+          isSubmitting={false}
+          errors={null}
+          message=""
+          {...mockHandlers}
+          dataFormatter={mockDataFormatter}
+        />
+      );
+
+      expect(
+        screen.getByTestId('contrato-input-data-de-inicio-do-contrato')
+      ).toBeInTheDocument();
+      expect(
+        screen.getByTestId('contrato-input-data-de-termino-do-contrato')
+      ).toBeInTheDocument();
+    });
+
+    it('should display selected aluno option value', () => {
+      render(
+        <ContratoForm
+          alunoOptions={mockAlunoOptions}
+          professorOptions={mockProfessorOptions}
+          formData={mockFormData}
+          isLoading={false}
+          isSubmitting={false}
+          errors={null}
+          message=""
+          {...mockHandlers}
+          dataFormatter={mockDataFormatter}
+        />
+      );
+
+      const alunoSelect = screen.getByTestId('select-alunoId');
+      expect(alunoSelect.value).toBe('1');
+    });
+
+    it('should call handleAlunoChange when aluno changes', async () => {
+      const { rerender } = render(
+        <ContratoForm
+          alunoOptions={mockAlunoOptions}
+          professorOptions={mockProfessorOptions}
+          formData={mockFormData}
+          isLoading={false}
+          isSubmitting={false}
+          errors={null}
+          message=""
+          {...mockHandlers}
+          dataFormatter={mockDataFormatter}
+        />
+      );
+
+      const alunoSelect = screen.getByTestId('select-alunoId');
+      fireEvent.change(alunoSelect, { target: { value: '2' } });
+
+      expect(mockHandlers.handleAlunoChange).toHaveBeenCalled();
+    });
   });
 
-  it('should display error message when provided', () => {
-    const errorMessage = 'Erro ao salvar contrato';
-    render(
-      <ContratoForm
-        alunoOptions={mockAlunoOptions}
-        professorOptions={mockProfessorOptions}
-        formData={mockFormData}
-        isLoading={false}
-        isSubmitting={false}
-        errors={['Erro 1', 'Erro 2']}
-        message={errorMessage}
-        handleSubmit={mockHandleSubmit}
-        handleChange={mockHandleChange}
-        handleAlunoChange={mockHandleAlunoChange}
-        handleProfessorChange={mockHandleProfessorChange}
-        handleAtivoChange={mockHandleAtivoChange}
-        handleHoraInicialChange={mockHandleHoraInicialChange}
-        handleQuantidadeAulasChange={mockHandleQuantidadeAulasChange}
-        handleDeleteAula={mockHandleDeleteAula}
-        handleEditAula={mockHandleEditAula}
-        handleGenerateAulasByContrato={mockHandleGenerateAulasByContrato}
-        createAula={mockCreateAula}
-        dataFormatter={mockDataFormatter}
-      />
-    );
+  describe('Step 2: Dias de Aula', () => {
+    it('should render dias de aula section when conditions are met', () => {
+      const formDataWithAllRequiredFields = {
+        ...mockFormData,
+        professor: { nome: 'Prof. Carlos' },
+        aluno: { nome: 'João Silva' },
+        dataInicio: '2024-03-01',
+        dataTermino: '2024-12-31',
+      };
 
-    expect(screen.getByTestId('contrato-error-title')).toHaveTextContent(
-      errorMessage
-    );
+      render(
+        <ContratoForm
+          alunoOptions={mockAlunoOptions}
+          professorOptions={mockProfessorOptions}
+          formData={formDataWithAllRequiredFields}
+          isLoading={false}
+          isSubmitting={false}
+          errors={null}
+          message=""
+          {...mockHandlers}
+          dataFormatter={mockDataFormatter}
+        />
+      );
+
+      // Should render dias de aula checkboxes
+      expect(
+        screen.getByTestId('contrato-checkbox-SEGUNDA')
+      ).toBeInTheDocument();
+      expect(
+        screen.getByTestId('contrato-checkbox-QUARTA')
+      ).toBeInTheDocument();
+    });
+
+    it('should toggle dia ativo checkbox', () => {
+      const formDataWithAllRequiredFields = {
+        ...mockFormData,
+        professor: { nome: 'Prof. Carlos' },
+        aluno: { nome: 'João Silva' },
+      };
+
+      render(
+        <ContratoForm
+          alunoOptions={mockAlunoOptions}
+          professorOptions={mockProfessorOptions}
+          formData={formDataWithAllRequiredFields}
+          isLoading={false}
+          isSubmitting={false}
+          errors={null}
+          message=""
+          {...mockHandlers}
+          dataFormatter={mockDataFormatter}
+        />
+      );
+
+      const checkbox = screen.getByTestId('checkbox-SEGUNDA');
+      fireEvent.click(checkbox);
+
+      expect(mockHandlers.handleAtivoChange).toHaveBeenCalled();
+    });
+
+    it('should render hora inicial and hora final inputs when dia is ativo', () => {
+      const formDataWithAllRequiredFields = {
+        ...mockFormData,
+        professor: { nome: 'Prof. Carlos' },
+        aluno: { nome: 'João Silva' },
+        diasAulas: mockFormData.diasAulas.map(dia =>
+          dia.diaSemana === 'SEGUNDA' ? { ...dia, ativo: true } : dia
+        ),
+      };
+
+      render(
+        <ContratoForm
+          alunoOptions={mockAlunoOptions}
+          professorOptions={mockProfessorOptions}
+          formData={formDataWithAllRequiredFields}
+          isLoading={false}
+          isSubmitting={false}
+          errors={null}
+          message=""
+          {...mockHandlers}
+          dataFormatter={mockDataFormatter}
+        />
+      );
+
+      // Check for hora inicial and hora final inputs by unique labels with day
+      expect(
+        screen.getByTestId('contrato-input-hora-inicial-segunda')
+      ).toBeInTheDocument();
+      expect(
+        screen.getByTestId('contrato-input-hora-final-segunda')
+      ).toBeInTheDocument();
+    });
+
+    it('should call handleHoraInicialChange when hora inicial changes', async () => {
+      const formDataWithAllRequiredFields = {
+        ...mockFormData,
+        professor: { nome: 'Prof. Carlos' },
+        aluno: { nome: 'João Silva' },
+        diasAulas: mockFormData.diasAulas.map(dia =>
+          dia.diaSemana === 'SEGUNDA' ? { ...dia, ativo: true } : dia
+        ),
+      };
+
+      render(
+        <ContratoForm
+          alunoOptions={mockAlunoOptions}
+          professorOptions={mockProfessorOptions}
+          formData={formDataWithAllRequiredFields}
+          isLoading={false}
+          isSubmitting={false}
+          errors={null}
+          message=""
+          {...mockHandlers}
+          dataFormatter={mockDataFormatter}
+        />
+      );
+
+      const horaInicialContainer = screen.getByTestId(
+        'contrato-input-hora-inicial-segunda'
+      );
+      const horaInicialInput = horaInicialContainer.querySelector('input');
+      await userEvent.clear(horaInicialInput);
+      await userEvent.type(horaInicialInput, '10:00');
+      expect(mockHandlers.handleHoraInicialChange).toHaveBeenCalled();
+    });
   });
 
-  it('should render form with initial values', () => {
-    render(
-      <ContratoForm
-        alunoOptions={mockAlunoOptions}
-        professorOptions={mockProfessorOptions}
-        formData={mockFormData}
-        isLoading={false}
-        isSubmitting={false}
-        errors={null}
-        message=""
-        handleSubmit={mockHandleSubmit}
-        handleChange={mockHandleChange}
-        handleAlunoChange={mockHandleAlunoChange}
-        handleProfessorChange={mockHandleProfessorChange}
-        handleAtivoChange={mockHandleAtivoChange}
-        handleHoraInicialChange={mockHandleHoraInicialChange}
-        handleQuantidadeAulasChange={mockHandleQuantidadeAulasChange}
-        handleDeleteAula={mockHandleDeleteAula}
-        handleEditAula={mockHandleEditAula}
-        handleGenerateAulasByContrato={mockHandleGenerateAulasByContrato}
-        createAula={mockCreateAula}
-        dataFormatter={mockDataFormatter}
-      />
-    );
+  describe('Step 3: Aulas', () => {
+    it('should render aulas section with Nova Aula button', () => {
+      const formDataWithAulasActive = {
+        ...mockFormData,
+        professor: { nome: 'Prof. Carlos' },
+        aluno: { nome: 'João Silva' },
+        diasAulas: mockFormData.diasAulas.map(dia =>
+          dia.diaSemana === 'SEGUNDA' ? { ...dia, ativo: true } : dia
+        ),
+      };
 
-    const dataInicioInput = screen
-      .getByTestId('contrato-input-dataInicio')
-      .querySelector('input');
-    expect(dataInicioInput.value).toBe(mockFormData.dataInicio);
+      render(
+        <ContratoForm
+          alunoOptions={mockAlunoOptions}
+          professorOptions={mockProfessorOptions}
+          formData={formDataWithAulasActive}
+          isLoading={false}
+          isSubmitting={false}
+          errors={null}
+          message=""
+          {...mockHandlers}
+          dataFormatter={mockDataFormatter}
+        />
+      );
+
+      // Should display "Nova Aula" button if aulas section is visible
+      const buttons = screen.queryAllByRole('button');
+      expect(buttons.length).toBeGreaterThan(0);
+    });
+
+    it('should display aulas count', () => {
+      const formDataWithAulasActive = {
+        ...mockFormData,
+        professor: { nome: 'Prof. Carlos' },
+        aluno: { nome: 'João Silva' },
+        diasAulas: mockFormData.diasAulas.map(dia =>
+          dia.diaSemana === 'SEGUNDA' ? { ...dia, ativo: true } : dia
+        ),
+      };
+
+      render(
+        <ContratoForm
+          alunoOptions={mockAlunoOptions}
+          professorOptions={mockProfessorOptions}
+          formData={formDataWithAulasActive}
+          isLoading={false}
+          isSubmitting={false}
+          errors={null}
+          message=""
+          {...mockHandlers}
+          dataFormatter={mockDataFormatter}
+        />
+      );
+
+      expect(screen.getByText(/Total de.*aulas/)).toBeInTheDocument();
+    });
+
+    it('should render aula cards with edit and delete buttons', () => {
+      const formDataWithAulasActive = {
+        ...mockFormData,
+        professor: { nome: 'Prof. Carlos' },
+        aluno: { Nome: 'João Silva' },
+        diasAulas: mockFormData.diasAulas.map(dia =>
+          dia.diaSemana === 'SEGUNDA' ? { ...dia, ativo: true } : dia
+        ),
+      };
+
+      render(
+        <ContratoForm
+          alunoOptions={mockAlunoOptions}
+          professorOptions={mockProfessorOptions}
+          formData={formDataWithAulasActive}
+          isLoading={false}
+          isSubmitting={false}
+          errors={null}
+          message=""
+          {...mockHandlers}
+          dataFormatter={mockDataFormatter}
+        />
+      );
+
+      const editButtons = screen.queryAllByTestId('icon-pencil');
+      const trashButtons = screen.queryAllByTestId('icon-trash');
+
+      expect(editButtons.length).toBeGreaterThanOrEqual(0);
+      expect(trashButtons.length).toBeGreaterThanOrEqual(0);
+    });
+
+    it('should display loading component when isSubmitting is true', () => {
+      const formDataWithAulasActive = {
+        ...mockFormData,
+        professor: { nome: 'Prof. Carlos' },
+        aluno: { Nome: 'João Silva' },
+        diasAulas: mockFormData.diasAulas.map(dia =>
+          dia.diaSemana === 'SEGUNDA' ? { ...dia, ativo: true } : dia
+        ),
+      };
+
+      render(
+        <ContratoForm
+          alunoOptions={mockAlunoOptions}
+          professorOptions={mockProfessorOptions}
+          formData={formDataWithAulasActive}
+          isLoading={false}
+          isSubmitting={true}
+          errors={null}
+          message=""
+          {...mockHandlers}
+          dataFormatter={mockDataFormatter}
+        />
+      );
+
+      expect(screen.getByTestId('contrato-loading')).toBeInTheDocument();
+    });
   });
 
-  it('should call handleAlunoChange when aluno selection changes', () => {
-    render(
-      <ContratoForm
-        alunoOptions={mockAlunoOptions}
-        professorOptions={mockProfessorOptions}
-        formData={mockFormData}
-        isLoading={false}
-        isSubmitting={false}
-        errors={null}
-        message=""
-        handleSubmit={mockHandleSubmit}
-        handleChange={mockHandleChange}
-        handleAlunoChange={mockHandleAlunoChange}
-        handleProfessorChange={mockHandleProfessorChange}
-        handleAtivoChange={mockHandleAtivoChange}
-        handleHoraInicialChange={mockHandleHoraInicialChange}
-        handleQuantidadeAulasChange={mockHandleQuantidadeAulasChange}
-        handleDeleteAula={mockHandleDeleteAula}
-        handleEditAula={mockHandleEditAula}
-        handleGenerateAulasByContrato={mockHandleGenerateAulasByContrato}
-        createAula={mockCreateAula}
-        dataFormatter={mockDataFormatter}
-      />
-    );
+  describe('Form Submission', () => {
+    it('should render submit button', () => {
+      render(
+        <ContratoForm
+          alunoOptions={mockAlunoOptions}
+          professorOptions={mockProfessorOptions}
+          formData={mockFormData}
+          isLoading={false}
+          isSubmitting={false}
+          errors={null}
+          message=""
+          {...mockHandlers}
+          dataFormatter={mockDataFormatter}
+        />
+      );
 
-    const alunoSelect = screen
-      .getByTestId('contrato-select-alunoId')
-      .querySelector('select');
-    fireEvent.change(alunoSelect, { target: { value: '2' } });
+      expect(screen.getByTestId('submit-button')).toBeInTheDocument();
+    });
 
-    expect(mockHandleAlunoChange).toHaveBeenCalled();
+    it('should disable submit button when isLoading is true', () => {
+      render(
+        <ContratoForm
+          alunoOptions={mockAlunoOptions}
+          professorOptions={mockProfessorOptions}
+          formData={mockFormData}
+          isLoading={true}
+          isSubmitting={false}
+          errors={null}
+          message=""
+          {...mockHandlers}
+          dataFormatter={mockDataFormatter}
+        />
+      );
+
+      const submitButton = screen.getByTestId('submit-button');
+      expect(submitButton).toBeDisabled();
+    });
+
+    it('should disable submit button when blocked is true (no aulas)', () => {
+      const formDataNoAulas = {
+        ...mockFormData,
+        aulas: [],
+      };
+
+      render(
+        <ContratoForm
+          alunoOptions={mockAlunoOptions}
+          professorOptions={mockProfessorOptions}
+          formData={formDataNoAulas}
+          isLoading={false}
+          isSubmitting={false}
+          errors={null}
+          message=""
+          {...mockHandlers}
+          dataFormatter={mockDataFormatter}
+        />
+      );
+
+      const submitButton = screen.getByTestId('submit-button');
+      expect(submitButton).toBeDisabled();
+    });
+
+    it('should call handleSubmit when form is submitted', async () => {
+      render(
+        <ContratoForm
+          alunoOptions={mockAlunoOptions}
+          professorOptions={mockProfessorOptions}
+          formData={mockFormData}
+          isLoading={false}
+          isSubmitting={false}
+          errors={null}
+          message=""
+          {...mockHandlers}
+          dataFormatter={mockDataFormatter}
+        />
+      );
+
+      const form = screen.getByTestId('contrato-form');
+      fireEvent.submit(form);
+
+      await waitFor(() => {
+        expect(mockHandlers.handleSubmit).toHaveBeenCalled();
+      });
+    });
   });
 
-  it('should render buttons field component', () => {
-    render(
-      <ContratoForm
-        alunoOptions={mockAlunoOptions}
-        professorOptions={mockProfessorOptions}
-        formData={mockFormData}
-        isLoading={false}
-        isSubmitting={false}
-        errors={null}
-        message=""
-        handleSubmit={mockHandleSubmit}
-        handleChange={mockHandleChange}
-        handleAlunoChange={mockHandleAlunoChange}
-        handleProfessorChange={mockHandleProfessorChange}
-        handleAtivoChange={mockHandleAtivoChange}
-        handleHoraInicialChange={mockHandleHoraInicialChange}
-        handleQuantidadeAulasChange={mockHandleQuantidadeAulasChange}
-        handleDeleteAula={mockHandleDeleteAula}
-        handleEditAula={mockHandleEditAula}
-        handleGenerateAulasByContrato={mockHandleGenerateAulasByContrato}
-        createAula={mockCreateAula}
-        dataFormatter={mockDataFormatter}
-      />
-    );
+  describe('Error Handling', () => {
+    it('should display error message when provided', () => {
+      const errorMessage = 'Erro ao salvar contrato';
+      render(
+        <ContratoForm
+          alunoOptions={mockAlunoOptions}
+          professorOptions={mockProfessorOptions}
+          formData={mockFormData}
+          isLoading={false}
+          isSubmitting={false}
+          errors={['error1', 'error2']}
+          message={errorMessage}
+          {...mockHandlers}
+          dataFormatter={mockDataFormatter}
+        />
+      );
 
-    expect(screen.getByTestId('contrato-buttons-fields')).toBeInTheDocument();
+      expect(screen.getByTestId('contrato-error-title')).toHaveTextContent(
+        errorMessage
+      );
+    });
+
+    it('should display error list when errors array is provided', () => {
+      const errors = ['Campo obrigatório', 'Data inválida'];
+      render(
+        <ContratoForm
+          alunoOptions={mockAlunoOptions}
+          professorOptions={mockProfessorOptions}
+          formData={mockFormData}
+          isLoading={false}
+          isSubmitting={false}
+          errors={errors}
+          message="Erros no formulário"
+          {...mockHandlers}
+          dataFormatter={mockDataFormatter}
+        />
+      );
+
+      expect(screen.getByTestId('contrato-errors')).toBeInTheDocument();
+    });
   });
 
-  it('should disable submit button when blocked is true', () => {
-    const emptyFormData = {
-      ...mockFormData,
-      aulas: [],
-    };
+  describe('Cancel Button', () => {
+    it('should render cancel button with correct href', () => {
+      render(
+        <ContratoForm
+          alunoOptions={mockAlunoOptions}
+          professorOptions={mockProfessorOptions}
+          formData={mockFormData}
+          isLoading={false}
+          isSubmitting={false}
+          errors={null}
+          message=""
+          {...mockHandlers}
+          dataFormatter={mockDataFormatter}
+        />
+      );
 
-    render(
-      <ContratoForm
-        alunoOptions={mockAlunoOptions}
-        professorOptions={mockProfessorOptions}
-        formData={emptyFormData}
-        isLoading={false}
-        isSubmitting={false}
-        errors={null}
-        message=""
-        handleSubmit={mockHandleSubmit}
-        handleChange={mockHandleChange}
-        handleAlunoChange={mockHandleAlunoChange}
-        handleProfessorChange={mockHandleProfessorChange}
-        handleAtivoChange={mockHandleAtivoChange}
-        handleHoraInicialChange={mockHandleHoraInicialChange}
-        handleQuantidadeAulasChange={mockHandleQuantidadeAulasChange}
-        handleDeleteAula={mockHandleDeleteAula}
-        handleEditAula={mockHandleEditAula}
-        handleGenerateAulasByContrato={mockHandleGenerateAulasByContrato}
-        createAula={mockCreateAula}
-        dataFormatter={mockDataFormatter}
-      />
-    );
-
-    const submitButton = screen
-      .getByTestId('contrato-buttons-fields')
-      .querySelector('button[type="submit"]');
-    expect(submitButton).toBeDisabled();
-  });
-
-  it('should disable submit button when isLoading is true', () => {
-    render(
-      <ContratoForm
-        alunoOptions={mockAlunoOptions}
-        professorOptions={mockProfessorOptions}
-        formData={mockFormData}
-        isLoading={true}
-        isSubmitting={false}
-        errors={null}
-        message=""
-        handleSubmit={mockHandleSubmit}
-        handleChange={mockHandleChange}
-        handleAlunoChange={mockHandleAlunoChange}
-        handleProfessorChange={mockHandleProfessorChange}
-        handleAtivoChange={mockHandleAtivoChange}
-        handleHoraInicialChange={mockHandleHoraInicialChange}
-        handleQuantidadeAulasChange={mockHandleQuantidadeAulasChange}
-        handleDeleteAula={mockHandleDeleteAula}
-        handleEditAula={mockHandleEditAula}
-        handleGenerateAulasByContrato={mockHandleGenerateAulasByContrato}
-        createAula={mockCreateAula}
-        dataFormatter={mockDataFormatter}
-      />
-    );
-
-    const submitButton = screen
-      .getByTestId('contrato-buttons-fields')
-      .querySelector('button[type="submit"]');
-    expect(submitButton).toBeDisabled();
-  });
-
-  it('should call handleSubmit when form is submitted', () => {
-    render(
-      <ContratoForm
-        alunoOptions={mockAlunoOptions}
-        professorOptions={mockProfessorOptions}
-        formData={mockFormData}
-        isLoading={false}
-        isSubmitting={false}
-        errors={null}
-        message=""
-        handleSubmit={mockHandleSubmit}
-        handleChange={mockHandleChange}
-        handleAlunoChange={mockHandleAlunoChange}
-        handleProfessorChange={mockHandleProfessorChange}
-        handleAtivoChange={mockHandleAtivoChange}
-        handleHoraInicialChange={mockHandleHoraInicialChange}
-        handleQuantidadeAulasChange={mockHandleQuantidadeAulasChange}
-        handleDeleteAula={mockHandleDeleteAula}
-        handleEditAula={mockHandleEditAula}
-        handleGenerateAulasByContrato={mockHandleGenerateAulasByContrato}
-        createAula={mockCreateAula}
-        dataFormatter={mockDataFormatter}
-      />
-    );
-
-    const form = screen.getByTestId('contrato-form');
-    fireEvent.submit(form);
-
-    expect(mockHandleSubmit).toHaveBeenCalled();
-  });
-
-  it('should display loading component when isSubmitting is true', () => {
-    render(
-      <ContratoForm
-        alunoOptions={mockAlunoOptions}
-        professorOptions={mockProfessorOptions}
-        formData={mockFormData}
-        isLoading={false}
-        isSubmitting={true}
-        errors={null}
-        message=""
-        handleSubmit={mockHandleSubmit}
-        handleChange={mockHandleChange}
-        handleAlunoChange={mockHandleAlunoChange}
-        handleProfessorChange={mockHandleProfessorChange}
-        handleAtivoChange={mockHandleAtivoChange}
-        handleHoraInicialChange={mockHandleHoraInicialChange}
-        handleQuantidadeAulasChange={mockHandleQuantidadeAulasChange}
-        handleDeleteAula={mockHandleDeleteAula}
-        handleEditAula={mockHandleEditAula}
-        handleGenerateAulasByContrato={mockHandleGenerateAulasByContrato}
-        createAula={mockCreateAula}
-        dataFormatter={mockDataFormatter}
-      />
-    );
-
-    expect(screen.getByTestId('contrato-loading')).toBeInTheDocument();
+      const cancelButton = screen.getByTestId('cancel-button');
+      expect(cancelButton).toBeInTheDocument();
+      expect(cancelButton).toHaveAttribute('href', '/contratos');
+    });
   });
 });

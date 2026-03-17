@@ -18,6 +18,7 @@ import {
   Badge,
 } from '@/components';
 import { useContrato } from '@/hooks/contratos/useContrato';
+import { IDIOMA_LABEL } from '@/constants';
 
 export default function Contrato() {
   const params = useParams();
@@ -63,6 +64,11 @@ export default function Contrato() {
               icon="calendar"
               color="gray"
               text={`Total de aulas ${contrato.totalAulas}`}
+            />
+            <Badge
+              icon={'star'}
+              color="gray"
+              text={IDIOMA_LABEL[contrato.idioma]}
             />
             <Badge
               icon={contrato.status === 'ATIVO' ? 'check' : 'alert'}
