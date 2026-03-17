@@ -1,3 +1,9 @@
+## [1.9.1](https://github.com/BLS-idiomas/diario-de-classe-frontend/compare/v1.9.0...v1.9.1) (2026-03-17)
+
+### Bug Fixes
+
+- update horaInicial and horaFinal assignment in initialDiaAula ([20fe700](https://github.com/BLS-idiomas/diario-de-classe-frontend/commit/20fe700a7f5475cecc5fe2b63416a80ec7373b4e))
+
 # [1.9.0](https://github.com/BLS-idiomas/diario-de-classe-frontend/compare/v1.8.0...v1.9.0) (2026-03-17)
 
 ### Bug Fixes
