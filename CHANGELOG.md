@@ -1,3 +1,15 @@
+# [1.10.0](https://github.com/BLS-idiomas/diario-de-classe-frontend/compare/v1.9.3...v1.10.0) (2026-03-17)
+
+### Bug Fixes
+
+- update href in ButtonsFields to point to /alunos instead of /aulas ([1f65793](https://github.com/BLS-idiomas/diario-de-classe-frontend/commit/1f65793cc86f2aabcf4845b3553f0135916aebaa))
+
+### Features
+
+- add DisponibilidadeCard component with rendering and edit functionality ([3e087f4](https://github.com/BLS-idiomas/diario-de-classe-frontend/commit/3e087f4ced2fa5bbe472c4deffa61fc32f313682))
+- implement calculateHoraFim utility and integrate into useContratoForm for final time calculation ([54a34d3](https://github.com/BLS-idiomas/diario-de-classe-frontend/commit/54a34d3b35c820a4ee33a3013480ba1bd7413e44))
+- integrate DisponibilidadeCard component for displaying professor availability and add utility for day constant mapping ([df9d23b](https://github.com/BLS-idiomas/diario-de-classe-frontend/commit/df9d23badf3fdf5925ae81889ba15451a89c087d))
+
 ## [1.9.3](https://github.com/BLS-idiomas/diario-de-classe-frontend/compare/v1.9.2...v1.9.3) (2026-03-17)
 
 ### Bug Fixes
