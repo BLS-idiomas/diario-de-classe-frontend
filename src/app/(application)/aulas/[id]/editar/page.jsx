@@ -47,7 +47,7 @@ export default function EditarAula() {
       subTitle="Atualize os dados da aula"
       buttons={[
         {
-          href: backUrl || `/aulas`,
+          href: backUrl || `/aulas/${params.id}`,
           label: '← Voltar',
           type: 'secondary',
         },
