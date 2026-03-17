@@ -1,3 +1,10 @@
+## [1.9.2](https://github.com/BLS-idiomas/diario-de-classe-frontend/compare/v1.9.1...v1.9.2) (2026-03-17)
+
+### Bug Fixes
+
+- handle potential null currentUser in useEditarProfessor and useProfessorForm ([c5b9ccc](https://github.com/BLS-idiomas/diario-de-classe-frontend/commit/c5b9ccc96906e78674be6aaf1732730e284d03f4))
+- update professorId assignment in EditarContrato to use formData when no aulas exist ([41426b9](https://github.com/BLS-idiomas/diario-de-classe-frontend/commit/41426b9dac53e91f41758d4593c4b88f439aebe8))
+
 ## [1.9.1](https://github.com/BLS-idiomas/diario-de-classe-frontend/compare/v1.9.0...v1.9.1) (2026-03-17)
 
 ### Bug Fixes
