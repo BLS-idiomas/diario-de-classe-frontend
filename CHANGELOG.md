@@ -1,3 +1,20 @@
+# [1.9.0](https://github.com/BLS-idiomas/diario-de-classe-frontend/compare/v1.8.0...v1.9.0) (2026-03-17)
+
+### Bug Fixes
+
+- handle potential null currentUser in useProfessor call ([234862d](https://github.com/BLS-idiomas/diario-de-classe-frontend/commit/234862dd21cb04a42a11187fb4d69c368ab588f7))
+
+### Features
+
+- add idioma constants for language support ([163c540](https://github.com/BLS-idiomas/diario-de-classe-frontend/commit/163c54097ab4ab7779551ee9d636d5ea9be17639))
+- add idioma support to useAulasList and its tests ([cd2b05e](https://github.com/BLS-idiomas/diario-de-classe-frontend/commit/cd2b05e7db6d528e48dd26f1beb49831ba134753))
+- add language display functionality to Aluno component ([3e2cfad](https://github.com/BLS-idiomas/diario-de-classe-frontend/commit/3e2cfade583483bb859098217282ba14e17037a9))
+- add language support to professor forms and pages ([b3c46c8](https://github.com/BLS-idiomas/diario-de-classe-frontend/commit/b3c46c825a052bfcd50f4aee3a38e0cd4c609a54))
+- add statusContrato constants for contract status management ([1ab7209](https://github.com/BLS-idiomas/diario-de-classe-frontend/commit/1ab7209241757ca985fd29e96555fbdc01550e5a))
+- conditionally render contrato information in Aluno component ([6f8a009](https://github.com/BLS-idiomas/diario-de-classe-frontend/commit/6f8a009c4b842cbc19c55ad4e3cb5bb351748444))
+- enhance aulas and contratos management with idioma support and improved tests ([136a920](https://github.com/BLS-idiomas/diario-de-classe-frontend/commit/136a92092d12914b1299c3dd055d481f653ae2a1))
+- refactor next.config to export config object with turbopack support ([bfb03b5](https://github.com/BLS-idiomas/diario-de-classe-frontend/commit/bfb03b5950dbe353daeb1d2b680e6556fa2b7d66))
+
 # [1.8.0](https://github.com/BLS-idiomas/diario-de-classe-frontend/compare/v1.7.3...v1.8.0) (2026-03-11)
 
 ### Bug Fixes
