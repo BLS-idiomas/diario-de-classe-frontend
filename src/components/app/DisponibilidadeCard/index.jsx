@@ -27,10 +27,10 @@ export const DisponibilidadeCard = ({
   const { diaSemana, horaInicial, horaFinal, ativo } = formData[dia];
   return (
     <div
-      className="p-3 rounded-md bg-main shadow-sm"
+      className="p-3 rounded-md bg-main shadow-lg "
       data-testid={`disponibilidade-card-${dia}`}
     >
-      <div className="font-medium" data-testid={`dia-label-${dia}`}>
+      <div className="font-medium text-main" data-testid={`dia-label-${dia}`}>
         {DIAS_LABEL[diaSemana]}
       </div>
 
