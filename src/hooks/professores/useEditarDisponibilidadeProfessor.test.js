@@ -23,7 +23,7 @@ jest.mock('@/store/slices/professoresSlice', () => ({
   clearStatus: jest.fn(() => ({ type: 'clearStatus' })),
 }));
 
-describe('useEditarDisponibilidadeProfessor', () => {
+describe('useEditarDisponibilidadeProfessor Hook', () => {
   const mockDispatch = jest.fn();
   const mockSuccess = jest.fn();
   const mockProfessor = { id: 123, nome: 'Professor Teste' };
@@ -34,13 +34,13 @@ describe('useEditarDisponibilidadeProfessor', () => {
     useToast.mockReturnValue({ success: mockSuccess });
   });
 
-  describe('initial state', () => {
-    it('deve retornar estados e funções corretamente', () => {
+  describe('Initial State', () => {
+    it('deve retornar estados iniciais corretamente', () => {
       useSelector.mockImplementation(fn =>
         fn({
           professores: {
             status: STATUS.IDLE,
-            message: 'msg',
+            message: 'msg inicial',
             errors: [],
             action: '',
           },
@@ -49,16 +49,32 @@ describe('useEditarDisponibilidadeProfessor', () => {
       const { result } = renderHook(() =>
         useEditarDisponibilidadeProfessor(mockProfessor)
       );
-      expect(result.current.message).toBe('msg');
+      expect(result.current.message).toBe('msg inicial');
       expect(result.current.errors).toEqual([]);
       expect(result.current.isLoading).toBe(false);
       expect(result.current.editMode).toBe(false);
       expect(result.current.formData).toBeDefined();
+    });
+
+    it('deve retornar todas as funções handler', () => {
+      useSelector.mockImplementation(fn =>
+        fn({
+          professores: {
+            status: STATUS.IDLE,
+            message: '',
+            errors: [],
+            action: '',
+          },
+        })
+      );
+      const { result } = renderHook(() =>
+        useEditarDisponibilidadeProfessor(mockProfessor)
+      );
       expect(typeof result.current.handleSubmit).toBe('function');
       expect(typeof result.current.handleChange).toBe('function');
-      expect(typeof result.current.handleCheckboxChange).toBe('function');
       expect(typeof result.current.setDisponibilidadesHandle).toBe('function');
       expect(typeof result.current.setEditMode).toBe('function');
+      expect(typeof result.current.setFormData).toBe('function');
     });
 
     it('deve inicializar formData com todos os dias da semana', () => {
@@ -110,6 +126,23 @@ describe('useEditarDisponibilidadeProfessor', () => {
         useEditarDisponibilidadeProfessor(mockProfessor)
       );
       expect(result.current.isLoading).toBe(true);
+    });
+
+    it('deve definir isLoading como false quando ação não for updateDisponibilidadeProfessor', () => {
+      useSelector.mockImplementation(fn =>
+        fn({
+          professores: {
+            status: STATUS.LOADING,
+            message: '',
+            errors: [],
+            action: 'outraAction',
+          },
+        })
+      );
+      const { result } = renderHook(() =>
+        useEditarDisponibilidadeProfessor(mockProfessor)
+      );
+      expect(result.current.isLoading).toBe(false);
     });
   });
 
@@ -185,7 +218,7 @@ describe('useEditarDisponibilidadeProfessor', () => {
   });
 
   describe('handleChange', () => {
-    it('deve atualizar campo específico no formData', () => {
+    it('deve atualizar campo de input de horário no formData', () => {
       useSelector.mockImplementation(fn =>
         fn({
           professores: {
@@ -200,21 +233,16 @@ describe('useEditarDisponibilidadeProfessor', () => {
         useEditarDisponibilidadeProfessor(mockProfessor)
       );
 
-      const event = {
-        target: {
-          name: 'SEGUNDA.horaInicial',
-          value: '09:00',
-        },
-      };
-
       act(() => {
-        result.current.handleChange(event);
+        result.current.handleChange({
+          target: { name: 'SEGUNDA.horaInicial', value: '09:00' },
+        });
       });
 
       expect(result.current.formData.SEGUNDA.horaInicial).toBe('09:00');
     });
 
-    it('deve atualizar múltiplos campos independentemente', () => {
+    it('deve atualizar horaFinal independentemente de horaInicial', () => {
       useSelector.mockImplementation(fn =>
         fn({
           professores: {
@@ -236,19 +264,13 @@ describe('useEditarDisponibilidadeProfessor', () => {
         result.current.handleChange({
           target: { name: 'SEGUNDA.horaFinal', value: '12:00' },
         });
-        result.current.handleChange({
-          target: { name: 'TERCA.horaInicial', value: '14:00' },
-        });
       });
 
       expect(result.current.formData.SEGUNDA.horaInicial).toBe('08:00');
       expect(result.current.formData.SEGUNDA.horaFinal).toBe('12:00');
-      expect(result.current.formData.TERCA.horaInicial).toBe('14:00');
     });
-  });
 
-  describe('handleCheckboxChange', () => {
-    it('deve atualizar campo checkbox no formData', () => {
+    it('deve atualizar múltiplos dias independentemente', () => {
       useSelector.mockImplementation(fn =>
         fn({
           professores: {
@@ -263,21 +285,48 @@ describe('useEditarDisponibilidadeProfessor', () => {
         useEditarDisponibilidadeProfessor(mockProfessor)
       );
 
-      const event = {
-        target: {
-          name: 'SEGUNDA.ativo',
-          checked: true,
-        },
-      };
+      act(() => {
+        result.current.handleChange({
+          target: { name: 'SEGUNDA.horaInicial', value: '08:00' },
+        });
+        result.current.handleChange({
+          target: { name: 'TERCA.horaInicial', value: '09:00' },
+        });
+        result.current.handleChange({
+          target: { name: 'QUARTA.horaFinal', value: '17:00' },
+        });
+      });
+
+      expect(result.current.formData.SEGUNDA.horaInicial).toBe('08:00');
+      expect(result.current.formData.TERCA.horaInicial).toBe('09:00');
+      expect(result.current.formData.QUARTA.horaFinal).toBe('17:00');
+    });
+
+    it('deve atualizar campo ativo através do handleChange', () => {
+      useSelector.mockImplementation(fn =>
+        fn({
+          professores: {
+            status: STATUS.IDLE,
+            message: '',
+            errors: [],
+            action: '',
+          },
+        })
+      );
+      const { result } = renderHook(() =>
+        useEditarDisponibilidadeProfessor(mockProfessor)
+      );
 
       act(() => {
-        result.current.handleCheckboxChange(event);
+        result.current.handleChange({
+          target: { name: 'SEGUNDA.ativo', value: true },
+        });
       });
 
       expect(result.current.formData.SEGUNDA.ativo).toBe(true);
     });
 
-    it('deve alternar valor do checkbox', () => {
+    it('não deve afetar outros dias ao mudar um campo', () => {
       useSelector.mockImplementation(fn =>
         fn({
           professores: {
@@ -292,24 +341,20 @@ describe('useEditarDisponibilidadeProfessor', () => {
         useEditarDisponibilidadeProfessor(mockProfessor)
       );
 
-      act(() => {
-        result.current.handleCheckboxChange({
-          target: { name: 'QUARTA.ativo', checked: true },
-        });
-      });
-      expect(result.current.formData.QUARTA.ativo).toBe(true);
+      const terçaOriginal = result.current.formData.TERCA;
 
       act(() => {
-        result.current.handleCheckboxChange({
-          target: { name: 'QUARTA.ativo', checked: false },
+        result.current.handleChange({
+          target: { name: 'SEGUNDA.horaInicial', value: '10:00' },
         });
       });
-      expect(result.current.formData.QUARTA.ativo).toBe(false);
+
+      expect(result.current.formData.TERCA).toEqual(terçaOriginal);
     });
   });
 
   describe('handleSubmit', () => {
-    it('deve disparar updateDisponibilidadeProfessor no submit', () => {
+    it('deve disparar updateDisponibilidadeProfessor com dados corretos', () => {
       useSelector.mockImplementation(fn =>
         fn({
           professores: {
@@ -339,7 +384,60 @@ describe('useEditarDisponibilidadeProfessor', () => {
       );
     });
 
-    it('deve enviar todos os dados do formData como array', () => {
+    it('deve enviar todos os 7 dias como array', () => {
+      useSelector.mockImplementation(fn =>
+        fn({
+          professores: {
+            status: STATUS.IDLE,
+            message: '',
+            errors: [],
+            action: '',
+          },
+        })
+      );
+      const { result } = renderHook(() =>
+        useEditarDisponibilidadeProfessor(mockProfessor)
+      );
+
+      act(() => {
+        result.current.handleSubmit({ preventDefault: jest.fn() });
+      });
+
+      const dispatchCall = mockDispatch.mock.calls[0][0];
+      expect(dispatchCall.payload.data).toHaveLength(7);
+      expect(Array.isArray(dispatchCall.payload.data)).toBe(true);
+    });
+
+    it('deve incluir todos os campos obrigatórios no envio', () => {
+      useSelector.mockImplementation(fn =>
+        fn({
+          professores: {
+            status: STATUS.IDLE,
+            message: '',
+            errors: [],
+            action: '',
+          },
+        })
+      );
+      const { result } = renderHook(() =>
+        useEditarDisponibilidadeProfessor(mockProfessor)
+      );
+
+      act(() => {
+        result.current.handleSubmit({ preventDefault: jest.fn() });
+      });
+
+      const dispatchCall = mockDispatch.mock.calls[0][0];
+      const firstDay = dispatchCall.payload.data[0];
+
+      expect(firstDay).toHaveProperty('diaSemana');
+      expect(firstDay).toHaveProperty('horaInicial');
+      expect(firstDay).toHaveProperty('horaFinal');
+      expect(firstDay).toHaveProperty('ativo');
+      expect(firstDay).toHaveProperty('userId');
+    });
+
+    it('deve enviar dados modificados no formulário', () => {
       useSelector.mockImplementation(fn =>
         fn({
           professores: {
@@ -356,7 +454,10 @@ describe('useEditarDisponibilidadeProfessor', () => {
 
       act(() => {
         result.current.handleChange({
-          target: { name: 'SEGUNDA.horaInicial', value: '08:00' },
+          target: { name: 'SEGUNDA.horaInicial', value: '09:30' },
+        });
+        result.current.handleChange({
+          target: { name: 'SEGUNDA.ativo', value: true },
         });
       });
 
@@ -365,8 +466,12 @@ describe('useEditarDisponibilidadeProfessor', () => {
       });
 
       const dispatchCall = mockDispatch.mock.calls[0][0];
-      expect(dispatchCall.payload.data).toHaveLength(7); // 7 dias da semana
-      expect(Array.isArray(dispatchCall.payload.data)).toBe(true);
+      const segudaData = dispatchCall.payload.data.find(
+        d => d.diaSemana === 'SEGUNDA'
+      );
+
+      expect(segudaData.horaInicial).toBe('09:30');
+      expect(segudaData.ativo).toBe(true);
     });
   });
 

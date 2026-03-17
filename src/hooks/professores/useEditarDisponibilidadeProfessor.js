@@ -75,11 +75,6 @@ export function useEditarDisponibilidadeProfessor(professor) {
     changeForm(name, value);
   };
 
-  const handleCheckboxChange = e => {
-    const { name, checked } = e.target;
-    changeForm(name, checked);
-  };
-
   const handleSubmit = e => {
     e.preventDefault();
     const id = professor.id;
@@ -110,7 +105,6 @@ export function useEditarDisponibilidadeProfessor(professor) {
     setEditMode,
     setFormData,
     handleChange,
-    handleCheckboxChange,
     handleSubmit,
   };
 }
