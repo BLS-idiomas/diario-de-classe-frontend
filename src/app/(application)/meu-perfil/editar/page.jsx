@@ -19,9 +19,9 @@ import {
 export default function EditarProfessor() {
   const { currentUser } = useUserAuth();
   const { message, errors, isLoading, current, statusError, submit } =
-    useEditarProfessor(currentUser.id);
+    useEditarProfessor(currentUser?.id);
   const { formData, isSenhaError, handleChange, handleSubmit, setFormData } =
-    useProfessorForm({ submit, isEdit: true, id: currentUser.id });
+    useProfessorForm({ submit, isEdit: true, id: currentUser?.id });
 
   useEffect(() => {
     if (current) {

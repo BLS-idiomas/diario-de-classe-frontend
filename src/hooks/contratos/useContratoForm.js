@@ -16,7 +16,7 @@ export function useContratoForm({
   const hoje = new Date();
   const dataInicioFormatada = hoje.toISOString().split('T')[0];
   const [formData, setFormData] = useState({
-    professorId: currentUser.id || null,
+    professorId: currentUser?.id || null,
     professor: currentUser || null,
     alunoId: null,
     aluno: null,

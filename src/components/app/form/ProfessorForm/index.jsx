@@ -23,7 +23,7 @@ export const ProfessorForm = ({
   const { currentUser } = useUserAuth();
   const getShowPasswordFields = () => {
     if (!isEdit) return true;
-    if (isEdit && formData.id === currentUser.id) return true;
+    if (isEdit && formData.id === currentUser?.id) return true;
     return false;
   };
   const showPasswordFields = getShowPasswordFields();
