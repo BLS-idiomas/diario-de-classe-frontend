@@ -1,5 +1,5 @@
 import { IDIOMA_LABEL, STATUS_AULA_LABEL, TIPO_AULA_LABEL } from '@/constants';
-import { Pencil, Trash2 } from 'lucide-react';
+import { Eye, Pencil, Trash2 } from 'lucide-react';
 import Link from 'next/link';
 import { useMemo } from 'react';
 
@@ -72,7 +72,7 @@ export function useAulasList({
 
   const data = useMemo(() => {
     if (!aulas) return [];
-    const iconParams = { strokeWidth: 1, size: 16 };
+    const iconParams = { strokeWidth: 1, size: 16, stroke: 'currentColor' };
     return aulas.map((aula, index) => ({
       id: index + 1,
       dataAula: dataFormatter(aula.dataAula),
@@ -85,25 +85,25 @@ export function useAulasList({
       professor: aula.professor?.nome || '-',
       acoes: (
         <div className="flex gap-2">
-          {/* <Link
+          <Link
             href={`/aulas/${aula.id}`}
             className="btn-outline btn-outline-primary"
           >
-            <Eye {...iconParams} stroke="currentColor" />
-          </Link> */}
+            <Eye {...iconParams} />
+          </Link>
 
           <Link
             href={`/aulas/${aula.id}/editar`}
             className="btn-outline btn-outline-secondary"
           >
-            <Pencil {...iconParams} stroke="currentColor" />
+            <Pencil {...iconParams} />
           </Link>
 
           <button
             onClick={() => handleDeleteAula(aula.id)}
             className="btn-outline btn-outline-danger"
           >
-            <Trash2 {...iconParams} stroke="currentColor" />
+            <Trash2 {...iconParams} />
           </button>
         </div>
       ),
