@@ -3,6 +3,7 @@ import { useUserAuth } from '@/providers/UserAuthProvider';
 import useSweetAlert from '@/hooks/useSweetAlert';
 import { TIPO_AULA_LABEL } from '@/constants';
 import Swal from 'sweetalert2';
+import { calculateHoraFim } from '@/utils/calculateHoraFim';
 
 export function useContratoForm({
   alunos,
@@ -143,20 +144,6 @@ export function useContratoForm({
       ) || null
     );
   };
-  const handleHoraFinalCalculation = ({
-    horaInicial,
-    quantidadeAulas,
-    tempoAula,
-  }) => {
-    if (!horaInicial || !quantidadeAulas || quantidadeAulas <= 0) return '';
-    const [hours, minutes] = horaInicial.split(':').map(Number);
-    const totalMinutes = hours * 60 + minutes + quantidadeAulas * tempoAula;
-    const finalHours = Math.floor(totalMinutes / 60) % 24;
-    const finalMinutes = totalMinutes % 60;
-    return `${finalHours.toString().padStart(2, '0')}:${finalMinutes
-      .toString()
-      .padStart(2, '0')}`;
-  };
   const handleAtivoChange = e => {
     const { name, checked } = e.target;
     const newDiasAulas = formData.diasAulas.map(dia =>
@@ -171,7 +158,7 @@ export function useContratoForm({
         ? {
             ...dia,
             horaInicial: value,
-            horaFinal: handleHoraFinalCalculation({
+            horaFinal: calculateHoraFim({
               horaInicial: value,
               quantidadeAulas: dia.quantidadeAulas,
               tempoAula,
@@ -188,7 +175,7 @@ export function useContratoForm({
         ? {
             ...dia,
             quantidadeAulas: value,
-            horaFinal: handleHoraFinalCalculation({
+            horaFinal: calculateHoraFim({
               horaInicial: dia.horaInicial,
               quantidadeAulas: value,
               tempoAula,
@@ -236,33 +223,33 @@ export function useContratoForm({
     return await showForm({
       title: title,
       html: `
-                            <div style="display: flex; flex-direction: column; gap: 1rem; text-align: left;">
-                              <div>
-                                <label for="dataAula" style="display: block; margin-bottom: 0.25rem; font-weight: 500;">Data da Aula</label>
-                                <input id="dataAula" type="date" class="swal2-input" value="${aula.dataAula}" style="margin: 0; width: 100%;">
-                              </div>
-                              <div>
-                                <label for="horaInicial" style="display: block; margin-bottom: 0.25rem; font-weight: 500;">Hora Inicial</label>
-                                <input id="horaInicial" type="time" class="swal2-input" value="${aula.horaInicial}" style="margin: 0; width: 100%;">
-                              </div>
-                              <div>
-                                <label for="horaFinal" style="display: block; margin-bottom: 0.25rem; font-weight: 500;">Hora Final</label>
-                                <input id="horaFinal" type="time" class="swal2-input" value="${aula.horaFinal}" style="margin: 0; width: 100%;">
-                              </div>
-                              <div>
-                                <label for="tipo" style="display: block; margin-bottom: 0.25rem; font-weight: 500;">Tipo</label>
-                                <select id="tipo" class="swal2-input" style="margin: 0; width: 100%;">
-                                  <option value="PADRAO" ${aula.tipo === 'PADRAO' ? 'selected' : ''}>${TIPO_AULA_LABEL.PADRAO}</option>
-                                  <option value="REPOSICAO" ${aula.tipo === 'REPOSICAO' ? 'selected' : ''}>${TIPO_AULA_LABEL.REPOSICAO}</option>
-                                  <option value="OUTRA" ${aula.tipo === 'OUTRA' ? 'selected' : ''}>${TIPO_AULA_LABEL.OUTRA}</option>
-                                </select>
-                              </div>
-                              <div>
-                                <label for="observacao" style="display: block; margin-bottom: 0.25rem; font-weight: 500;">Observação (opcional)</label>
-                                <input id="observacao" type="text" class="swal2-input" placeholder="Digite uma observação..." value="${aula.observacao || ''}" style="margin: 0; width: 100%;">
-                              </div>
-                            </div>
-                          `,
+              <div style="display: flex; flex-direction: column; gap: 1rem; text-align: left;">
+                <div>
+                  <label for="dataAula" style="display: block; margin-bottom: 0.25rem; font-weight: 500;">Data da Aula</label>
+                  <input id="dataAula" type="date" class="swal2-input" value="${aula.dataAula}" style="margin: 0; width: 100%;">
+                </div>
+                <div>
+                  <label for="horaInicial" style="display: block; margin-bottom: 0.25rem; font-weight: 500;">Hora Inicial</label>
+                  <input id="horaInicial" type="time" class="swal2-input" value="${aula.horaInicial}" style="margin: 0; width: 100%;">
+                </div>
+                <div>
+                  <label for="horaFinal" style="display: block; margin-bottom: 0.25rem; font-weight: 500;">Hora Final</label>
+                  <input id="horaFinal" type="time" class="swal2-input" value="${aula.horaFinal}" style="margin: 0; width: 100%;">
+                </div>
+                <div>
+                  <label for="tipo" style="display: block; margin-bottom: 0.25rem; font-weight: 500;">Tipo</label>
+                  <select id="tipo" class="swal2-input" style="margin: 0; width: 100%;">
+                    <option value="PADRAO" ${aula.tipo === 'PADRAO' ? 'selected' : ''}>${TIPO_AULA_LABEL.PADRAO}</option>
+                    <option value="REPOSICAO" ${aula.tipo === 'REPOSICAO' ? 'selected' : ''}>${TIPO_AULA_LABEL.REPOSICAO}</option>
+                    <option value="OUTRA" ${aula.tipo === 'OUTRA' ? 'selected' : ''}>${TIPO_AULA_LABEL.OUTRA}</option>
+                  </select>
+                </div>
+                <div>
+                  <label for="observacao" style="display: block; margin-bottom: 0.25rem; font-weight: 500;">Observação (opcional)</label>
+                  <input id="observacao" type="text" class="swal2-input" placeholder="Digite uma observação..." value="${aula.observacao || ''}" style="margin: 0; width: 100%;">
+                </div>
+              </div>
+            `,
       preConfirm: () => {
         const dataAula = document.getElementById('dataAula').value;
         const horaInicial = document.getElementById('horaInicial').value;
