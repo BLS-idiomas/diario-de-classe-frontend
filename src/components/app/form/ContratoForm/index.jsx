@@ -233,7 +233,7 @@ export const ContratoForm = ({
                           'SEXTA',
                           'SABADO',
                         ];
-                        return DIAS_LABEL[dias[date.getDay()]];
+                        return DIAS_LABEL[dias[date.getUTCDay()]];
                       })()}
                     </p>
                     <p className="text-main">
