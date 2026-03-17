@@ -27,6 +27,7 @@ describe('Professor Page', () => {
     email: 'joao@example.com',
     telefone: '11987654321',
     permissao: 'admin',
+    idiomas: ['INGLES'],
     dataCriacao: '2024-01-01T10:00:00Z',
     dataAtualizacao: '2024-01-15T15:30:00Z',
     observacoes: 'Professor experiente',
@@ -328,6 +329,58 @@ describe('Professor Page', () => {
 
     // Only 1 active disponibilidade (Monday)
     expect(screen.getByText(/1.*aulas por semana/i)).toBeInTheDocument();
+  });
+
+  it('should render idioma badge when professor has idiomas', () => {
+    useProfessor.mockReturnValue({
+      professor: mockProfessor,
+      aulas: [],
+      alunos: [],
+      isLoading: false,
+      isNotFound: false,
+    });
+
+    render(<Professor />);
+
+    expect(screen.getByText(/Inglês/)).toBeInTheDocument();
+  });
+
+  it('should not render idioma badge when professor has no idiomas', () => {
+    const professorWithoutIdiomas = {
+      ...mockProfessor,
+      idiomas: [],
+    };
+
+    useProfessor.mockReturnValue({
+      professor: professorWithoutIdiomas,
+      aulas: [],
+      alunos: [],
+      isLoading: false,
+      isNotFound: false,
+    });
+
+    render(<Professor />);
+
+    expect(screen.queryByText(/Inglês/)).not.toBeInTheDocument();
+  });
+
+  it('should not render idioma badge when professor has null idiomas', () => {
+    const professorWithNullIdiomas = {
+      ...mockProfessor,
+      idiomas: null,
+    };
+
+    useProfessor.mockReturnValue({
+      professor: professorWithNullIdiomas,
+      aulas: [],
+      alunos: [],
+      isLoading: false,
+      isNotFound: false,
+    });
+
+    render(<Professor />);
+
+    expect(screen.queryByText(/Inglês/)).not.toBeInTheDocument();
   });
 
   it('should render alunos section with table', () => {

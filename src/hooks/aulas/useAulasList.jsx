@@ -1,4 +1,4 @@
-import { STATUS_AULA_LABEL, TIPO_AULA_LABEL } from '@/constants';
+import { IDIOMA_LABEL, STATUS_AULA_LABEL, TIPO_AULA_LABEL } from '@/constants';
 import { Pencil, Trash2 } from 'lucide-react';
 import Link from 'next/link';
 import { useMemo } from 'react';
@@ -54,6 +54,11 @@ export function useAulasList({
       sortable: true,
     },
     {
+      name: 'Idioma',
+      selector: row => row.idioma,
+      sortable: true,
+    },
+    {
       name: 'Ações',
       selector: row => row.acoes,
       sortable: false,
@@ -74,6 +79,7 @@ export function useAulasList({
       horaFinal: aula.horaFinal,
       horaInicial: aula.horaInicial,
       status: STATUS_AULA_LABEL[aula.status],
+      idioma: IDIOMA_LABEL[aula.contrato.idioma],
       tipo: TIPO_AULA_LABEL[aula.tipo],
       aluno: aula.aluno?.nome || '-',
       professor: aula.professor?.nome || '-',

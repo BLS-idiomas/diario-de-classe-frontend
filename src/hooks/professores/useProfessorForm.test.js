@@ -1,6 +1,6 @@
 import { renderHook, act } from '@testing-library/react';
 import { useProfessorForm } from './useProfessorForm';
-import { PERMISSAO } from '@/constants';
+import { PERMISSAO, IDIOMA } from '@/constants';
 
 describe('useProfessorForm', () => {
   it('should initialize with default values if no professor is provided', () => {
@@ -14,6 +14,8 @@ describe('useProfessorForm', () => {
       telefone: '',
       senha: '',
       repetirSenha: '',
+      idioma: IDIOMA.INGLES,
+      idiomas: [IDIOMA.INGLES],
       permissao: PERMISSAO.MEMBER,
     });
     expect(result.current.isSenhaError).toBe(false);
@@ -79,6 +81,9 @@ describe('useProfessorForm', () => {
       result.current.handleChange({
         target: { name: 'nome', value: 'Carlos' },
       });
+      result.current.handleChange({
+        target: { name: 'idioma', value: IDIOMA.INGLES },
+      });
     });
     const mockEvent = { preventDefault: jest.fn() };
     act(() => {
@@ -94,7 +99,31 @@ describe('useProfessorForm', () => {
         telefone: '',
         senha: '123',
         permissao: PERMISSAO.MEMBER,
+        idiomas: [IDIOMA.INGLES],
       },
     });
+  });
+
+  it('should transform idioma to idiomas array and remove idioma field on submit', () => {
+    const submit = jest.fn();
+    const { result } = renderHook(() => useProfessorForm({ submit }));
+    act(() => {
+      result.current.handleChange({
+        target: { name: 'senha', value: 'test123' },
+      });
+      result.current.handleChange({
+        target: { name: 'repetirSenha', value: 'test123' },
+      });
+      result.current.handleChange({
+        target: { name: 'idioma', value: IDIOMA.ESPANHOL },
+      });
+    });
+    const mockEvent = { preventDefault: jest.fn() };
+    act(() => {
+      result.current.handleSubmit(mockEvent);
+    });
+    const callArgs = submit.mock.calls[0][0];
+    expect(callArgs.dataToSend.idiomas).toEqual([IDIOMA.ESPANHOL]);
+    expect(callArgs.dataToSend.idioma).toBeUndefined();
   });
 });

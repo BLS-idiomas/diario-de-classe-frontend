@@ -5,3 +5,5 @@ export * from './diasDaSemana';
 export * from './tipoAula';
 export * from './environment';
 export * from './statusAulas';
+export * from './idioma';
+export * from './statusContrato';

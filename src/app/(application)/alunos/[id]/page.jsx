@@ -19,6 +19,7 @@ import {
   InfoCard,
   BlockQuoteInfo,
 } from '@/components';
+import { IDIOMA_LABEL } from '@/constants';
 
 export default function Aluno() {
   const params = useParams();
@@ -26,6 +27,17 @@ export default function Aluno() {
     params.id
   );
   const { telefoneFormatter, dataFormatter } = useFormater();
+
+  const getIdiomas = () => {
+    if (!aluno || !aluno.contratos || aluno.contratos.length === 0) {
+      return '';
+    }
+
+    return aluno.contratos
+      .map(contrato => IDIOMA_LABEL[contrato.idioma])
+      .filter((idioma, index, array) => array.indexOf(idioma) === index)
+      .join(', ');
+  };
 
   useEffect(() => {
     if (isNotFound) {
@@ -66,6 +78,8 @@ export default function Aluno() {
               text={`${diasAulas?.length || 0} aulas por semana`}
             />
 
+            {contrato && <Badge icon="star" color="gray" text={getIdiomas()} />}
+
             <Badge
               icon="lock"
               color="blue"
@@ -96,9 +110,11 @@ export default function Aluno() {
                   type: 'bold',
                 },
                 ...[
-                  contrato && {
-                    text: `Vigência: de ${dataFormatter(contrato?.dataInicio)} até ${dataFormatter(contrato?.dataTermino)}`,
-                  },
+                  contrato
+                    ? {
+                        text: `Vigência: de ${dataFormatter(contrato?.dataInicio)} até ${dataFormatter(contrato?.dataTermino)}`,
+                      }
+                    : [],
                 ],
               ]}
             />

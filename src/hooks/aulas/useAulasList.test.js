@@ -15,6 +15,9 @@ describe('useAulasList', () => {
       horaInicial: '09:00',
       status: 'AGENDADA',
       tipo: 'PADRAO',
+      contrato: { idioma: 'INGLES' },
+      aluno: { nome: 'Aluno 1' },
+      professor: { nome: 'Professor 1' },
     },
     {
       id: 11,
@@ -23,6 +26,9 @@ describe('useAulasList', () => {
       horaInicial: '10:00',
       status: 'EM_ANDAMENTO',
       tipo: 'PADRAO',
+      contrato: { idioma: 'ESPANHOL' },
+      aluno: { nome: 'Aluno 2' },
+      professor: { nome: 'Professor 2' },
     },
     {
       id: 12,
@@ -31,6 +37,9 @@ describe('useAulasList', () => {
       horaInicial: '11:00',
       status: 'CONCLUIDA',
       tipo: 'PADRAO',
+      contrato: { idioma: 'INGLES' },
+      aluno: { nome: 'Aluno 3' },
+      professor: { nome: 'Professor 1' },
     },
     {
       id: 13,
@@ -39,6 +48,9 @@ describe('useAulasList', () => {
       horaInicial: '12:00',
       status: 'CANCELADA',
       tipo: 'PADRAO',
+      contrato: { idioma: 'FRANCÊS' },
+      aluno: { nome: 'Aluno 4' },
+      professor: { nome: 'Professor 3' },
     },
     {
       id: 14,
@@ -47,6 +59,9 @@ describe('useAulasList', () => {
       horaInicial: '13:00',
       status: 'CANCELADA_POR_FALTA',
       tipo: 'PADRAO',
+      contrato: { idioma: 'INGLES' },
+      aluno: { nome: 'Aluno 5' },
+      professor: { nome: 'Professor 2' },
     },
   ];
 

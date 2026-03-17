@@ -1,13 +1,15 @@
-import { useRouter } from 'next/navigation';
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useUserAuth } from '@/providers/UserAuthProvider';
-import { useToast } from '@/providers/ToastProvider';
 import useSweetAlert from '@/hooks/useSweetAlert';
-import { useNovoContrato } from './useNovoContrato';
 import { TIPO_AULA_LABEL } from '@/constants';
 import Swal from 'sweetalert2';
 
-export function useContratoForm({ alunos, professores, submit }) {
+export function useContratoForm({
+  alunos,
+  professores,
+  submit,
+  isEdit = false,
+}) {
   const { currentUser, settings } = useUserAuth();
   const { showForm, showSuccess } = useSweetAlert();
   const tempoAula = settings.duracaoAula || 0;
@@ -22,6 +24,8 @@ export function useContratoForm({ alunos, professores, submit }) {
     contrato: null,
     dataInicio: dataInicioFormatada,
     dataTermino: '',
+    idioma: null,
+    status: null,
     diasAulas: [],
     currentDiasAulas: [],
     aulas: [],
@@ -80,7 +84,7 @@ export function useContratoForm({ alunos, professores, submit }) {
           initialDiaAula.ativo = true;
           initialDiaAula.horaInicial = diaAtual.diaSemana;
           initialDiaAula.horaFinal = diaAtual.diaSemana;
-          initialDiaAula.quantidadeAulas = diaAtual.diaSemana;
+          initialDiaAula.quantidadeAulas = diaAtual.quantidadeAulas;
         }
       });
     }
@@ -102,6 +106,8 @@ export function useContratoForm({ alunos, professores, submit }) {
       idProfessor: formData.professorId,
       dataInicio: formData.dataInicio,
       dataTermino: formData.dataTermino,
+      idioma: formData.idioma,
+      status: formData.status,
       diasAulas: formData.diasAulas,
       aulas: formData.aulas,
     };
@@ -113,7 +119,12 @@ export function useContratoForm({ alunos, professores, submit }) {
         ativo: diaAula.ativo,
       };
     });
-    submit(dataToSend);
+
+    if (isEdit) {
+      submit(formData.contratoId, dataToSend);
+    } else {
+      submit(dataToSend);
+    }
   };
   const handleAlunoChange = e => {
     const { value } = e.target;

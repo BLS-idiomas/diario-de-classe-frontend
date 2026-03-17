@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { PERMISSAO } from '@/constants';
+import { IDIOMA, PERMISSAO } from '@/constants';
 
 export function useProfessorForm({ id = null, isEdit = false, submit }) {
   const [isSenhaError, setIsSenhaError] = useState(false);
@@ -11,6 +11,8 @@ export function useProfessorForm({ id = null, isEdit = false, submit }) {
     telefone: '',
     senha: '',
     repetirSenha: '',
+    idioma: IDIOMA.INGLES,
+    idiomas: [IDIOMA.INGLES],
     permissao: PERMISSAO.MEMBER,
   });
 
@@ -32,7 +34,8 @@ export function useProfessorForm({ id = null, isEdit = false, submit }) {
     }
     setIsSenhaError(false);
     const { repetirSenha, ...dataToSend } = formData;
-
+    dataToSend.idiomas = [dataToSend.idioma];
+    delete dataToSend.idioma;
     submit({ id, dataToSend });
   };
 

@@ -2,7 +2,14 @@
 
 import { useEffect, useState } from 'react';
 import { Pencil, Trash2, Plus, Wand2 } from 'lucide-react';
-import { TIPO_AULA_LABEL, DIAS_LABEL } from '@/constants';
+import {
+  TIPO_AULA_LABEL,
+  DIAS_LABEL,
+  IDIOMA_LABEL,
+  IDIOMA_ARRAY,
+  STATUS_CONTRATO_ARRAY,
+  STATUS_CONTRATO_LABEL,
+} from '@/constants';
 import {
   Form,
   FormError,
@@ -85,6 +92,30 @@ export const ContratoForm = ({
             onChange={handleProfessorChange}
             value={formData.professorId}
             options={professorOptions}
+          />
+          <SelectField
+            required
+            htmlFor="idioma"
+            label="Idioma"
+            placeholder="Selecione o idioma"
+            onChange={handleChange}
+            value={formData.idioma}
+            options={IDIOMA_ARRAY.map(idioma => ({
+              label: IDIOMA_LABEL[idioma],
+              value: idioma,
+            }))}
+          />
+          <SelectField
+            required
+            htmlFor="status"
+            label="Status"
+            placeholder="Selecione o status do contrato"
+            onChange={handleChange}
+            value={formData.status}
+            options={STATUS_CONTRATO_ARRAY.map(status => ({
+              label: STATUS_CONTRATO_LABEL[status],
+              value: status,
+            }))}
           />
           {/* STEP 3 - DATA DE INÍCIO E TÉRMINO DO CONTRATO */}
           <InputField

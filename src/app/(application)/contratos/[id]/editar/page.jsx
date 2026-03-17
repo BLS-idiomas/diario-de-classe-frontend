@@ -30,7 +30,7 @@ export default function EditarContrato() {
     createAula,
     setFormData,
     setInitialDiasAulas,
-  } = useContratoForm({ alunos, professores, submit });
+  } = useContratoForm({ alunos, professores, submit, isEdit: true });
   const { generateAulasByContrato, isSubmitting } = useGenerateAulasByContrato({
     setFormData,
   });
@@ -56,6 +56,7 @@ export default function EditarContrato() {
         diasAulas: [],
         currentDiasAulas: [],
         aulas: current.aulas,
+        idioma: current.idioma,
       };
       setFormData(data);
       setInitialDiasAulas(current.diaAulas);
