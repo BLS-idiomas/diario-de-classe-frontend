@@ -78,7 +78,7 @@ export default function Aluno() {
               text={`${diasAulas?.length || 0} aulas por semana`}
             />
 
-            <Badge icon="star" color="gray" text={getIdiomas()} />
+            {contrato && <Badge icon="star" color="gray" text={getIdiomas()} />}
 
             <Badge
               icon="lock"
@@ -110,9 +110,11 @@ export default function Aluno() {
                   type: 'bold',
                 },
                 ...[
-                  contrato && {
-                    text: `Vigência: de ${dataFormatter(contrato?.dataInicio)} até ${dataFormatter(contrato?.dataTermino)}`,
-                  },
+                  contrato
+                    ? {
+                        text: `Vigência: de ${dataFormatter(contrato?.dataInicio)} até ${dataFormatter(contrato?.dataTermino)}`,
+                      }
+                    : [],
                 ],
               ]}
             />
