@@ -5,14 +5,14 @@ export class GetAulaListService {
     this.aulaApi = aulaApi;
   }
 
-  async execute(searchParam) {
-    return await this.aulaApi.getAll({ q: searchParam });
+  async execute(params) {
+    return await this.aulaApi.getAll(params);
   }
 
-  static async handle(searchParam) {
+  static async handle(params) {
     const aulaApi = new AulaApi();
     const service = new GetAulaListService(aulaApi);
 
-    return await service.execute(searchParam);
+    return await service.execute(params);
   }
 }

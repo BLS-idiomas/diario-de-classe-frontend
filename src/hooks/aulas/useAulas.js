@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { STATUS } from '@/constants';
 import { getAulas } from '@/store/slices/aulasSlice';
@@ -9,10 +9,35 @@ export function useAulas() {
   const { list, status, action } = useSelector(state => state.aulas);
   const searchParams = query =>
     searchFunction({ dispatch, query, perform: getAulas });
+  const hoje = new Date();
+  const dataInicioFormatada = hoje.toISOString().split('T')[0];
+  const dataFim = new Date(hoje);
+  dataFim.setMonth(dataFim.getMonth() + 6);
+  const dataTerminoFormatada = dataFim.toISOString().split('T')[0];
+
+  const [formData, setFormData] = useState({
+    dataInicio: dataInicioFormatada,
+    dataTermino: dataTerminoFormatada,
+  });
+
+  const handleSubmit = useCallback(
+    formData => {
+      dispatch(getAulas(formData));
+    },
+    [dispatch]
+  );
+
+  const handleChange = async e => {
+    const { name, value, checked, type } = e.target;
+    setFormData(prevState => ({
+      ...prevState,
+      [name]: type === 'checkbox' ? checked : value,
+    }));
+  };
 
   useEffect(() => {
-    dispatch(getAulas());
-  }, [dispatch]);
+    handleSubmit(formData);
+  }, [handleSubmit, formData]);
 
   const isLoading =
     action === 'getAulas' &&
@@ -23,5 +48,8 @@ export function useAulas() {
     status,
     isLoading,
     searchParams,
+    handleSubmit,
+    handleChange,
+    formData,
   };
 }

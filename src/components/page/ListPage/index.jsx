@@ -11,6 +11,7 @@ export const ListPage = ({
   data,
   isLoading,
   notFoundMessage,
+  Filter = null,
 }) => (
   <>
     <h1 className="page-title" data-testid="list-page-title">
@@ -22,11 +23,17 @@ export const ListPage = ({
       data-testid="list-page-controls"
     >
       <ButtonsPage buttons={buttons} extraButton={extraButton} />
-
       {Boolean(search) && (
         <SearchForm placeholder={search.title} perform={search.searchParams} />
       )}
     </div>
+
+    {Filter && (
+      <div className="my-6" data-testid="list-page-filter">
+        <Filter />
+      </div>
+    )}
+
     <div data-testid="list-page-table">
       <Table
         columns={columns}

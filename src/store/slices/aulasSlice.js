@@ -12,9 +12,9 @@ import { UpdateAndamentoAulaService } from '@/services/aula/updateAndamentoAulaS
 // GET ALL
 export const getAulas = createAsyncThunk(
   'aulas/getAll',
-  async (searchParam = null, { rejectWithValue }) => {
+  async (params = {}, { rejectWithValue }) => {
     try {
-      const res = await GetAulaListService.handle(searchParam);
+      const res = await GetAulaListService.handle(params);
       return res.data;
     } catch (error) {
       const errorMessage =
