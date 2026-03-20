@@ -21,6 +21,7 @@ export default function NovoContrato() {
     handleAtivoChange,
     handleHoraInicialChange,
     handleQuantidadeAulasChange,
+    handleDuracaoAulaChange,
     handleDeleteAula,
     handleEditAula,
     createAula,
@@ -58,6 +59,7 @@ export default function NovoContrato() {
         handleAtivoChange={handleAtivoChange}
         handleHoraInicialChange={handleHoraInicialChange}
         handleQuantidadeAulasChange={handleQuantidadeAulasChange}
+        handleDuracaoAulaChange={handleDuracaoAulaChange}
         handleDeleteAula={handleDeleteAula}
         handleEditAula={handleEditAula}
         handleGenerateAulasByContrato={handleGenerateAulasByContrato}

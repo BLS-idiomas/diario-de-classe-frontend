@@ -25,6 +25,7 @@ export default function EditarContrato() {
     handleAtivoChange,
     handleHoraInicialChange,
     handleQuantidadeAulasChange,
+    handleDuracaoAulaChange,
     handleDeleteAula,
     handleEditAula,
     createAula,
@@ -102,6 +103,7 @@ export default function EditarContrato() {
         handleAtivoChange={handleAtivoChange}
         handleHoraInicialChange={handleHoraInicialChange}
         handleQuantidadeAulasChange={handleQuantidadeAulasChange}
+        handleDuracaoAulaChange={handleDuracaoAulaChange}
         handleDeleteAula={handleDeleteAula}
         handleEditAula={handleEditAula}
         handleGenerateAulasByContrato={handleGenerateAulasByContrato}

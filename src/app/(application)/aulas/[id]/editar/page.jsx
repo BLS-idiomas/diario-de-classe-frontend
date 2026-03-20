@@ -5,6 +5,7 @@ import { STATUS_ERROR } from '@/constants';
 import { useEditarAula } from '@/hooks/aulas/useEditarAula';
 import { useAulaForm } from '@/hooks/aulas/useAulaForm';
 import { AulaForm, Loading, FormPage } from '@/components';
+import { calculateDuracaoAula } from '@/utils/calculateDuracaoAula';
 
 export default function EditarAula() {
   const params = useParams();
@@ -24,6 +25,9 @@ export default function EditarAula() {
       setFormData({
         ...current,
         dataAula: current.dataAula.split('T')[0],
+        duracaoAula: current.duracaoAula
+          ? current.duracaoAula
+          : calculateDuracaoAula(current),
       });
     }
   }, [current, setFormData]);
