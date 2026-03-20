@@ -1,3 +1,14 @@
+# [1.12.0](https://github.com/BLS-idiomas/diario-de-classe-frontend/compare/v1.11.0...v1.12.0) (2026-03-20)
+
+### Features
+
+- Add comprehensive tests for useContratoForm and useGenerateAulasByContrato hooks ([830ae68](https://github.com/BLS-idiomas/diario-de-classe-frontend/commit/830ae68801415f94677ecdbb4566bd90b591bd30))
+- add DURACAO_AULA constants for class duration management ([5575de3](https://github.com/BLS-idiomas/diario-de-classe-frontend/commit/5575de333243e506bbee1e789076e8373dd47049))
+- Add duration selection to AulaForm and ContratoForm components ([bde9c1e](https://github.com/BLS-idiomas/diario-de-classe-frontend/commit/bde9c1e93940434ecbf3c2f594594974c3572f70))
+- Add handleDuracaoAulaChange to Contrato and NovoContrato components ([d1364cd](https://github.com/BLS-idiomas/diario-de-classe-frontend/commit/d1364cd8df458e30e5c59d30dbd740ec24280ffb))
+- Enhance useGenerateAulasByContrato tests with duration handling and state management ([a26e931](https://github.com/BLS-idiomas/diario-de-classe-frontend/commit/a26e93169e40334afe649656a4af2041140039fe))
+- implement calculateDuracaoAula and calculateHoraFimByDuracaoAula functions with corresponding tests ([c8bbbf9](https://github.com/BLS-idiomas/diario-de-classe-frontend/commit/c8bbbf9fc5f37b8082af1c51892b0be41af5b865))
+
 # [1.11.0](https://github.com/BLS-idiomas/diario-de-classe-frontend/compare/v1.10.0...v1.11.0) (2026-03-17)
 
 ### Bug Fixes
