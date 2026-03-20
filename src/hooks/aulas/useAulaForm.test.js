@@ -191,6 +191,8 @@ describe('useAulaForm', () => {
           ...prev,
           duracaoAula: 60,
         }));
+      });
+      act(() => {
         result.current.handleSubmit(fakeEvent);
       });
       const callArgs = submit.mock.calls[0][0];
