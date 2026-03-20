@@ -1,4 +1,7 @@
-import { calculateHoraFim } from './calculateHoraFim';
+import {
+  calculateHoraFim,
+  calculateHoraFimByDuracaoAula,
+} from './calculateHoraFim';
 
 describe('calculateHoraFim', () => {
   describe('Basic Calculations', () => {
@@ -247,6 +250,129 @@ describe('calculateHoraFim', () => {
         horaInicial: '22:30',
         quantidadeAulas: 2,
         tempoAula: 50,
+      });
+      expect(result).toBe('00:10');
+    });
+  });
+});
+
+describe('calculateHoraFimByDuracaoAula', () => {
+  describe('Basic Calculations', () => {
+    it('should calculate final time with 40 minute duration', () => {
+      const result = calculateHoraFimByDuracaoAula({
+        horaInicial: '09:00',
+        duracaoAula: 40,
+      });
+      expect(result).toBe('09:40');
+    });
+
+    it('should calculate final time with 60 minute duration', () => {
+      const result = calculateHoraFimByDuracaoAula({
+        horaInicial: '09:00',
+        duracaoAula: 60,
+      });
+      expect(result).toBe('10:00');
+    });
+
+    it('should calculate final time with 80 minute duration', () => {
+      const result = calculateHoraFimByDuracaoAula({
+        horaInicial: '09:00',
+        duracaoAula: 80,
+      });
+      expect(result).toBe('10:20');
+    });
+
+    it('should handle different starting hours correctly', () => {
+      const result = calculateHoraFimByDuracaoAula({
+        horaInicial: '14:30',
+        duracaoAula: 60,
+      });
+      expect(result).toBe('15:30');
+    });
+  });
+
+  describe('Midnight Boundary', () => {
+    it('should wrap around midnight correctly', () => {
+      const result = calculateHoraFimByDuracaoAula({
+        horaInicial: '23:40',
+        duracaoAula: 40,
+      });
+      expect(result).toBe('00:20');
+    });
+
+    it('should handle late evening time', () => {
+      const result = calculateHoraFimByDuracaoAula({
+        horaInicial: '23:30',
+        duracaoAula: 40,
+      });
+      expect(result).toBe('00:10');
+    });
+
+    it('should handle exact midnight boundary', () => {
+      const result = calculateHoraFimByDuracaoAula({
+        horaInicial: '23:20',
+        duracaoAula: 40,
+      });
+      expect(result).toBe('00:00');
+    });
+
+    it('should handle full day wrap-around', () => {
+      const result = calculateHoraFimByDuracaoAula({
+        horaInicial: '22:00',
+        duracaoAula: 360,
+      });
+      expect(result).toBe('04:00');
+    });
+  });
+
+  describe('Formatting', () => {
+    it('should pad single digit hours with leading zero', () => {
+      const result = calculateHoraFimByDuracaoAula({
+        horaInicial: '09:00',
+        duracaoAula: 40,
+      });
+      expect(result).toMatch(/^\d{2}:\d{2}$/);
+    });
+
+    it('should pad single digit minutes with leading zero', () => {
+      const result = calculateHoraFimByDuracaoAula({
+        horaInicial: '09:30',
+        duracaoAula: 25,
+      });
+      expect(result).toBe('09:55');
+    });
+
+    it('should format result as HH:MM', () => {
+      const result = calculateHoraFimByDuracaoAula({
+        horaInicial: '08:05',
+        duracaoAula: 50,
+      });
+      expect(result).toMatch(/^\d{2}:\d{2}$/);
+      expect(result).toBe('08:55');
+    });
+  });
+
+  describe('Real Scenarios', () => {
+    it('should calculate morning class schedule', () => {
+      const result = calculateHoraFimByDuracaoAula({
+        horaInicial: '08:00',
+        duracaoAula: 100,
+      });
+      expect(result).toBe('09:40');
+    });
+
+    it('should calculate afternoon class schedule', () => {
+      const result = calculateHoraFimByDuracaoAula({
+        horaInicial: '14:00',
+        duracaoAula: 150,
+      });
+      expect(result).toBe('16:30');
+    });
+
+    it('should calculate evening class extending past midnight', () => {
+      const result = calculateHoraFimByDuracaoAula({
+        horaInicial: '22:30',
+        duracaoAula: 100,
       });
       expect(result).toBe('00:10');
     });
