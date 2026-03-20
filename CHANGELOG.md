@@ -1,3 +1,9 @@
+## [1.12.1](https://github.com/BLS-idiomas/diario-de-classe-frontend/compare/v1.12.0...v1.12.1) (2026-03-20)
+
+### Bug Fixes
+
+- Implement filter functionality in Aulas page with date range selection and integrate with useAulas hook ([2516a62](https://github.com/BLS-idiomas/diario-de-classe-frontend/commit/2516a62a001f7ebe554396c5acedf3b189a983e6))
+
 # [1.12.0](https://github.com/BLS-idiomas/diario-de-classe-frontend/compare/v1.11.0...v1.12.0) (2026-03-20)
 
 ### Features
