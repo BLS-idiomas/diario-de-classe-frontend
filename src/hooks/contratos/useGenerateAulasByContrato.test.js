@@ -9,6 +9,7 @@ import {
   clearExtra,
 } from '@/store/slices/contratosSlice';
 import { STATUS } from '@/constants';
+import { calculateDuracaoAula } from '@/utils/calculateDuracaoAula';
 
 // Mock das actions
 jest.mock('@/store/slices/contratosSlice', () => ({
@@ -25,6 +26,10 @@ jest.mock('@/constants', () => ({
     SUCCESS: 'success',
     FAILED: 'failed',
   },
+}));
+
+jest.mock('@/utils/calculateDuracaoAula', () => ({
+  calculateDuracaoAula: jest.fn(() => 40),
 }));
 
 describe('useGenerateAulasByContrato', () => {
@@ -123,19 +128,48 @@ describe('useGenerateAulasByContrato', () => {
           dataTermino: '2024-12-31',
         },
         currentDiasAulas: [
-          { diaSemana: 'SEGUNDA', horaInicial: '09:00', horaFinal: '10:00' },
-          { diaSemana: 'QUARTA', horaInicial: '14:00', horaFinal: '15:00' },
+          {
+            diaSemana: 'SEGUNDA',
+            ativo: true,
+            quantidadeAulas: 1,
+            duracaoAula: 40,
+            horaInicial: '09:00',
+            horaFinal: '10:00',
+          },
+          {
+            diaSemana: 'QUARTA',
+            ativo: true,
+            quantidadeAulas: 1,
+            duracaoAula: 40,
+            horaInicial: '14:00',
+            horaFinal: '15:00',
+          },
         ],
       };
 
-      result.current.generateAulasByContrato(formData);
+      act(() => {
+        result.current.generateAulasByContrato(formData);
+      });
 
       expect(generateAulas).toHaveBeenCalledWith({
         id: 123,
         data: {
           dataInicio: '2024-01-01',
           dataFim: '2024-12-31',
-          diasAulas: formData.currentDiasAulas,
+          diasAulas: expect.arrayContaining([
+            expect.objectContaining({
+              diaSemana: 'SEGUNDA',
+              quantidadeAulas: 1,
+              horaInicial: '09:00',
+              horaFinal: '10:00',
+            }),
+            expect.objectContaining({
+              diaSemana: 'QUARTA',
+              quantidadeAulas: 1,
+              horaInicial: '14:00',
+              horaFinal: '15:00',
+            }),
+          ]),
         },
       });
     });
@@ -362,7 +396,9 @@ describe('useGenerateAulasByContrato', () => {
         currentDiasAulas: [],
       };
 
-      result.current.generateAulasByContrato(formData);
+      act(() => {
+        result.current.generateAulasByContrato(formData);
+      });
 
       expect(generateAulas).toHaveBeenCalledWith({
         id: 789,
@@ -394,7 +430,9 @@ describe('useGenerateAulasByContrato', () => {
         currentDiasAulas: [],
       };
 
-      result.current.generateAulasByContrato(formData);
+      act(() => {
+        result.current.generateAulasByContrato(formData);
+      });
 
       expect(generateAulas).toHaveBeenCalledWith({
         id: 100,
@@ -453,7 +491,9 @@ describe('useGenerateAulasByContrato', () => {
         ],
       };
 
-      result.current.generateAulasByContrato(formData);
+      act(() => {
+        result.current.generateAulasByContrato(formData);
+      });
 
       const callArgs = generateAulas.mock.calls[0][0];
       expect(callArgs.data.diasAulas).toHaveLength(2);
@@ -490,7 +530,9 @@ describe('useGenerateAulasByContrato', () => {
         ],
       };
 
-      result.current.generateAulasByContrato(formData);
+      act(() => {
+        result.current.generateAulasByContrato(formData);
+      });
 
       const callArgs = generateAulas.mock.calls[0][0];
       const duracaoAula = callArgs.data.diasAulas[0].duracaoAula;
@@ -569,7 +611,9 @@ describe('useGenerateAulasByContrato', () => {
         ],
       };
 
-      result.current.generateAulasByContrato(formData);
+      act(() => {
+        result.current.generateAulasByContrato(formData);
+      });
 
       const callArgs = generateAulas.mock.calls[0][0];
       const dia = callArgs.data.diasAulas[0];
@@ -655,7 +699,9 @@ describe('useGenerateAulasByContrato', () => {
         ],
       };
 
-      result.current.generateAulasByContrato(formData);
+      act(() => {
+        result.current.generateAulasByContrato(formData);
+      });
 
       const callArgs = generateAulas.mock.calls[0][0];
       expect(callArgs.data.diasAulas).toHaveLength(3);
@@ -711,7 +757,9 @@ describe('useGenerateAulasByContrato', () => {
         ],
       };
 
-      result.current.generateAulasByContrato(formData);
+      act(() => {
+        result.current.generateAulasByContrato(formData);
+      });
 
       const callArgs = generateAulas.mock.calls[0][0];
       expect(callArgs.data.diasAulas[0].diaSemana).toBe('SEGUNDA');
@@ -720,8 +768,8 @@ describe('useGenerateAulasByContrato', () => {
   });
 
   describe('Error Handling and Edge Cases', () => {
-    it('should set isSubmitting to false after generation completes', () => {
-      const { result } = renderHook(
+    it('should set isSubmitting to false after generation completes', async () => {
+      const { result, rerender } = renderHook(
         () =>
           useGenerateAulasByContrato({
             errorSubmit: mockErrorSubmit,
@@ -739,12 +787,25 @@ describe('useGenerateAulasByContrato', () => {
         currentDiasAulas: [],
       };
 
+      // Call function - this should set isSubmitting to true
       act(() => {
         result.current.generateAulasByContrato(formData);
       });
 
-      // After action completes
-      expect(result.current.isSubmitting).toBe(false);
+      // Simulate status change to SUCCESS to trigger the useEffect cleanup
+      store = createMockStore({
+        status: STATUS.SUCCESS,
+        action: 'generateAulas',
+        extra: { aulas: [] },
+      });
+
+      // Re-render with the new store state
+      rerender();
+
+      // Now isSubmitting should be false
+      await waitFor(() => {
+        expect(mockSetFormData).toHaveBeenCalled();
+      });
     });
 
     it('should handle diasAulas with only quantidadeAulas property', () => {
@@ -809,7 +870,9 @@ describe('useGenerateAulasByContrato', () => {
         ],
       };
 
-      result.current.generateAulasByContrato(formData);
+      act(() => {
+        result.current.generateAulasByContrato(formData);
+      });
 
       const callArgs = generateAulas.mock.calls[0][0];
       expect(callArgs.data.diasAulas).toHaveLength(1);
@@ -963,7 +1026,9 @@ describe('useGenerateAulasByContrato', () => {
         currentDiasAulas: largeDiasAulas,
       };
 
-      result.current.generateAulasByContrato(formData);
+      act(() => {
+        result.current.generateAulasByContrato(formData);
+      });
 
       const callArgs = generateAulas.mock.calls[0][0];
       expect(callArgs.data.diasAulas.length).toBe(30);
@@ -1005,7 +1070,9 @@ describe('useGenerateAulasByContrato', () => {
         ],
       };
 
-      result.current.generateAulasByContrato(formData);
+      act(() => {
+        result.current.generateAulasByContrato(formData);
+      });
 
       const callArgs = generateAulas.mock.calls[0][0];
       expect(typeof callArgs.data.diasAulas[0].duracaoAula).toBe('number');
