@@ -1,5 +1,8 @@
 import { useMemo } from 'react';
 import {
+  DURACAO_AULA,
+  DURACAO_AULA_ARRAY,
+  DURACAO_AULA_LABEL,
   STATUS_AULA,
   STATUS_AULA_LABEL,
   TIPO_AULA,
@@ -86,6 +89,9 @@ export const AulaForm = ({
             onChange={handleChange}
             value={formData.idProfessor}
           />
+        </FormGroup>
+
+        <FormGroup cols={3} dataTestId="aula-form-group">
           <SelectField
             required
             htmlFor="idContrato"
@@ -106,9 +112,6 @@ export const AulaForm = ({
             onChange={handleChange}
             value={formData.tipo}
           />
-        </FormGroup>
-
-        <FormGroup cols={isEdit ? 4 : 3} dataTestId="aula-form-group">
           <InputField
             required
             htmlFor="dataAula"
@@ -117,7 +120,9 @@ export const AulaForm = ({
             onChange={handleChange}
             value={formData.dataAula}
           />
+        </FormGroup>
 
+        <FormGroup cols={isEdit ? 4 : 3} dataTestId="aula-form-group">
           <InputField
             required
             htmlFor="horaInicial"
@@ -127,14 +132,28 @@ export const AulaForm = ({
             value={formData.horaInicial}
           />
 
+          <SelectField
+            required
+            htmlFor="duracaoAula"
+            label="Duração da Aula"
+            options={DURACAO_AULA_ARRAY.map(duracao => ({
+              label: DURACAO_AULA_LABEL[duracao],
+              value: DURACAO_AULA[duracao],
+            }))}
+            onChange={handleChange}
+            value={formData.duracaoAula}
+          />
+
           <InputField
             required
+            disabled
             htmlFor="horaFinal"
             label="Hora Fim"
             type="time"
             onChange={handleChange}
             value={formData.horaFinal}
           />
+
           {isEdit && (
             <SelectField
               required

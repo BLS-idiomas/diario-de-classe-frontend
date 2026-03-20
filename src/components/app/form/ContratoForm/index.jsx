@@ -9,6 +9,9 @@ import {
   IDIOMA_ARRAY,
   STATUS_CONTRATO_ARRAY,
   STATUS_CONTRATO_LABEL,
+  DURACAO_AULA_ARRAY,
+  DURACAO_AULA_LABEL,
+  DURACAO_AULA,
 } from '@/constants';
 import {
   Form,
@@ -37,6 +40,7 @@ export const ContratoForm = ({
   handleAtivoChange,
   handleHoraInicialChange,
   handleQuantidadeAulasChange,
+  handleDuracaoAulaChange,
   handleDeleteAula,
   handleEditAula,
   handleGenerateAulasByContrato,
@@ -155,6 +159,7 @@ export const ContratoForm = ({
               />
               <SelectField
                 disabled={!dia.ativo}
+                hidden={true}
                 htmlFor={dia.diaSemana}
                 label="Quantidade de aulas"
                 onChange={handleQuantidadeAulasChange}
@@ -164,6 +169,18 @@ export const ContratoForm = ({
                   { label: '3 (120 min)', value: 3 },
                 ]}
                 value={dia.quantidadeAulas}
+              />
+
+              <SelectField
+                disabled={!dia.ativo}
+                htmlFor={dia.diaSemana}
+                label="Duração da Aula"
+                onChange={handleDuracaoAulaChange}
+                options={DURACAO_AULA_ARRAY.map(duracao => ({
+                  label: DURACAO_AULA_LABEL[duracao],
+                  value: DURACAO_AULA[duracao],
+                }))}
+                value={dia.duracaoAula}
               />
 
               <InputField
