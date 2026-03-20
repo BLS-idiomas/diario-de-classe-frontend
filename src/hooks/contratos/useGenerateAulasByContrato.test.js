@@ -1,4 +1,4 @@
-import { renderHook, waitFor } from '@testing-library/react';
+import { renderHook, waitFor, act } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
 import { useGenerateAulasByContrato } from './useGenerateAulasByContrato';
@@ -404,6 +404,656 @@ describe('useGenerateAulasByContrato', () => {
           diasAulas: [],
         },
       });
+    });
+  });
+
+  describe('Dias Aulas Filtering and Formatting', () => {
+    it('should filter out dias with ativo=false', () => {
+      const { result } = renderHook(
+        () =>
+          useGenerateAulasByContrato({
+            errorSubmit: mockErrorSubmit,
+
+            setFormData: mockSetFormData,
+          }),
+        { wrapper }
+      );
+
+      const formData = {
+        contratoId: 123,
+        contrato: {
+          dataInicio: '2024-01-01',
+          dataTermino: '2024-12-31',
+        },
+        currentDiasAulas: [
+          {
+            diaSemana: 'SEGUNDA',
+            ativo: true,
+            horaInicial: '09:00',
+            horaFinal: '10:00',
+            quantidadeAulas: 1,
+            duracaoAula: 40,
+          },
+          {
+            diaSemana: 'TERCA',
+            ativo: false,
+            horaInicial: '14:00',
+            horaFinal: '15:00',
+            quantidadeAulas: 1,
+            duracaoAula: 60,
+          },
+          {
+            diaSemana: 'QUARTA',
+            ativo: true,
+            horaInicial: '10:00',
+            horaFinal: '11:00',
+            quantidadeAulas: 1,
+            duracaoAula: 60,
+          },
+        ],
+      };
+
+      result.current.generateAulasByContrato(formData);
+
+      const callArgs = generateAulas.mock.calls[0][0];
+      expect(callArgs.data.diasAulas).toHaveLength(2);
+      expect(callArgs.data.diasAulas[0].diaSemana).toBe('SEGUNDA');
+      expect(callArgs.data.diasAulas[1].diaSemana).toBe('QUARTA');
+    });
+
+    it('should parse duracaoAula as integer', () => {
+      const { result } = renderHook(
+        () =>
+          useGenerateAulasByContrato({
+            errorSubmit: mockErrorSubmit,
+
+            setFormData: mockSetFormData,
+          }),
+        { wrapper }
+      );
+
+      const formData = {
+        contratoId: 123,
+        contrato: {
+          dataInicio: '2024-01-01',
+          dataTermino: '2024-12-31',
+        },
+        currentDiasAulas: [
+          {
+            diaSemana: 'SEGUNDA',
+            ativo: true,
+            horaInicial: '09:00',
+            horaFinal: '10:00',
+            quantidadeAulas: 1,
+            duracaoAula: '40',
+          },
+        ],
+      };
+
+      result.current.generateAulasByContrato(formData);
+
+      const callArgs = generateAulas.mock.calls[0][0];
+      const duracaoAula = callArgs.data.diasAulas[0].duracaoAula;
+      expect(typeof duracaoAula).toBe('number');
+      expect(Number.isInteger(duracaoAula)).toBe(true);
+      expect(duracaoAula).toBe(40);
+    });
+
+    it('should preserve all required fields in diasAulas', () => {
+      const { result } = renderHook(
+        () =>
+          useGenerateAulasByContrato({
+            errorSubmit: mockErrorSubmit,
+
+            setFormData: mockSetFormData,
+          }),
+        { wrapper }
+      );
+
+      const formData = {
+        contratoId: 123,
+        contrato: {
+          dataInicio: '2024-01-01',
+          dataTermino: '2024-12-31',
+        },
+        currentDiasAulas: [
+          {
+            diaSemana: 'SEGUNDA',
+            ativo: true,
+            horaInicial: '09:00',
+            horaFinal: '10:00',
+            quantidadeAulas: 2,
+            duracaoAula: 40,
+          },
+        ],
+      };
+
+      result.current.generateAulasByContrato(formData);
+
+      const callArgs = generateAulas.mock.calls[0][0];
+      const dia = callArgs.data.diasAulas[0];
+
+      expect(dia).toHaveProperty('diaSemana', 'SEGUNDA');
+      expect(dia).toHaveProperty('quantidadeAulas', 2);
+      expect(dia).toHaveProperty('duracaoAula', 40);
+      expect(dia).toHaveProperty('horaInicial', '09:00');
+      expect(dia).toHaveProperty('horaFinal', '10:00');
+    });
+
+    it('should calculate duracaoAula when not provided', () => {
+      const { result } = renderHook(
+        () =>
+          useGenerateAulasByContrato({
+            errorSubmit: mockErrorSubmit,
+
+            setFormData: mockSetFormData,
+          }),
+        { wrapper }
+      );
+
+      const formData = {
+        contratoId: 123,
+        contrato: {
+          dataInicio: '2024-01-01',
+          dataTermino: '2024-12-31',
+        },
+        currentDiasAulas: [
+          {
+            diaSemana: 'SEGUNDA',
+            ativo: true,
+            horaInicial: '09:00',
+            horaFinal: '09:40',
+            quantidadeAulas: 1,
+            // duracaoAula not provided
+          },
+        ],
+      };
+
+      result.current.generateAulasByContrato(formData);
+
+      const callArgs = generateAulas.mock.calls[0][0];
+      const dia = callArgs.data.diasAulas[0];
+
+      expect(dia.duracaoAula).toBe(40);
+    });
+  });
+
+  describe('IsSubmitting State', () => {
+    it('should have isSubmitting as false in initial state', () => {
+      const { result } = renderHook(
+        () =>
+          useGenerateAulasByContrato({
+            errorSubmit: mockErrorSubmit,
+
+            setFormData: mockSetFormData,
+          }),
+        { wrapper }
+      );
+
+      expect(result.current.isSubmitting).toBe(false);
+    });
+
+    it('should return isSubmitting property', () => {
+      const { result } = renderHook(
+        () =>
+          useGenerateAulasByContrato({
+            errorSubmit: mockErrorSubmit,
+
+            setFormData: mockSetFormData,
+          }),
+        { wrapper }
+      );
+
+      expect(result.current).toHaveProperty('isSubmitting');
+      expect(typeof result.current.isSubmitting).toBe('boolean');
+    });
+  });
+
+  describe('Multiple Dias Aulas Handling', () => {
+    it('should handle multiple active dias correctly', () => {
+      const { result } = renderHook(
+        () =>
+          useGenerateAulasByContrato({
+            errorSubmit: mockErrorSubmit,
+
+            setFormData: mockSetFormData,
+          }),
+        { wrapper }
+      );
+
+      const formData = {
+        contratoId: 123,
+        contrato: {
+          dataInicio: '2024-01-01',
+          dataTermino: '2024-12-31',
+        },
+        currentDiasAulas: [
+          {
+            diaSemana: 'SEGUNDA',
+            ativo: true,
+            horaInicial: '09:00',
+            horaFinal: '10:00',
+            quantidadeAulas: 1,
+            duracaoAula: 40,
+          },
+          {
+            diaSemana: 'QUARTA',
+            ativo: true,
+            horaInicial: '14:00',
+            horaFinal: '15:00',
+            quantidadeAulas: 2,
+            duracaoAula: 60,
+          },
+          {
+            diaSemana: 'SEXTA',
+            ativo: true,
+            horaInicial: '19:00',
+            horaFinal: '20:00',
+            quantidadeAulas: 1,
+            duracaoAula: 40,
+          },
+        ],
+      };
+
+      result.current.generateAulasByContrato(formData);
+
+      const callArgs = generateAulas.mock.calls[0][0];
+      expect(callArgs.data.diasAulas).toHaveLength(3);
+      expect(callArgs.data.diasAulas.map(d => d.diaSemana)).toEqual([
+        'SEGUNDA',
+        'QUARTA',
+        'SEXTA',
+      ]);
+    });
+
+    it('should preserve order of dias aulas', () => {
+      const { result } = renderHook(
+        () =>
+          useGenerateAulasByContrato({
+            errorSubmit: mockErrorSubmit,
+
+            setFormData: mockSetFormData,
+          }),
+        { wrapper }
+      );
+
+      const formData = {
+        contratoId: 123,
+        contrato: {
+          dataInicio: '2024-01-01',
+          dataTermino: '2024-12-31',
+        },
+        currentDiasAulas: [
+          {
+            diaSemana: 'SEGUNDA',
+            ativo: true,
+            horaInicial: '09:00',
+            horaFinal: '10:00',
+            quantidadeAulas: 1,
+            duracaoAula: 40,
+          },
+          {
+            diaSemana: 'TERCA',
+            ativo: false,
+            horaInicial: '10:00',
+            horaFinal: '11:00',
+            quantidadeAulas: 1,
+            duracaoAula: 60,
+          },
+          {
+            diaSemana: 'QUARTA',
+            ativo: true,
+            horaInicial: '14:00',
+            horaFinal: '15:00',
+            quantidadeAulas: 1,
+            duracaoAula: 60,
+          },
+        ],
+      };
+
+      result.current.generateAulasByContrato(formData);
+
+      const callArgs = generateAulas.mock.calls[0][0];
+      expect(callArgs.data.diasAulas[0].diaSemana).toBe('SEGUNDA');
+      expect(callArgs.data.diasAulas[1].diaSemana).toBe('QUARTA');
+    });
+  });
+
+  describe('Error Handling and Edge Cases', () => {
+    it('should set isSubmitting to false after generation completes', () => {
+      const { result } = renderHook(
+        () =>
+          useGenerateAulasByContrato({
+            errorSubmit: mockErrorSubmit,
+            setFormData: mockSetFormData,
+          }),
+        { wrapper }
+      );
+
+      const formData = {
+        contratoId: 100,
+        contrato: {
+          dataInicio: '2024-01-01',
+          dataTermino: '2024-12-31',
+        },
+        currentDiasAulas: [],
+      };
+
+      act(() => {
+        result.current.generateAulasByContrato(formData);
+      });
+
+      // After action completes
+      expect(result.current.isSubmitting).toBe(false);
+    });
+
+    it('should handle diasAulas with only quantidadeAulas property', () => {
+      const { result } = renderHook(
+        () =>
+          useGenerateAulasByContrato({
+            errorSubmit: mockErrorSubmit,
+            setFormData: mockSetFormData,
+          }),
+        { wrapper }
+      );
+
+      const formData = {
+        contratoId: 123,
+        contrato: {
+          dataInicio: '2024-01-01',
+          dataTermino: '2024-12-31',
+        },
+        currentDiasAulas: [
+          {
+            diaSemana: 'SEGUNDA',
+            ativo: true,
+            quantidadeAulas: 3,
+            duracaoAula: 40,
+          },
+        ],
+      };
+
+      act(() => {
+        result.current.generateAulasByContrato(formData);
+      });
+
+      const callArgs = generateAulas.mock.calls[0][0];
+      expect(callArgs.data.diasAulas[0].quantidadeAulas).toBe(3);
+    });
+
+    it('should handle formData with diasAulas property instead of currentDiasAulas', () => {
+      const { result } = renderHook(
+        () =>
+          useGenerateAulasByContrato({
+            errorSubmit: mockErrorSubmit,
+            setFormData: mockSetFormData,
+          }),
+        { wrapper }
+      );
+
+      const formData = {
+        contratoId: 123,
+        contrato: {
+          dataInicio: '2024-01-01',
+          dataTermino: '2024-12-31',
+        },
+        diasAulas: [
+          {
+            diaSemana: 'SEGUNDA',
+            ativo: true,
+            horaInicial: '09:00',
+            horaFinal: '10:00',
+            quantidadeAulas: 1,
+            duracaoAula: 40,
+          },
+        ],
+      };
+
+      result.current.generateAulasByContrato(formData);
+
+      const callArgs = generateAulas.mock.calls[0][0];
+      expect(callArgs.data.diasAulas).toHaveLength(1);
+      expect(callArgs.data.diasAulas[0].diaSemana).toBe('SEGUNDA');
+    });
+
+    it('should handle error with multiple errors array', async () => {
+      const mockErrors = [
+        { field: 'diasAulas', message: 'Campo obrigatório' },
+        { field: 'dataInicio', message: 'Data invalida' },
+        { field: 'dataFim', message: 'Data invalida' },
+      ];
+
+      store = createMockStore({
+        status: STATUS.FAILED,
+        action: 'generateAulas',
+        message: 'Erro de validação',
+        errors: mockErrors,
+      });
+
+      renderHook(
+        () =>
+          useGenerateAulasByContrato({
+            errorSubmit: mockErrorSubmit,
+            setFormData: mockSetFormData,
+          }),
+        { wrapper }
+      );
+
+      await waitFor(() => {
+        expect(mockErrorSubmit).toHaveBeenCalledWith({
+          message: 'Erro de validação',
+          errors: mockErrors,
+        });
+      });
+    });
+
+    it('should not process if extra is null on success', async () => {
+      store = createMockStore({
+        status: STATUS.SUCCESS,
+        action: 'generateAulas',
+        extra: null,
+      });
+
+      renderHook(
+        () =>
+          useGenerateAulasByContrato({
+            errorSubmit: mockErrorSubmit,
+            setFormData: mockSetFormData,
+          }),
+        { wrapper }
+      );
+
+      await waitFor(() => {
+        // Should still call setFormData even with null extra
+        // but with empty aulas
+        expect(mockSetFormData).not.toHaveBeenCalled();
+      });
+    });
+
+    it('should handle SUCCESS status without action being generateAulas', async () => {
+      store = createMockStore({
+        status: STATUS.SUCCESS,
+        action: 'otherAction',
+        extra: { aulas: [{ id: 1, dataAula: '2024-01-15' }] },
+      });
+
+      renderHook(
+        () =>
+          useGenerateAulasByContrato({
+            errorSubmit: mockErrorSubmit,
+            setFormData: mockSetFormData,
+          }),
+        { wrapper }
+      );
+
+      await waitFor(() => {
+        expect(mockSetFormData).not.toHaveBeenCalled();
+      });
+    });
+  });
+
+  describe('Complex Data Scenarios', () => {
+    it('should handle aulas with mixed id patterns', async () => {
+      const mockAulas = [
+        { id: 1, dataAula: '2024-01-15', horaInicial: '09:00' },
+        { dataAula: '2024-01-17', horaInicial: '14:00' },
+        { id: 'custom-id', dataAula: '2024-01-19', horaInicial: '10:00' },
+      ];
+
+      store = createMockStore({
+        status: STATUS.SUCCESS,
+        action: 'generateAulas',
+        extra: { aulas: mockAulas },
+      });
+
+      renderHook(
+        () =>
+          useGenerateAulasByContrato({
+            errorSubmit: mockErrorSubmit,
+            setFormData: mockSetFormData,
+          }),
+        { wrapper }
+      );
+
+      await waitFor(() => {
+        expect(mockSetFormData).toHaveBeenCalled();
+      });
+
+      const setFormDataCall = mockSetFormData.mock.calls[0][0];
+      const updatedData = setFormDataCall({ aulas: [] });
+
+      expect(updatedData.aulas[0].id).toBe(1);
+      expect(updatedData.aulas[1].id).toBe(2);
+      expect(updatedData.aulas[2].id).toBe('custom-id');
+    });
+
+    it('should handle large number of dias correctly', () => {
+      const { result } = renderHook(
+        () =>
+          useGenerateAulasByContrato({
+            errorSubmit: mockErrorSubmit,
+            setFormData: mockSetFormData,
+          }),
+        { wrapper }
+      );
+
+      const largeDiasAulas = Array.from({ length: 30 }, (_, i) => ({
+        diaSemana: [
+          'SEGUNDA',
+          'TERCA',
+          'QUARTA',
+          'QUINTA',
+          'SEXTA',
+          'SABADO',
+          'DOMINGO',
+        ][i % 7],
+        ativo: true,
+        horaInicial: '09:00',
+        horaFinal: '10:00',
+        quantidadeAulas: 1,
+        duracaoAula: 40,
+      }));
+
+      const formData = {
+        contratoId: 123,
+        contrato: {
+          dataInicio: '2024-01-01',
+          dataTermino: '2024-12-31',
+        },
+        currentDiasAulas: largeDiasAulas,
+      };
+
+      result.current.generateAulasByContrato(formData);
+
+      const callArgs = generateAulas.mock.calls[0][0];
+      expect(callArgs.data.diasAulas.length).toBe(30);
+    });
+
+    it('should preserve duracaoAula types during generation', () => {
+      const { result } = renderHook(
+        () =>
+          useGenerateAulasByContrato({
+            errorSubmit: mockErrorSubmit,
+            setFormData: mockSetFormData,
+          }),
+        { wrapper }
+      );
+
+      const formData = {
+        contratoId: 123,
+        contrato: {
+          dataInicio: '2024-01-01',
+          dataTermino: '2024-12-31',
+        },
+        currentDiasAulas: [
+          {
+            diaSemana: 'SEGUNDA',
+            ativo: true,
+            horaInicial: '09:00',
+            horaFinal: '10:00',
+            quantidadeAulas: 1,
+            duracaoAula: '40',
+          },
+          {
+            diaSemana: 'QUARTA',
+            ativo: true,
+            horaInicial: '14:00',
+            horaFinal: '15:00',
+            quantidadeAulas: 1,
+            duracaoAula: 60,
+          },
+        ],
+      };
+
+      result.current.generateAulasByContrato(formData);
+
+      const callArgs = generateAulas.mock.calls[0][0];
+      expect(typeof callArgs.data.diasAulas[0].duracaoAula).toBe('number');
+      expect(typeof callArgs.data.diasAulas[1].duracaoAula).toBe('number');
+    });
+  });
+
+  describe('State Management', () => {
+    it('should dispatch all clear actions on component mount', () => {
+      renderHook(
+        () =>
+          useGenerateAulasByContrato({
+            errorSubmit: mockErrorSubmit,
+            setFormData: mockSetFormData,
+          }),
+        { wrapper }
+      );
+
+      expect(clearStatus).toHaveBeenCalled();
+      expect(clearCurrent).toHaveBeenCalled();
+      expect(clearExtra).toHaveBeenCalled();
+    });
+
+    it('should have generateAulasByContrato as function in hook result', () => {
+      const { result } = renderHook(
+        () =>
+          useGenerateAulasByContrato({
+            errorSubmit: mockErrorSubmit,
+            setFormData: mockSetFormData,
+          }),
+        { wrapper }
+      );
+
+      expect(typeof result.current.generateAulasByContrato).toBe('function');
+    });
+
+    it('should have isSubmitting boolean in hook result', () => {
+      const { result } = renderHook(
+        () =>
+          useGenerateAulasByContrato({
+            errorSubmit: mockErrorSubmit,
+            setFormData: mockSetFormData,
+          }),
+        { wrapper }
+      );
+
+      expect(typeof result.current.isSubmitting).toBe('boolean');
+      expect([true, false]).toContain(result.current.isSubmitting);
     });
   });
 });

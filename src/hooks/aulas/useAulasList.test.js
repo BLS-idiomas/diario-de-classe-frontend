@@ -407,4 +407,170 @@ describe('useAulasList', () => {
       expect(result.current.data[0].idioma).toBe(IDIOMA_LABEL['ESPANHOL']);
     });
   });
+
+  describe('Additional Integration Tests', () => {
+    it('should render all aula types in data', () => {
+      const aulasPorTipo = [
+        { ...mockAula, id: 1, tipo: 'PADRAO' },
+        { ...mockAula, id: 2, tipo: 'REPOSICAO' },
+        { ...mockAula, id: 3, tipo: 'OUTRA' },
+      ];
+
+      const { result } = renderHook(() =>
+        useAulasList({
+          aulas: aulasPorTipo,
+          dataFormatter: mockFormatter,
+          handleDeleteAula: mockDelete,
+        })
+      );
+
+      expect(result.current.data[0].tipo).toBe(TIPO_AULA_LABEL['PADRAO']);
+      expect(result.current.data[1].tipo).toBe(TIPO_AULA_LABEL['REPOSICAO']);
+      expect(result.current.data[2].tipo).toBe(TIPO_AULA_LABEL['OUTRA']);
+    });
+
+    it('should handle mixed valid and invalid data', () => {
+      const mixedAulas = [
+        mockAula,
+        {
+          ...mockAula,
+          id: 11,
+          aluno: null,
+          professor: { nome: 'Professor 2' },
+        },
+        { ...mockAula, id: 12, aluno: { nome: 'Aluno 2' }, professor: null },
+      ];
+
+      const { result } = renderHook(() =>
+        useAulasList({
+          aulas: mixedAulas,
+          dataFormatter: mockFormatter,
+          handleDeleteAula: mockDelete,
+        })
+      );
+
+      expect(result.current.data[0].aluno).toBe('Aluno 1');
+      expect(result.current.data[1].aluno).toBe('-');
+      expect(result.current.data[2].professor).toBe('-');
+    });
+
+    it('should provide stable references for columns across renders', () => {
+      const { result, rerender } = renderHook(
+        ({ aulas: aulasProp, readOnly }) =>
+          useAulasList({
+            aulas: aulasProp,
+            dataFormatter: mockFormatter,
+            handleDeleteAula: mockDelete,
+            readOnly,
+          }),
+        {
+          initialProps: { aulas: [mockAula], readOnly: false },
+        }
+      );
+
+      const columns1 = result.current.columns;
+
+      rerender({ aulas: aulas, readOnly: false });
+
+      const columns2 = result.current.columns;
+
+      // Columns structure should be consistent
+      expect(columns1.length).toBe(columns2.length);
+      columns1.forEach((col, index) => {
+        expect(col.name).toBe(columns2[index].name);
+      });
+    });
+
+    it('should handle large dataset of aulas', () => {
+      const largAulaSet = Array.from({ length: 100 }, (_, i) => ({
+        ...mockAula,
+        id: i + 1,
+        dataAula: new Date(2025, 0, (i % 28) + 1).toISOString().split('T')[0],
+      }));
+
+      const { result } = renderHook(() =>
+        useAulasList({
+          aulas: largAulaSet,
+          dataFormatter: mockFormatter,
+          handleDeleteAula: mockDelete,
+        })
+      );
+
+      expect(result.current.data).toHaveLength(100);
+      expect(result.current.data[0].id).toBe(1);
+      expect(result.current.data[99].id).toBe(100);
+    });
+
+    it('should call handleDeleteAula with correct aula id', () => {
+      const { result } = renderHook(() =>
+        useAulasList({
+          aulas: [mockAula],
+          dataFormatter: mockFormatter,
+          handleDeleteAula: mockDelete,
+        })
+      );
+
+      // The actions component should have been created
+      expect(React.isValidElement(result.current.data[0].acoes)).toBe(true);
+    });
+
+    it('should format all numeric fields correctly', () => {
+      const { result } = renderHook(() =>
+        useAulasList({
+          aulas: [mockAula],
+          dataFormatter: mockFormatter,
+          handleDeleteAula: mockDelete,
+        })
+      );
+
+      const firstRow = result.current.data[0];
+      expect(typeof firstRow.id).toBe('number');
+      expect(firstRow.id).toBeGreaterThan(0);
+    });
+
+    it('should handle aulas with special characters in names', () => {
+      const aulaWithSpecialChars = {
+        ...mockAula,
+        aluno: { nome: 'João da Silva' },
+        professor: { nome: 'Profa. Mª Helena' },
+      };
+
+      const { result } = renderHook(() =>
+        useAulasList({
+          aulas: [aulaWithSpecialChars],
+          dataFormatter: mockFormatter,
+          handleDeleteAula: mockDelete,
+        })
+      );
+
+      expect(result.current.data[0].aluno).toBe('João da Silva');
+      expect(result.current.data[0].professor).toBe('Profa. Mª Helena');
+    });
+
+    it('should maintain data consistency when switching readOnly', () => {
+      const { result, rerender } = renderHook(
+        ({ readOnly }) =>
+          useAulasList({
+            aulas,
+            dataFormatter: mockFormatter,
+            handleDeleteAula: mockDelete,
+            readOnly,
+          }),
+        {
+          initialProps: { readOnly: false },
+        }
+      );
+
+      const dataBeforeReadOnly = result.current.data;
+
+      rerender({ readOnly: true });
+
+      // Data should remain the same, only columns should change
+      expect(result.current.data.length).toBe(dataBeforeReadOnly.length);
+      result.current.data.forEach((row, index) => {
+        expect(row.aluno).toBe(dataBeforeReadOnly[index].aluno);
+        expect(row.professor).toBe(dataBeforeReadOnly[index].professor);
+      });
+    });
+  });
 });

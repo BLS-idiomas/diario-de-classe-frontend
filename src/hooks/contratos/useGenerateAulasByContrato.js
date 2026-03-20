@@ -7,6 +7,7 @@ import {
   clearExtra,
   generateAulas,
 } from '@/store/slices/contratosSlice';
+import { calculateDuracaoAula } from '@/utils/calculateDuracaoAula';
 
 export function useGenerateAulasByContrato({ errorSubmit, setFormData }) {
   const dispatch = useDispatch();
@@ -22,6 +23,9 @@ export function useGenerateAulasByContrato({ errorSubmit, setFormData }) {
       .map(dia => ({
         diaSemana: dia.diaSemana,
         quantidadeAulas: dia.quantidadeAulas,
+        duracaoAula: dia.duracaoAula
+          ? parseInt(dia.duracaoAula)
+          : calculateDuracaoAula(dia),
         horaInicial: dia.horaInicial,
         horaFinal: dia.horaFinal,
       }));

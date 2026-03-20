@@ -1,3 +1,5 @@
+import { DURACAO_AULA } from '@/constants';
+import { calculateHoraFimByDuracaoAula } from '@/utils/calculateHoraFim';
 import { useState } from 'react';
 
 export function useAulaForm({ id = null, submit }) {
@@ -8,6 +10,7 @@ export function useAulaForm({ id = null, submit }) {
     idProfessor: '',
     idContrato: '',
     dataAula: dataInicioFormatada,
+    duracaoAula: DURACAO_AULA[40],
     horaInicial: '',
     horaFinal: '',
     tipo: 'PADRAO',
@@ -17,8 +20,18 @@ export function useAulaForm({ id = null, submit }) {
 
   const handleChange = e => {
     const { name, value } = e.target;
+    let extraData = {};
+
+    if (['horaInicial', 'duracaoAula'].includes(name)) {
+      extraData.horaFinal = calculateHoraFimByDuracaoAula({
+        horaInicial: name === 'horaInicial' ? value : formData.horaInicial,
+        duracaoAula: name === 'duracaoAula' ? value : formData.duracaoAula,
+      });
+    }
+
     setFormData(prev => ({
       ...prev,
+      ...extraData,
       [name]: value,
     }));
   };
@@ -27,6 +40,7 @@ export function useAulaForm({ id = null, submit }) {
     e.preventDefault();
     const dataToSend = {
       ...formData,
+      duracaoAula: parseInt(formData.duracaoAula),
       dataAula: formData.dataAula
         ? new Date(formData.dataAula).toISOString()
         : '',

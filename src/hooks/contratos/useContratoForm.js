@@ -1,9 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { useUserAuth } from '@/providers/UserAuthProvider';
 import useSweetAlert from '@/hooks/useSweetAlert';
-import { TIPO_AULA_LABEL } from '@/constants';
+import {
+  DURACAO_AULA,
+  DURACAO_AULA_ARRAY,
+  DURACAO_AULA_LABEL,
+  TIPO_AULA_LABEL,
+} from '@/constants';
 import Swal from 'sweetalert2';
-import { calculateHoraFim } from '@/utils/calculateHoraFim';
+import {
+  calculateHoraFim,
+  calculateHoraFimByDuracaoAula,
+} from '@/utils/calculateHoraFim';
+import { calculateDuracaoAula } from '@/utils/calculateDuracaoAula';
 
 export function useContratoForm({
   alunos,
@@ -72,6 +81,7 @@ export function useContratoForm({
       horaInicial: '',
       horaFinal: '',
       quantidadeAulas: 1,
+      duracaoAula: DURACAO_AULA_ARRAY[0],
     }));
 
     diasAulas ||= formData.currentDiasAulas;
@@ -86,6 +96,18 @@ export function useContratoForm({
           initialDiaAula.horaInicial = diaAtual.horaInicial;
           initialDiaAula.horaFinal = diaAtual.horaFinal;
           initialDiaAula.quantidadeAulas = diaAtual.quantidadeAulas;
+          if (
+            diaAtual.horaInicial &&
+            diaAtual.horaFinal &&
+            !diaAtual.duracaoAula
+          ) {
+            initialDiaAula.duracaoAula = calculateDuracaoAula({
+              horaInicial: diaAtual.horaInicial,
+              horaFinal: diaAtual.horaFinal,
+            });
+          } else {
+            initialDiaAula.duracaoAula = diaAtual.duracaoAula;
+          }
         }
       });
     }
@@ -115,6 +137,7 @@ export function useContratoForm({
 
     formData.diasAulas.forEach(diaAula => {
       dataToSend[diaAula.diaSemana] = {
+        duracaoAula: parseInt(diaAula.duracaoAula),
         quantidadeAulas: diaAula.quantidadeAulas,
         horaInicial: diaAula.horaInicial,
         ativo: diaAula.ativo,
@@ -158,10 +181,9 @@ export function useContratoForm({
         ? {
             ...dia,
             horaInicial: value,
-            horaFinal: calculateHoraFim({
+            horaFinal: calculateHoraFimByDuracaoAula({
               horaInicial: value,
-              quantidadeAulas: dia.quantidadeAulas,
-              tempoAula,
+              duracaoAula: dia.duracaoAula,
             }),
           }
         : dia
@@ -185,6 +207,24 @@ export function useContratoForm({
     );
     setDiasAulas(newDiasAulas);
   };
+
+  const handleDuracaoAulaChange = e => {
+    const { name, value } = e.target;
+    const newDiasAulas = formData.diasAulas.map(dia =>
+      dia.diaSemana === name
+        ? {
+            ...dia,
+            duracaoAula: value,
+            horaFinal: calculateHoraFimByDuracaoAula({
+              horaInicial: dia.horaInicial,
+              duracaoAula: value,
+            }),
+          }
+        : dia
+    );
+    setDiasAulas(newDiasAulas);
+  };
+
   const handleDeleteAula = aulaId => {
     const updatedAulas = formData.aulas.filter(aula => aula.id !== aulaId);
     setAulas(updatedAulas);
@@ -213,11 +253,17 @@ export function useContratoForm({
       if (!dateStr) return '';
       return dateStr.split('T')[0];
     };
+    const getDuracaoAula = aula => {
+      if (aula?.duracaoAula) return aula.duracaoAula;
+      if (aula?.horaFinal) return calculateDuracaoAula(aula);
+      return DURACAO_AULA_ARRAY[0];
+    };
     aula = {
       dataAula: formateDateValue(aula?.dataAula),
       horaInicial: aula?.horaInicial || '',
       horaFinal: aula?.horaFinal || '',
       tipo: aula?.tipo || 'PADRAO',
+      duracaoAula: getDuracaoAula(aula),
       observacao: aula?.observacao || '',
     };
     return await showForm({
@@ -233,8 +279,12 @@ export function useContratoForm({
                   <input id="horaInicial" type="time" class="swal2-input" value="${aula.horaInicial}" style="margin: 0; width: 100%;">
                 </div>
                 <div>
-                  <label for="horaFinal" style="display: block; margin-bottom: 0.25rem; font-weight: 500;">Hora Final</label>
-                  <input id="horaFinal" type="time" class="swal2-input" value="${aula.horaFinal}" style="margin: 0; width: 100%;">
+                  <label for="duracaoAula" style="display: block; margin-bottom: 0.25rem; font-weight: 500;">Duração da Aula</label>
+                  <select id="duracaoAula" class="swal2-input" style="margin: 0; width: 100%;">
+                    <option value="${DURACAO_AULA[40]}" ${parseInt(aula.duracaoAula) === DURACAO_AULA[40] ? 'selected' : ''}>${DURACAO_AULA_LABEL[40]}</option>
+                    <option value="${DURACAO_AULA[60]}" ${parseInt(aula.duracaoAula) === DURACAO_AULA[60] ? 'selected' : ''}>${DURACAO_AULA_LABEL[60]}</option>
+                    <option value="${DURACAO_AULA[80]}" ${parseInt(aula.duracaoAula) === DURACAO_AULA[80] ? 'selected' : ''}>${DURACAO_AULA_LABEL[80]}</option>
+                  </select>
                 </div>
                 <div>
                   <label for="tipo" style="display: block; margin-bottom: 0.25rem; font-weight: 500;">Tipo</label>
@@ -253,11 +303,16 @@ export function useContratoForm({
       preConfirm: () => {
         const dataAula = document.getElementById('dataAula').value;
         const horaInicial = document.getElementById('horaInicial').value;
-        const horaFinal = document.getElementById('horaFinal').value;
         const tipo = document.getElementById('tipo').value;
+        const duracaoAula = document.getElementById('duracaoAula').value;
         const observacao = document.getElementById('observacao').value;
 
-        if (!dataAula || !horaInicial || !horaFinal || !tipo) {
+        const horaFinal = calculateHoraFimByDuracaoAula({
+          horaInicial,
+          duracaoAula,
+        });
+
+        if (!dataAula || !horaInicial || !duracaoAula || !tipo) {
           Swal.showValidationMessage(
             'Por favor, preencha todos os campos obrigatórios'
           );
@@ -281,6 +336,7 @@ export function useContratoForm({
           dataAula: new Date(dataAula).toISOString(),
           horaInicial,
           horaFinal,
+          duracaoAula,
           tipo,
           observacao,
         };
@@ -340,6 +396,7 @@ export function useContratoForm({
     handleAtivoChange,
     handleHoraInicialChange,
     handleQuantidadeAulasChange,
+    handleDuracaoAulaChange,
     handleDeleteAula,
     handleEditAula,
     createAula,

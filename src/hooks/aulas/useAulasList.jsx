@@ -79,7 +79,7 @@ export function useAulasList({
       horaFinal: aula.horaFinal,
       horaInicial: aula.horaInicial,
       status: STATUS_AULA_LABEL[aula.status],
-      idioma: IDIOMA_LABEL[aula.contrato.idioma],
+      idioma: IDIOMA_LABEL[aula.contrato?.idioma],
       tipo: TIPO_AULA_LABEL[aula.tipo],
       aluno: aula.aluno?.nome || '-',
       professor: aula.professor?.nome || '-',
