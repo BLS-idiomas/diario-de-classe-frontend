@@ -12,7 +12,7 @@ export function useAulas() {
   const hoje = new Date();
   const dataInicioFormatada = hoje.toISOString().split('T')[0];
   const dataFim = new Date(hoje);
-  dataFim.setMonth(dataFim.getMonth() + 6);
+  dataFim.setMonth(dataFim.getMonth() + 3);
   const dataTerminoFormatada = dataFim.toISOString().split('T')[0];
 
   const [formData, setFormData] = useState({

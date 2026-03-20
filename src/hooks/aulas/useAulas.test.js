@@ -29,16 +29,16 @@ describe('useAulas', () => {
   };
 
   describe('initialization', () => {
-    it('should initialize with default date range (today to 6 months later)', () => {
+    it('should initialize with default date range (today to 3 months later)', () => {
       useSelector.mockImplementation(cb => cb(mockSelectorState));
       const { result } = renderHook(() => useAulas());
 
       const today = new Date().toISOString().split('T')[0];
       expect(result.current.formData.dataInicio).toBe(today);
 
-      const sixMonthsLater = new Date();
-      sixMonthsLater.setMonth(sixMonthsLater.getMonth() + 6);
-      const expectedDate = sixMonthsLater.toISOString().split('T')[0];
+      const threeMonthsLater = new Date();
+      threeMonthsLater.setMonth(threeMonthsLater.getMonth() + 3);
+      const expectedDate = threeMonthsLater.toISOString().split('T')[0];
       expect(result.current.formData.dataTermino).toBe(expectedDate);
     });
 
@@ -264,12 +264,12 @@ describe('useAulas', () => {
 
       act(() => {
         result.current.handleChange({
-          target: { name: 'dataTermino', value: '2024-06-15', type: 'text' },
+          target: { name: 'dataTermino', value: '2024-03-15', type: 'text' },
         });
       });
 
       expect(result.current.formData.dataInicio).toBe('2024-01-15');
-      expect(result.current.formData.dataTermino).toBe('2024-06-15');
+      expect(result.current.formData.dataTermino).toBe('2024-03-15');
     });
 
     it('should preserve formData integrity across changes', () => {
