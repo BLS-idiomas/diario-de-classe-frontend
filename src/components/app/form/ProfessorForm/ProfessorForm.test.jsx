@@ -253,6 +253,7 @@ describe('ProfessorForm', () => {
     expect(idiomSelect).toBeInTheDocument();
     expect(screen.getByText('Inglês')).toBeInTheDocument();
     expect(screen.getByText('Espanhol')).toBeInTheDocument();
+    expect(screen.getByText('Francês')).toBeInTheDocument();
   });
 
   it('renders input fields with correct values from formData', () => {

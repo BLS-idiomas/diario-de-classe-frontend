@@ -126,4 +126,39 @@ describe('useProfessorForm', () => {
     expect(callArgs.dataToSend.idiomas).toEqual([IDIOMA.ESPANHOL]);
     expect(callArgs.dataToSend.idioma).toBeUndefined();
   });
+
+  it('should handle FRANCES idioma correctly', () => {
+    const submit = jest.fn();
+    const { result } = renderHook(() => useProfessorForm({ submit }));
+    act(() => {
+      result.current.handleChange({
+        target: { name: 'senha', value: 'test123' },
+      });
+      result.current.handleChange({
+        target: { name: 'repetirSenha', value: 'test123' },
+      });
+      result.current.handleChange({
+        target: { name: 'nome', value: 'Pierre' },
+      });
+      result.current.handleChange({
+        target: { name: 'idioma', value: IDIOMA.FRANCES },
+      });
+    });
+    const mockEvent = { preventDefault: jest.fn() };
+    act(() => {
+      result.current.handleSubmit(mockEvent);
+    });
+    expect(submit).toHaveBeenCalledWith({
+      id: null,
+      dataToSend: {
+        nome: 'Pierre',
+        sobrenome: '',
+        email: '',
+        telefone: '',
+        senha: 'test123',
+        permissao: PERMISSAO.MEMBER,
+        idiomas: [IDIOMA.FRANCES],
+      },
+    });
+  });
 });

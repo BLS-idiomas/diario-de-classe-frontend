@@ -391,20 +391,27 @@ describe('useAulasList', () => {
     });
 
     it('should correctly label all idiomas', () => {
-      const aulaWithDifferentIdioma = {
+      const aulaWithEspanhol = {
         ...mockAula,
         contrato: { idioma: 'ESPANHOL' },
       };
 
+      const aulaWithFrances = {
+        ...mockAula,
+        id: 99,
+        contrato: { idioma: 'FRANCES' },
+      };
+
       const { result } = renderHook(() =>
         useAulasList({
-          aulas: [aulaWithDifferentIdioma],
+          aulas: [aulaWithEspanhol, aulaWithFrances],
           dataFormatter: mockFormatter,
           handleDeleteAula: mockDelete,
         })
       );
 
       expect(result.current.data[0].idioma).toBe(IDIOMA_LABEL['ESPANHOL']);
+      expect(result.current.data[1].idioma).toBe(IDIOMA_LABEL['FRANCES']);
     });
   });
 
