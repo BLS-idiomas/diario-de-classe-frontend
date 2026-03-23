@@ -1,3 +1,13 @@
+# [1.13.0](https://github.com/BLS-idiomas/diario-de-classe-frontend/compare/v1.12.1...v1.13.0) (2026-03-23)
+
+### Bug Fixes
+
+- Update default date range in useAulas to 3 months ([1542b2a](https://github.com/BLS-idiomas/diario-de-classe-frontend/commit/1542b2ae27ced087cf73f21b5e6b60b4f8da5b1b))
+
+### Features
+
+- Add support for 'Francês' idioma in forms and tests ([25fe7e9](https://github.com/BLS-idiomas/diario-de-classe-frontend/commit/25fe7e9709086d724fe539c04486a798c52f38e6))
+
 ## [1.12.1](https://github.com/BLS-idiomas/diario-de-classe-frontend/compare/v1.12.0...v1.12.1) (2026-03-20)
 
 ### Bug Fixes
