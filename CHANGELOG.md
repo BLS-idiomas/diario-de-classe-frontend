@@ -1,3 +1,9 @@
+# [1.14.0](https://github.com/BLS-idiomas/diario-de-classe-frontend/compare/v1.13.0...v1.14.0) (2026-03-25)
+
+### Features
+
+- Implement filter component and integrate with Aulas page ([4a2ac82](https://github.com/BLS-idiomas/diario-de-classe-frontend/commit/4a2ac82521e9368230cced0a5dab3ec1194d2eef))
+
 # [1.13.0](https://github.com/BLS-idiomas/diario-de-classe-frontend/compare/v1.12.1...v1.13.0) (2026-03-23)
 
 ### Bug Fixes
