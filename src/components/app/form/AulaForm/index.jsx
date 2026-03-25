@@ -22,6 +22,7 @@ import {
   TextAreaField,
 } from '@/components';
 import { useFormater } from '@/hooks/useFormater';
+import { getEntityOptions } from '@/utils/getEntityOptions';
 
 export const AulaForm = ({
   handleSubmit,
@@ -36,13 +37,6 @@ export const AulaForm = ({
   const { professores } = useProfessores();
   const { contratos } = useContratos();
   const { dataFormatter } = useFormater();
-
-  const getEntityOptions = entities => {
-    return entities.map(entity => ({
-      label: makeEmailLabel(entity),
-      value: entity.id,
-    }));
-  };
 
   const contratoOptions = useMemo(() => {
     if (contratos && contratos.length > 0 && formData.idAluno) {

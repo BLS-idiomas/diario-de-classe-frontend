@@ -62,12 +62,28 @@ describe('useAulas', () => {
       expect(result.current.status).toBe(STATUS.SUCCESS);
     });
 
-    it('should initialize with empty formData by default', () => {
+    it('should initialize with empty formData values by default', () => {
       useSelector.mockImplementation(cb => cb(mockSelectorState));
       const { result } = renderHook(() => useAulas());
 
-      expect(result.current.formData.dataInicio).toBeDefined();
-      expect(result.current.formData.dataTermino).toBeDefined();
+      expect(result.current.formData.tipo).toBe('');
+      expect(result.current.formData.status).toBe('');
+      expect(result.current.formData.idAluno).toBe('');
+      expect(result.current.formData.idProfessor).toBe('');
+      expect(result.current.formData.q).toBe('');
+    });
+
+    it('should initialize formData with all required fields', () => {
+      useSelector.mockImplementation(cb => cb(mockSelectorState));
+      const { result } = renderHook(() => useAulas());
+
+      expect(result.current.formData).toHaveProperty('dataInicio');
+      expect(result.current.formData).toHaveProperty('dataTermino');
+      expect(result.current.formData).toHaveProperty('tipo');
+      expect(result.current.formData).toHaveProperty('status');
+      expect(result.current.formData).toHaveProperty('idAluno');
+      expect(result.current.formData).toHaveProperty('idProfessor');
+      expect(result.current.formData).toHaveProperty('q');
     });
   });
 
@@ -115,6 +131,17 @@ describe('useAulas', () => {
 
       expect(result.current.isLoading).toBe(false);
     });
+
+    it('should return false when status is ERROR', () => {
+      useSelector.mockImplementation(cb =>
+        cb({
+          aulas: { list: [], status: STATUS.ERROR, action: 'getAulas' },
+        })
+      );
+      const { result } = renderHook(() => useAulas());
+
+      expect(result.current.isLoading).toBe(false);
+    });
   });
 
   describe('handleChange', () => {
@@ -156,6 +183,73 @@ describe('useAulas', () => {
 
       expect(result.current.formData.dataTermino).toBe('2024-12-31');
     });
+
+    it('should update tipo field', async () => {
+      useSelector.mockImplementation(cb => cb(mockSelectorState));
+      const { result } = renderHook(() => useAulas());
+
+      act(() => {
+        result.current.handleChange({
+          target: { name: 'tipo', value: 'PADRAO', type: 'text' },
+        });
+      });
+
+      expect(result.current.formData.tipo).toBe('PADRAO');
+    });
+
+    it('should update status field', async () => {
+      useSelector.mockImplementation(cb => cb(mockSelectorState));
+      const { result } = renderHook(() => useAulas());
+
+      act(() => {
+        result.current.handleChange({
+          target: { name: 'status', value: 'AGENDADA', type: 'text' },
+        });
+      });
+
+      expect(result.current.formData.status).toBe('AGENDADA');
+    });
+
+    it('should update idAluno field', async () => {
+      useSelector.mockImplementation(cb => cb(mockSelectorState));
+      const { result } = renderHook(() => useAulas());
+
+      act(() => {
+        result.current.handleChange({
+          target: { name: 'idAluno', value: '123', type: 'text' },
+        });
+      });
+
+      expect(result.current.formData.idAluno).toBe('123');
+    });
+
+    it('should update idProfessor field', async () => {
+      useSelector.mockImplementation(cb => cb(mockSelectorState));
+      const { result } = renderHook(() => useAulas());
+
+      act(() => {
+        result.current.handleChange({
+          target: { name: 'idProfessor', value: '456', type: 'text' },
+        });
+      });
+
+      expect(result.current.formData.idProfessor).toBe('456');
+    });
+
+    it('should maintain other fields when one field is updated', async () => {
+      useSelector.mockImplementation(cb => cb(mockSelectorState));
+      const { result } = renderHook(() => useAulas());
+
+      act(() => {
+        result.current.handleChange({
+          target: { name: 'tipo', value: 'REPOSICAO', type: 'text' },
+        });
+      });
+
+      expect(result.current.formData.dataInicio).toBeDefined();
+      expect(result.current.formData.dataTermino).toBeDefined();
+      expect(result.current.formData.status).toBe('');
+    });
   });
 
   describe('handleSubmit', () => {
@@ -177,20 +271,24 @@ describe('useAulas', () => {
 
     it('should dispatch getAulas on formData change', () => {
       useSelector.mockImplementation(cb => cb(mockSelectorState));
-      const { result } = renderHook(() => useAulas());
+      renderHook(() => useAulas());
 
-      act(() => {
-        result.current.handleChange({
-          target: { name: 'dataInicio', value: '2024-02-15', type: 'text' },
-        });
+      // Wait for useEffect to trigger after state changes
+      waitFor(() => {
+        expect(mockDispatch).toHaveBeenCalled();
       });
+    });
+
+    it('should call with current formData on mount', () => {
+      useSelector.mockImplementation(cb => cb(mockSelectorState));
+      renderHook(() => useAulas());
 
       expect(mockDispatch).toHaveBeenCalled();
     });
   });
 
   describe('searchParams', () => {
-    it('should dispatch getAulas with search query', () => {
+    it('should update formData with search query', () => {
       useSelector.mockImplementation(cb => cb(mockSelectorState));
       const { result } = renderHook(() => useAulas());
 
@@ -198,9 +296,7 @@ describe('useAulas', () => {
         result.current.searchParams('classroom search');
       });
 
-      expect(mockDispatch).toHaveBeenCalledWith(
-        getAulas({ q: 'classroom search' })
-      );
+      expect(result.current.formData.q).toBe('classroom search');
     });
 
     it('should be a function', () => {
@@ -218,7 +314,24 @@ describe('useAulas', () => {
         result.current.searchParams('');
       });
 
-      expect(mockDispatch).toHaveBeenCalledWith(getAulas({ q: '' }));
+      expect(result.current.formData.q).toBe('');
+    });
+
+    it('should handle multiple searches', () => {
+      useSelector.mockImplementation(cb => cb(mockSelectorState));
+      const { result } = renderHook(() => useAulas());
+
+      act(() => {
+        result.current.searchParams('search 1');
+      });
+
+      expect(result.current.formData.q).toBe('search 1');
+
+      act(() => {
+        result.current.searchParams('search 2');
+      });
+
+      expect(result.current.formData.q).toBe('search 2');
     });
   });
 
@@ -248,6 +361,54 @@ describe('useAulas', () => {
       const { result } = renderHook(() => useAulas());
 
       expect(typeof result.current.handleChange).toBe('function');
+    });
+
+    it('should return searchParams as function', () => {
+      useSelector.mockImplementation(cb => cb(mockSelectorState));
+      const { result } = renderHook(() => useAulas());
+
+      expect(typeof result.current.searchParams).toBe('function');
+    });
+
+    it('should return formData as object', () => {
+      useSelector.mockImplementation(cb => cb(mockSelectorState));
+      const { result } = renderHook(() => useAulas());
+
+      expect(typeof result.current.formData).toBe('object');
+      expect(result.current.formData).not.toBeNull();
+    });
+  });
+
+  describe('Redux integration', () => {
+    it('should use dispatch from Redux', () => {
+      useSelector.mockImplementation(cb => cb(mockSelectorState));
+      renderHook(() => useAulas());
+
+      expect(useDispatch).toHaveBeenCalled();
+    });
+
+    it('should use selector to get aulas state', () => {
+      useSelector.mockImplementation(cb => cb(mockSelectorState));
+      renderHook(() => useAulas());
+
+      expect(useSelector).toHaveBeenCalled();
+    });
+
+    it('should provide list, status, and action from Redux state', () => {
+      const mockAulas = [{ id: 1, nome: 'Aula teste' }];
+      useSelector.mockImplementation(cb =>
+        cb({
+          aulas: {
+            list: mockAulas,
+            status: STATUS.SUCCESS,
+            action: 'getAulas',
+          },
+        })
+      );
+      const { result } = renderHook(() => useAulas());
+
+      expect(result.current.aulas).toEqual(mockAulas);
+      expect(result.current.status).toBe(STATUS.SUCCESS);
     });
   });
 

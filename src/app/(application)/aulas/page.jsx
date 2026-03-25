@@ -4,8 +4,11 @@ import { useAulas } from '@/hooks/aulas/useAulas';
 import { useDeletarAula } from '@/hooks/aulas/useDeletarAula';
 import { useFormater } from '@/hooks/useFormater';
 import { useAulasList } from '@/hooks/aulas/useAulasList';
-import { Form, FormGroup, InputField, ListPage } from '@/components';
+import { useAlunos } from '@/hooks/alunos/useAlunos';
 import { useEditarAndamentoAula } from '@/hooks/aulas/useEditarAndamentoAula';
+import { useProfessores } from '@/hooks/professores/useProfessores';
+import { Filter } from './filter';
+import { ListPage } from '@/components';
 
 export default function Aulas() {
   const { currentUser } = useUserAuth();
@@ -17,6 +20,8 @@ export default function Aulas() {
     handleChange,
     formData,
   } = useAulas();
+  const { alunos } = useAlunos();
+  const { professores } = useProfessores();
   const { handleDeleteAula } = useDeletarAula();
   const { submit, isLoading: isLoadingSubmit } = useEditarAndamentoAula();
   const { telefoneFormatter, dataFormatter } = useFormater();
@@ -31,32 +36,6 @@ export default function Aulas() {
     isLoadingSubmit,
   });
 
-  const Filter = () => {
-    return (
-      <Form handleSubmit={handleSubmit}>
-        <h3 className="text-xl font-semibold text-main mb-4">Filtros</h3>
-        <FormGroup cols={2}>
-          <InputField
-            required
-            htmlFor="dataInicio"
-            label="Data de início"
-            type="date"
-            onChange={handleChange}
-            value={formData.dataInicio}
-          />
-          <InputField
-            required
-            htmlFor="dataTermino"
-            label="Data de fim"
-            type="date"
-            onChange={handleChange}
-            value={formData.dataTermino}
-          />
-        </FormGroup>
-      </Form>
-    );
-  };
-
   return (
     <>
       <ListPage
@@ -68,15 +47,22 @@ export default function Aulas() {
             type: 'primary',
           },
         ]}
-        // search={{
-        //   title: 'Buscar pelo nome do aluno ou professor...',
-        //   searchParams: searchParams,
-        // }}
+        search={{
+          title: 'Buscar pelo nome do aluno ou professor...',
+          searchParams: searchParams,
+        }}
         columns={columns}
         data={data}
         isLoading={isLoading || isLoadingSubmit}
         notFoundMessage="Nenhuma aula encontrada."
         Filter={Filter}
+        filterParams={{
+          handleSubmit,
+          handleChange,
+          formData,
+          alunos,
+          professores,
+        }}
       />
     </>
   );

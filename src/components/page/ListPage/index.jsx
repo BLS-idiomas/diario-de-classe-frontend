@@ -12,6 +12,7 @@ export const ListPage = ({
   isLoading,
   notFoundMessage,
   Filter = null,
+  filterParams = {},
 }) => (
   <>
     <h1 className="page-title" data-testid="list-page-title">
@@ -30,7 +31,7 @@ export const ListPage = ({
 
     {Filter && (
       <div className="my-6" data-testid="list-page-filter">
-        <Filter />
+        <Filter {...filterParams} />
       </div>
     )}
 

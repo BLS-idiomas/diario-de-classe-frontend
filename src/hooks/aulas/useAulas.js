@@ -7,8 +7,7 @@ import { searchFunction } from '@/utils/searchFunction';
 export function useAulas() {
   const dispatch = useDispatch();
   const { list, status, action } = useSelector(state => state.aulas);
-  const searchParams = query =>
-    searchFunction({ dispatch, query, perform: getAulas });
+
   const hoje = new Date();
   const dataInicioFormatada = hoje.toISOString().split('T')[0];
   const dataFim = new Date(hoje);
@@ -18,7 +17,18 @@ export function useAulas() {
   const [formData, setFormData] = useState({
     dataInicio: dataInicioFormatada,
     dataTermino: dataTerminoFormatada,
+    tipo: '',
+    status: '',
+    idAluno: '',
+    idProfessor: '',
+    q: '',
   });
+
+  const searchParams = query =>
+    setFormData(prevState => ({
+      ...prevState,
+      q: query,
+    }));
 
   const handleSubmit = useCallback(
     formData => {
