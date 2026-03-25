@@ -1,4 +1,6 @@
 import { render } from '@testing-library/react';
+import { Provider } from 'react-redux';
+import { configureStore } from '@reduxjs/toolkit';
 import Aulas from './page';
 import { useUserAuth } from '@/providers/UserAuthProvider';
 import { useAulas } from '@/hooks/aulas/useAulas';
@@ -14,6 +16,32 @@ jest.mock('@/hooks/useFormater');
 jest.mock('@/hooks/aulas/useAulasList');
 jest.mock('@/hooks/aulas/useEditarAndamentoAula');
 jest.mock('@/components');
+
+// Create a mock Redux store
+const createMockStore = () =>
+  configureStore({
+    reducer: {
+      aulas: () => ({
+        list: [],
+        status: 'idle',
+        action: null,
+      }),
+      alunos: () => ({
+        list: [],
+        status: 'idle',
+        action: null,
+      }),
+      professores: () => ({
+        list: [],
+        status: 'idle',
+        action: null,
+      }),
+    },
+  });
+
+const renderWithRedux = (component, store = createMockStore()) => {
+  return render(<Provider store={store}>{component}</Provider>);
+};
 
 describe('Aulas List Page', () => {
   beforeEach(() => {
@@ -56,7 +84,7 @@ describe('Aulas List Page', () => {
   });
 
   it('renders aulas list page', () => {
-    render(<Aulas />);
+    renderWithRedux(<Aulas />);
     expect(useAulas).toHaveBeenCalled();
   });
 
@@ -67,12 +95,12 @@ describe('Aulas List Page', () => {
       searchParams: {},
     });
 
-    render(<Aulas />);
+    renderWithRedux(<Aulas />);
     expect(useAulas).toHaveBeenCalled();
   });
 
   it('renders with aulas data', () => {
-    render(<Aulas />);
+    renderWithRedux(<Aulas />);
     expect(useAulasList).toHaveBeenCalled();
   });
 });
