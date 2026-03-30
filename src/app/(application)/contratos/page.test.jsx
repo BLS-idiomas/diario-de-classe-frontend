@@ -5,12 +5,14 @@ import { useContratos } from '@/hooks/contratos/useContratos';
 import { useDeletarContrato } from '@/hooks/contratos/useDeletarContrato';
 import { useFormater } from '@/hooks/useFormater';
 import { useContratosList } from '@/hooks/contratos/useContratosList';
+import { useAlunos } from '@/hooks/alunos/useAlunos';
 
 jest.mock('@/providers/UserAuthProvider');
 jest.mock('@/hooks/contratos/useContratos');
 jest.mock('@/hooks/contratos/useDeletarContrato');
 jest.mock('@/hooks/useFormater');
 jest.mock('@/hooks/contratos/useContratosList');
+jest.mock('@/hooks/alunos/useAlunos');
 jest.mock('@/components');
 
 describe('Contratos List Page', () => {
@@ -28,7 +30,21 @@ describe('Contratos List Page', () => {
         { id: 2, numero: 'CONT-002', valor: 2000, status: 'ativo' },
       ],
       isLoading: false,
-      searchParams: {},
+      searchParams: jest.fn(),
+      handleSubmit: jest.fn(),
+      handleChange: jest.fn(),
+      formData: {},
+    });
+
+    useAlunos.mockReturnValue({
+      alunos: [
+        { id: 1, nome: 'Aluno 1' },
+        { id: 2, nome: 'Aluno 2' },
+      ],
+      alunoOptions: [
+        { value: 1, label: 'Aluno 1' },
+        { value: 2, label: 'Aluno 2' },
+      ],
     });
 
     useDeletarContrato.mockReturnValue({

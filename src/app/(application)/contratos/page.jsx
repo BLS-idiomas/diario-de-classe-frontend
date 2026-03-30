@@ -1,20 +1,30 @@
 'use client';
 import { useUserAuth } from '@/providers/UserAuthProvider';
 import { useFormater } from '@/hooks/useFormater';
-import { ListPage } from '@/components';
 import { useContratos } from '@/hooks/contratos/useContratos';
 import { useDeletarContrato } from '@/hooks/contratos/useDeletarContrato';
 import { useContratosList } from '@/hooks/contratos/useContratosList';
+import { Filter } from './filter';
+import { ListPage } from '@/components';
+import { useAlunos } from '@/hooks/alunos/useAlunos';
 
 export default function Contratos() {
   const { currentUser, isAdmin } = useUserAuth();
-  const { contratos, isLoading, searchParams } = useContratos();
+  const {
+    contratos,
+    isLoading,
+    searchParams,
+    handleSubmit,
+    handleChange,
+    formData,
+  } = useContratos();
+  const { alunos } = useAlunos();
   const { handleDeleteContrato } = useDeletarContrato();
   const { dataFormatter } = useFormater();
   const { columns, data } = useContratosList({
     isAdmin: isAdmin(),
     currentUser,
-    contratos, //
+    contratos,
     readOnly: false,
     dataFormatter,
     handleDeleteContrato,
@@ -32,10 +42,17 @@ export default function Contratos() {
           },
         ]
       }
-      // search={{
-      //   title: 'Buscar pelo nome do aluno...',
-      //   searchParams: searchParams,
-      // }}
+      search={{
+        title: 'Buscar pelo nome do aluno...',
+        searchParams: searchParams,
+      }}
+      Filter={Filter}
+      filterParams={{
+        handleSubmit,
+        handleChange,
+        formData,
+        alunos,
+      }}
       columns={columns}
       data={data}
       isLoading={isLoading}

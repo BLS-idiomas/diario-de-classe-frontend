@@ -5,14 +5,14 @@ export class GetContratoListService {
     this.contratoApi = contratoApi;
   }
 
-  async execute(searchParam) {
-    return await this.contratoApi.getAll({ q: searchParam });
+  async execute(params) {
+    return await this.contratoApi.getAll(params);
   }
 
-  static async handle(searchParam) {
+  static async handle(params) {
     const contratoApi = new ContratoApi();
     const service = new GetContratoListService(contratoApi);
 
-    return await service.execute(searchParam);
+    return await service.execute(params);
   }
 }

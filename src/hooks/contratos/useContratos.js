@@ -1,18 +1,44 @@
-import { useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { STATUS } from '@/constants';
 import { getContratos } from '@/store/slices/contratosSlice';
-import { searchFunction } from '@/utils/searchFunction';
 
 export function useContratos() {
   const dispatch = useDispatch();
   const { list, status, action } = useSelector(state => state.contratos);
+
+  const [formData, setFormData] = useState({
+    dataInicio: '',
+    dataTermino: '',
+    idioma: '',
+    idAluno: '',
+    q: '',
+  });
+
   const searchParams = query =>
-    searchFunction({ dispatch, query, perform: getContratos });
+    setFormData(prevState => ({
+      ...prevState,
+      q: query,
+    }));
+
+  const handleSubmit = useCallback(
+    formData => {
+      dispatch(getContratos(formData));
+    },
+    [dispatch]
+  );
+
+  const handleChange = async e => {
+    const { name, value, checked, type } = e.target;
+    setFormData(prevState => ({
+      ...prevState,
+      [name]: type === 'checkbox' ? checked : value,
+    }));
+  };
 
   useEffect(() => {
-    dispatch(getContratos());
-  }, [dispatch]);
+    handleSubmit(formData);
+  }, [handleSubmit, formData]);
 
   const isAction = action === 'getContratos';
   const isLoading =
@@ -23,5 +49,8 @@ export function useContratos() {
     status,
     isLoading,
     searchParams,
+    handleSubmit,
+    handleChange,
+    formData,
   };
 }

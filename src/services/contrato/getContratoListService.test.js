@@ -35,14 +35,14 @@ describe('GetContratoListService', () => {
   });
 
   describe('execute', () => {
-    it('should call contratoApi.getAll with search param', async () => {
-      const searchParam = 'test';
+    it('should call contratoApi.getAll with params object', async () => {
+      const params = { q: 'test', idioma: 'INGLES' };
       const mockContratos = [{ id: 1, nome: 'Contrato 1' }];
       contratoApi.getAll.mockResolvedValue(mockContratos);
 
-      await service.execute(searchParam);
+      await service.execute(params);
 
-      expect(contratoApi.getAll).toHaveBeenCalledWith({ q: searchParam });
+      expect(contratoApi.getAll).toHaveBeenCalledWith(params);
       expect(contratoApi.getAll).toHaveBeenCalledTimes(1);
     });
 
@@ -54,51 +54,52 @@ describe('GetContratoListService', () => {
       ];
       contratoApi.getAll.mockResolvedValue(mockContratos);
 
-      const result = await service.execute('test');
+      const result = await service.execute({ q: 'test' });
 
       expect(result).toEqual(mockContratos);
     });
 
-    it('should handle empty search param', async () => {
+    it('should handle empty params object', async () => {
       const mockContratos = [{ id: 1, nome: 'All Contratos' }];
       contratoApi.getAll.mockResolvedValue(mockContratos);
 
-      await service.execute('');
+      await service.execute({});
 
-      expect(contratoApi.getAll).toHaveBeenCalledWith({ q: '' });
+      expect(contratoApi.getAll).toHaveBeenCalledWith({});
     });
 
-    it('should handle undefined search param', async () => {
+    it('should handle undefined params', async () => {
       const mockContratos = [];
       contratoApi.getAll.mockResolvedValue(mockContratos);
 
       await service.execute(undefined);
 
-      expect(contratoApi.getAll).toHaveBeenCalledWith({ q: undefined });
+      expect(contratoApi.getAll).toHaveBeenCalledWith(undefined);
     });
 
-    it('should handle null search param', async () => {
+    it('should handle null params', async () => {
       const mockContratos = [];
       contratoApi.getAll.mockResolvedValue(mockContratos);
 
       await service.execute(null);
 
-      expect(contratoApi.getAll).toHaveBeenCalledWith({ q: null });
+      expect(contratoApi.getAll).toHaveBeenCalledWith(null);
     });
 
-    it('should handle numeric search param', async () => {
+    it('should handle params with multiple filters', async () => {
       const mockContratos = [{ id: 123, nome: 'Contrato 123' }];
       contratoApi.getAll.mockResolvedValue(mockContratos);
+      const params = { q: 'test', idioma: 'INGLES', idAluno: '123' };
 
-      await service.execute(123);
+      await service.execute(params);
 
-      expect(contratoApi.getAll).toHaveBeenCalledWith({ q: 123 });
+      expect(contratoApi.getAll).toHaveBeenCalledWith(params);
     });
 
     it('should return empty array when no contratos found', async () => {
       contratoApi.getAll.mockResolvedValue([]);
 
-      const result = await service.execute('nonexistent');
+      const result = await service.execute({ q: 'nonexistent' });
 
       expect(result).toEqual([]);
     });
@@ -107,7 +108,7 @@ describe('GetContratoListService', () => {
       const error = new Error('Failed to fetch contratos');
       contratoApi.getAll.mockRejectedValue(error);
 
-      await expect(service.execute('test')).rejects.toThrow(
+      await expect(service.execute({ q: 'test' })).rejects.toThrow(
         'Failed to fetch contratos'
       );
     });
@@ -116,28 +117,30 @@ describe('GetContratoListService', () => {
       const networkError = new Error('Network error');
       contratoApi.getAll.mockRejectedValue(networkError);
 
-      await expect(service.execute('test')).rejects.toThrow('Network error');
+      await expect(service.execute({ q: 'test' })).rejects.toThrow(
+        'Network error'
+      );
     });
 
     it('should handle 404 errors', async () => {
       const notFoundError = new Error('Not found');
       contratoApi.getAll.mockRejectedValue(notFoundError);
 
-      await expect(service.execute('test')).rejects.toThrow('Not found');
+      await expect(service.execute({ q: 'test' })).rejects.toThrow('Not found');
     });
 
     it('should handle 403 errors', async () => {
       const forbiddenError = new Error('Forbidden');
       contratoApi.getAll.mockRejectedValue(forbiddenError);
 
-      await expect(service.execute('test')).rejects.toThrow('Forbidden');
+      await expect(service.execute({ q: 'test' })).rejects.toThrow('Forbidden');
     });
 
     it('should handle 500 errors', async () => {
       const serverError = new Error('Internal server error');
       contratoApi.getAll.mockRejectedValue(serverError);
 
-      await expect(service.execute('test')).rejects.toThrow(
+      await expect(service.execute({ q: 'test' })).rejects.toThrow(
         'Internal server error'
       );
     });
@@ -152,9 +155,9 @@ describe('GetContratoListService', () => {
         .mockResolvedValueOnce(mockContratos2)
         .mockResolvedValueOnce(mockContratos3);
 
-      await service.execute('first');
-      await service.execute('second');
-      await service.execute('third');
+      await service.execute({ q: 'first' });
+      await service.execute({ q: 'second' });
+      await service.execute({ q: 'third' });
 
       expect(contratoApi.getAll).toHaveBeenCalledTimes(3);
       expect(contratoApi.getAll).toHaveBeenNthCalledWith(1, { q: 'first' });
@@ -162,7 +165,7 @@ describe('GetContratoListService', () => {
       expect(contratoApi.getAll).toHaveBeenNthCalledWith(3, { q: 'third' });
     });
 
-    it('should return different lists for different search params', async () => {
+    it('should return different lists for different params', async () => {
       const mockContratos1 = [{ id: 1, nome: 'Premium' }];
       const mockContratos2 = [{ id: 2, nome: 'Basic' }];
 
@@ -170,8 +173,8 @@ describe('GetContratoListService', () => {
         .mockResolvedValueOnce(mockContratos1)
         .mockResolvedValueOnce(mockContratos2);
 
-      const result1 = await service.execute('premium');
-      const result2 = await service.execute('basic');
+      const result1 = await service.execute({ q: 'premium' });
+      const result2 = await service.execute({ q: 'basic' });
 
       expect(result1).toEqual(mockContratos1);
       expect(result2).toEqual(mockContratos2);
@@ -184,30 +187,30 @@ describe('GetContratoListService', () => {
       }));
       contratoApi.getAll.mockResolvedValue(mockContratos);
 
-      const result = await service.execute('all');
+      const result = await service.execute({ q: 'all' });
 
       expect(result).toHaveLength(100);
       expect(contratoApi.getAll).toHaveBeenCalledWith({ q: 'all' });
     });
 
-    it('should handle special characters in search param', async () => {
-      const searchParam = 'test@#$%';
+    it('should handle special characters in params', async () => {
+      const params = { q: 'test@#$%', idioma: 'INGLES' };
       const mockContratos = [{ id: 1, nome: 'Special' }];
       contratoApi.getAll.mockResolvedValue(mockContratos);
 
-      await service.execute(searchParam);
+      await service.execute(params);
 
-      expect(contratoApi.getAll).toHaveBeenCalledWith({ q: searchParam });
+      expect(contratoApi.getAll).toHaveBeenCalledWith(params);
     });
 
-    it('should handle long search strings', async () => {
-      const longSearchParam = 'a'.repeat(1000);
+    it('should handle params with date filters', async () => {
+      const params = { dataInicio: '2024-01-01', dataTermino: '2024-12-31' };
       const mockContratos = [];
       contratoApi.getAll.mockResolvedValue(mockContratos);
 
-      await service.execute(longSearchParam);
+      await service.execute(params);
 
-      expect(contratoApi.getAll).toHaveBeenCalledWith({ q: longSearchParam });
+      expect(contratoApi.getAll).toHaveBeenCalledWith(params);
     });
 
     it('should handle contratos with complete data structure', async () => {
@@ -226,9 +229,19 @@ describe('GetContratoListService', () => {
       ];
       contratoApi.getAll.mockResolvedValue(mockContratos);
 
-      const result = await service.execute('premium');
+      const result = await service.execute({ q: 'premium' });
 
       expect(result).toEqual(mockContratos);
+    });
+
+    it('should handle params with idAluno filter', async () => {
+      const params = { idAluno: '10' };
+      const mockContratos = [{ id: 1, alunoId: 10 }];
+      contratoApi.getAll.mockResolvedValue(mockContratos);
+
+      await service.execute(params);
+
+      expect(contratoApi.getAll).toHaveBeenCalledWith(params);
     });
   });
 
@@ -239,7 +252,7 @@ describe('GetContratoListService', () => {
         getAll: jest.fn().mockResolvedValue([]),
       }));
 
-      await GetContratoListService.handle('test');
+      await GetContratoListService.handle({ q: 'test' });
 
       expect(ContratoApi.mock.instances.length).toBe(initialCount + 1);
     });
@@ -250,20 +263,21 @@ describe('GetContratoListService', () => {
         getAll: jest.fn().mockResolvedValue(mockContratos),
       }));
 
-      const result = await GetContratoListService.handle('test');
+      const result = await GetContratoListService.handle({ q: 'test' });
 
       expect(result).toEqual(mockContratos);
     });
 
-    it('should call execute with correct search param', async () => {
+    it('should call execute with correct params', async () => {
       const mockGetAll = jest.fn().mockResolvedValue([{ id: 1 }]);
       ContratoApi.mockImplementation(() => ({
         getAll: mockGetAll,
       }));
+      const params = { q: 'search', idioma: 'INGLES' };
 
-      await GetContratoListService.handle('search');
+      await GetContratoListService.handle(params);
 
-      expect(mockGetAll).toHaveBeenCalledWith({ q: 'search' });
+      expect(mockGetAll).toHaveBeenCalledWith(params);
     });
 
     it('should return result from execute', async () => {
@@ -275,7 +289,7 @@ describe('GetContratoListService', () => {
         getAll: jest.fn().mockResolvedValue(mockContratos),
       }));
 
-      const result = await GetContratoListService.handle('test');
+      const result = await GetContratoListService.handle({ q: 'test' });
 
       expect(result).toEqual(mockContratos);
     });
@@ -286,20 +300,20 @@ describe('GetContratoListService', () => {
         getAll: jest.fn().mockRejectedValue(error),
       }));
 
-      await expect(GetContratoListService.handle('test')).rejects.toThrow(
-        'Failed to get list'
-      );
+      await expect(
+        GetContratoListService.handle({ q: 'test' })
+      ).rejects.toThrow('Failed to get list');
     });
 
-    it('should work with empty search param', async () => {
+    it('should work with empty params', async () => {
       const mockGetAll = jest.fn().mockResolvedValue([]);
       ContratoApi.mockImplementation(() => ({
         getAll: mockGetAll,
       }));
 
-      await GetContratoListService.handle('');
+      await GetContratoListService.handle({});
 
-      expect(mockGetAll).toHaveBeenCalledWith({ q: '' });
+      expect(mockGetAll).toHaveBeenCalledWith({});
     });
 
     it('should work with consecutive calls', async () => {
@@ -312,8 +326,8 @@ describe('GetContratoListService', () => {
         getAll: mockGetAll,
       }));
 
-      await GetContratoListService.handle('first');
-      await GetContratoListService.handle('second');
+      await GetContratoListService.handle({ q: 'first' });
+      await GetContratoListService.handle({ q: 'second' });
 
       expect(mockGetAll).toHaveBeenCalledTimes(2);
     });
@@ -324,8 +338,8 @@ describe('GetContratoListService', () => {
         getAll: jest.fn().mockResolvedValue([]),
       }));
 
-      await GetContratoListService.handle('test1');
-      await GetContratoListService.handle('test2');
+      await GetContratoListService.handle({ q: 'test1' });
+      await GetContratoListService.handle({ q: 'test2' });
 
       expect(ContratoApi.mock.instances.length).toBe(initialCount + 2);
     });
@@ -339,7 +353,7 @@ describe('GetContratoListService', () => {
       ];
       contratoApi.getAll.mockResolvedValue(mockContratos);
 
-      const result = await service.execute('test');
+      const result = await service.execute({ q: 'test' });
 
       expect(result).toEqual(mockContratos);
       expect(contratoApi.getAll).toHaveBeenCalledWith({ q: 'test' });
@@ -355,9 +369,9 @@ describe('GetContratoListService', () => {
         .mockResolvedValueOnce(mockContratos2)
         .mockResolvedValueOnce(mockContratos3);
 
-      await service.execute('premium');
-      await service.execute('basic');
-      await service.execute('standard');
+      await service.execute({ q: 'premium' });
+      await service.execute({ q: 'basic' });
+      await service.execute({ q: 'standard' });
 
       expect(contratoApi.getAll).toHaveBeenCalledTimes(3);
     });
@@ -373,9 +387,9 @@ describe('GetContratoListService', () => {
         .mockResolvedValueOnce(mockContratos3);
 
       const promises = [
-        service.execute('first'),
-        service.execute('second'),
-        service.execute('third'),
+        service.execute({ q: 'first' }),
+        service.execute({ q: 'second' }),
+        service.execute({ q: 'third' }),
       ];
 
       const results = await Promise.all(promises);
@@ -392,7 +406,7 @@ describe('GetContratoListService', () => {
       }));
       contratoApi.getAll.mockResolvedValue(mockContratos);
 
-      const result = await service.execute('all');
+      const result = await service.execute({ q: 'all' });
 
       expect(result).toHaveLength(50);
       expect(result[0].id).toBe(1);
@@ -414,7 +428,7 @@ describe('GetContratoListService', () => {
       ];
       contratoApi.getAll.mockResolvedValue(mockContratos);
 
-      const result = await service.execute('test');
+      const result = await service.execute({ q: 'test' });
 
       expect(result[0]).toEqual(mockContratos[0]);
       expect(result[0].metadata.tags).toEqual(['premium', 'active']);

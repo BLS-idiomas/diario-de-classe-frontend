@@ -17,9 +17,9 @@ import { ValidateContratoService } from '@/services/contrato/validateContratoSer
 // GET ALL
 export const getContratos = createAsyncThunk(
   'contratos/getAll',
-  async (searchParam = null, { rejectWithValue }) => {
+  async (params = {}, { rejectWithValue }) => {
     try {
-      const res = await GetContratoListService.handle(searchParam);
+      const res = await GetContratoListService.handle(params);
       return res.data;
     } catch (error) {
       // Capturar a mensagem de erro da resposta da API
