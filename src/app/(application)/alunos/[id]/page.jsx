@@ -18,15 +18,44 @@ import {
   InfoCardGroup,
   InfoCard,
   BlockQuoteInfo,
+  SectionTitle,
+  Table,
 } from '@/components';
 import { IDIOMA_LABEL } from '@/constants';
+import { useAulasList } from '@/hooks/aulas/useAulasList';
+import { useContratosList } from '@/hooks/contratos/useContratosList';
+import { useUserAuth } from '@/providers/UserAuthProvider';
 
 export default function Aluno() {
+  const { isAdmin } = useUserAuth();
   const params = useParams();
-  const { aluno, diasAulas, contrato, isLoading, isNotFound } = useAluno(
-    params.id
-  );
+  const backUrl = `/alunos/${params.id}`;
+  const {
+    aluno,
+    diasAulas,
+    contrato,
+    aulas,
+    contratos,
+    isLoading,
+    isNotFound,
+  } = useAluno(params.id);
   const { telefoneFormatter, dataFormatter } = useFormater();
+
+  const { columns: columnsAulas, data: dataAulas } = useAulasList({
+    aulas,
+    backUrl,
+    telefoneFormatter,
+    dataFormatter,
+  });
+
+  const { columns: columnsContratos, data: dataContratos } = useContratosList({
+    contratos,
+    backUrl,
+    readOnly: !isAdmin(),
+    isAdmin: isAdmin(),
+    telefoneFormatter,
+    dataFormatter,
+  });
 
   const getIdiomas = () => {
     if (!aluno || !aluno.contratos || aluno.contratos.length === 0) {
@@ -137,6 +166,30 @@ export default function Aluno() {
           >
             {aluno.material}
           </BlockQuoteInfo>
+        </Section>
+
+        {/*Aulas*/}
+        <Section>
+          <SectionTitle>Aulas</SectionTitle>
+          <Table
+            columns={columnsAulas}
+            data={dataAulas}
+            isLoading={isLoading}
+            notFoundMessage="Nenhuma aula encontrada."
+            className="null"
+          />
+        </Section>
+
+        {/*Contratos*/}
+        <Section>
+          <SectionTitle>Contratos</SectionTitle>
+          <Table
+            columns={columnsContratos}
+            data={dataContratos}
+            isLoading={isLoading}
+            notFoundMessage="Nenhum contrato encontrado."
+            className="null"
+          />
         </Section>
       </div>
     </>

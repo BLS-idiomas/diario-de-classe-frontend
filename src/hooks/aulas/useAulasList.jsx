@@ -1,4 +1,5 @@
 import { IDIOMA_LABEL, STATUS_AULA_LABEL, TIPO_AULA_LABEL } from '@/constants';
+import { buildQueryString } from '@/utils/bindUrlParams';
 import { Eye, Pencil, Trash2 } from 'lucide-react';
 import Link from 'next/link';
 import { useMemo } from 'react';
@@ -10,7 +11,9 @@ export function useAulasList({
   readOnly = false,
   submit,
   isLoadingSubmit,
+  backUrl = null,
 }) {
+  const backUrlParam = !backUrl ? '' : buildQueryString({ backUrl });
   const columns = [
     {
       name: '#',
@@ -86,14 +89,14 @@ export function useAulasList({
       acoes: (
         <div className="flex gap-2">
           <Link
-            href={`/aulas/${aula.id}`}
+            href={`/aulas/${aula.id}${backUrlParam}`}
             className="btn-outline btn-outline-primary"
           >
             <Eye {...iconParams} />
           </Link>
 
           <Link
-            href={`/aulas/${aula.id}/editar`}
+            href={`/aulas/${aula.id}/editar${backUrlParam}`}
             className="btn-outline btn-outline-secondary"
           >
             <Pencil {...iconParams} />
@@ -108,6 +111,13 @@ export function useAulasList({
         </div>
       ),
     }));
-  }, [aulas, dataFormatter, handleDeleteAula, submit, isLoadingSubmit]);
+  }, [
+    aulas,
+    dataFormatter,
+    handleDeleteAula,
+    submit,
+    isLoadingSubmit,
+    backUrlParam,
+  ]);
   return { columns, data };
 }

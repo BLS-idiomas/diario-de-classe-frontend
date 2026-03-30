@@ -1,6 +1,6 @@
 'use client';
 import { useEffect } from 'react';
-import { notFound, useParams } from 'next/navigation';
+import { notFound, useParams, useSearchParams } from 'next/navigation';
 import { useAlunos } from '@/hooks/alunos/useAlunos';
 import { useProfessores } from '@/hooks/professores/useProfessores';
 import { useFormater } from '@/hooks/useFormater';
@@ -11,11 +11,13 @@ import { ContratoForm, Loading, FormPage } from '@/components';
 
 export default function EditarContrato() {
   const params = useParams();
+  const searchParams = useSearchParams();
+  const backUrl = searchParams.get('backUrl');
   const { alunos, alunoOptions } = useAlunos();
   const { professores, professorOptions } = useProfessores();
   const { dataFormatter, formatForInput } = useFormater();
   const { message, errors, isLoading, current, isNotFound, submit } =
-    useEditarContrato(params.id);
+    useEditarContrato(params.id, backUrl);
   const {
     formData,
     handleSubmit,
@@ -82,7 +84,7 @@ export default function EditarContrato() {
       subTitle="Atualize os dados do contrato"
       buttons={[
         {
-          href: `/contratos/${params.id}`,
+          href: backUrl || `/contratos/${params.id}`,
           label: '← Voltar',
           type: 'secondary',
         },

@@ -3,6 +3,17 @@ import { render, screen, fireEvent, renderHook } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { useContratosList } from './useContratosList';
 
+// Mock buildQueryString
+jest.mock('@/utils/bindUrlParams', () => ({
+  buildQueryString: jest.fn(params => {
+    if (!params || Object.keys(params).length === 0) return '';
+    const queryString = Object.entries(params)
+      .map(([key, value]) => `${key}=${value}`)
+      .join('&');
+    return `?${queryString}`;
+  }),
+}));
+
 // Mock next/link
 jest.mock('next/link', () => {
   const MockLink = ({ children, href, ...props }) => {
@@ -29,6 +40,7 @@ function TestComponent({
   handleDeleteContrato,
   readOnly = false,
   isAdmin = false,
+  backUrl = null,
 }) {
   const { columns, data } = useContratosList({
     contratos,
@@ -36,6 +48,7 @@ function TestComponent({
     handleDeleteContrato,
     readOnly,
     isAdmin,
+    backUrl,
   });
 
   return (
@@ -665,6 +678,89 @@ describe('useContratosList Hook', () => {
       expect(mockDateFormatter.mock.calls.length).toBeGreaterThanOrEqual(
         initialCallCount
       );
+    });
+  });
+
+  describe('backUrl parameter', () => {
+    it('should handle null backUrl', () => {
+      const contrato = {
+        id: 1,
+        aluno: { nome: 'João' },
+        idioma: 'ENGLISH',
+        dataInicio: '2024-01-01',
+        dataTermino: '2024-12-31',
+        totalAulas: 50,
+        totalAulasFeitas: 25,
+        totalReposicoes: 2,
+        totalFaltas: 1,
+        totalAulasCanceladas: 0,
+      };
+
+      render(
+        <TestComponent
+          contratos={[contrato]}
+          dataFormatter={mockFormatter}
+          handleDeleteContrato={mockDeleter}
+          backUrl={null}
+        />
+      );
+
+      const actions = screen.getByTestId('actions-1');
+      expect(actions).toBeInTheDocument();
+    });
+
+    it('should handle provided backUrl', () => {
+      const contrato = {
+        id: 1,
+        aluno: { nome: 'João' },
+        idioma: 'ENGLISH',
+        dataInicio: '2024-01-01',
+        dataTermino: '2024-12-31',
+        totalAulas: 50,
+        totalAulasFeitas: 25,
+        totalReposicoes: 2,
+        totalFaltas: 1,
+        totalAulasCanceladas: 0,
+      };
+
+      render(
+        <TestComponent
+          contratos={[contrato]}
+          dataFormatter={mockFormatter}
+          handleDeleteContrato={mockDeleter}
+          backUrl="/alunos/123"
+        />
+      );
+
+      const actions = screen.getByTestId('actions-1');
+      expect(actions).toBeInTheDocument();
+    });
+
+    it('should handle empty backUrl string', () => {
+      const contrato = {
+        id: 1,
+        aluno: { nome: 'João' },
+        idioma: 'ENGLISH',
+        dataInicio: '2024-01-01',
+        dataTermino: '2024-12-31',
+        totalAulas: 50,
+        totalAulasFeitas: 25,
+        totalReposicoes: 2,
+        totalFaltas: 1,
+        totalAulasCanceladas: 0,
+      };
+
+      render(
+        <TestComponent
+          contratos={[contrato]}
+          dataFormatter={mockFormatter}
+          handleDeleteContrato={mockDeleter}
+          backUrl=""
+        />
+      );
+
+      const actions = screen.getByTestId('actions-1');
+      expect(actions).toBeInTheDocument();
     });
   });
 });

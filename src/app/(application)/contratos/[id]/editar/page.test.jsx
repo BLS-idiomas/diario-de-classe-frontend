@@ -1,6 +1,7 @@
 import { render, waitFor } from '@testing-library/react';
 import EditarContrato from './page';
 import { useEditarContrato } from '@/hooks/contratos/useEditarContrato';
+import * as nextNavigation from 'next/navigation';
 
 jest.mock('@/hooks/contratos/useEditarContrato');
 jest.mock('@/hooks/contratos/useContratoForm');
@@ -12,6 +13,7 @@ jest.mock('@/components');
 
 jest.mock('next/navigation', () => ({
   useParams: jest.fn(() => ({ id: '1' })),
+  useSearchParams: jest.fn(),
   notFound: jest.fn(),
 }));
 
@@ -58,6 +60,12 @@ describe('Editar Contrato Page', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+
+    // Mock useSearchParams
+    const mockSearchParams = {
+      get: jest.fn(() => null),
+    };
+    nextNavigation.useSearchParams.mockReturnValue(mockSearchParams);
 
     useAlunosHook.mockReturnValue({
       alunos: [mockAluno],
@@ -332,6 +340,40 @@ describe('Editar Contrato Page', () => {
 
       render(<EditarContrato />);
       expect(useEditarContratoHook).toHaveBeenCalled();
+    });
+  });
+
+  describe('backUrl parameter', () => {
+    beforeEach(() => {
+      // Reset useParams to default
+      useParams.mockReturnValue({ id: '1' });
+    });
+
+    it('should use backUrl when provided via searchParams', () => {
+      const mockSearchParams = {
+        get: jest.fn(key => {
+          if (key === 'backUrl') return '/alunos/123';
+          return null;
+        }),
+      };
+      nextNavigation.useSearchParams.mockReturnValue(mockSearchParams);
+
+      render(<EditarContrato />);
+
+      expect(mockSearchParams.get).toHaveBeenCalledWith('backUrl');
+      expect(useEditarContratoHook).toHaveBeenCalledWith('1', '/alunos/123');
+    });
+
+    it('should use null backUrl when not provided', () => {
+      const mockSearchParams = {
+        get: jest.fn(() => null),
+      };
+      nextNavigation.useSearchParams.mockReturnValue(mockSearchParams);
+
+      render(<EditarContrato />);
+
+      expect(mockSearchParams.get).toHaveBeenCalledWith('backUrl');
+      expect(useEditarContratoHook).toHaveBeenCalledWith('1', null);
     });
   });
 });

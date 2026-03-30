@@ -8,6 +8,7 @@ import * as nextNavigation from 'next/navigation';
 // Mock do Next.js
 jest.mock('next/navigation', () => ({
   useParams: jest.fn(),
+  useSearchParams: jest.fn(),
   notFound: jest.fn(),
 }));
 
@@ -24,6 +25,17 @@ jest.mock('next/link', () => {
 // Mock dos hooks
 jest.mock('@/hooks/aulas/useAula');
 jest.mock('@/hooks/useFormater');
+
+// Mock do buildQueryString
+jest.mock('@/utils/bindUrlParams', () => ({
+  buildQueryString: jest.fn(params => {
+    if (!params || Object.keys(params).length === 0) return '';
+    const queryString = Object.entries(params)
+      .map(([key, value]) => `${key}=${value}`)
+      .join('&');
+    return `?${queryString}`;
+  }),
+}));
 
 // Mock dos componentes
 jest.mock('@/components', () => ({
@@ -102,6 +114,16 @@ describe('Aula Page', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     useParams.mockReturnValue({ id: '1' });
+
+    // Mock useSearchParams
+    const mockSearchParams = {
+      get: jest.fn(key => {
+        if (key === 'backUrl') return null;
+        return null;
+      }),
+    };
+    nextNavigation.useSearchParams.mockReturnValue(mockSearchParams);
+
     useFormater.mockReturnValue({
       dataFormatter: jest.fn(data => `${data} (formatado)`),
       telefoneFormatter: jest.fn(tel => `(11) ${tel.slice(-8)}`),
@@ -546,6 +568,76 @@ describe('Aula Page', () => {
 
       // O getFullName deve retornar "João null"
       expect(screen.getByText('João null')).toBeInTheDocument();
+    });
+  });
+
+  describe('backUrl parameter handling', () => {
+    beforeEach(() => {
+      useAula.mockReturnValue({
+        aula: mockAulaData,
+        aluno: mockAlunoData,
+        professor: mockProfessorData,
+        contrato: mockContratoData,
+        isLoading: false,
+        isNotFound: false,
+      });
+    });
+
+    it('should use default /aulas when backUrl is null', () => {
+      const mockSearchParams = {
+        get: jest.fn(() => null),
+      };
+      nextNavigation.useSearchParams.mockReturnValue(mockSearchParams);
+
+      render(<Aula />);
+
+      const backButton = screen.getByRole('link', { name: /voltar/i });
+      expect(backButton).toHaveAttribute('href', '/aulas');
+    });
+
+    it('should use provided backUrl from searchParams', () => {
+      const mockSearchParams = {
+        get: jest.fn(key => {
+          if (key === 'backUrl') return '/alunos/123';
+          return null;
+        }),
+      };
+      nextNavigation.useSearchParams.mockReturnValue(mockSearchParams);
+
+      render(<Aula />);
+
+      const backButton = screen.getByRole('link', { name: /voltar/i });
+      expect(backButton).toHaveAttribute('href', '/alunos/123');
+    });
+
+    it('should include backUrl in edit link when provided', () => {
+      const mockSearchParams = {
+        get: jest.fn(key => {
+          if (key === 'backUrl') return '/alunos/456';
+          return null;
+        }),
+      };
+      nextNavigation.useSearchParams.mockReturnValue(mockSearchParams);
+
+      render(<Aula />);
+
+      const editButton = screen.getByRole('link', { name: /editar/i });
+      expect(editButton).toHaveAttribute(
+        'href',
+        '/aulas/1/editar?backUrl=/alunos/456'
+      );
+    });
+
+    it('should not include query params in edit link when backUrl is null', () => {
+      const mockSearchParams = {
+        get: jest.fn(() => null),
+      };
+      nextNavigation.useSearchParams.mockReturnValue(mockSearchParams);
+
+      render(<Aula />);
+
+      const editButton = screen.getByRole('link', { name: /editar/i });
+      expect(editButton).toHaveAttribute('href', '/aulas/1/editar');
     });
   });
 });

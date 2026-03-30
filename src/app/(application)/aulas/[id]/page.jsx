@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react';
 import Link from 'next/link';
-import { notFound, useParams } from 'next/navigation';
+import { notFound, useParams, useSearchParams } from 'next/navigation';
 import {
   IDIOMA_LABEL,
   STATUS_AULA_LABEL,
@@ -25,9 +25,13 @@ import {
   InfoCard,
   BlockQuoteInfo,
 } from '@/components';
+import { buildQueryString } from '@/utils/bindUrlParams';
 
 export default function Aula() {
   const params = useParams();
+  const searchParams = useSearchParams();
+  const backUrl = searchParams.get('backUrl');
+  const backUrlParam = !backUrl ? '' : buildQueryString({ backUrl });
   const { aula, aluno, professor, contrato, isLoading, isNotFound } = useAula(
     params.id
   );
@@ -56,11 +60,14 @@ export default function Aula() {
       </PageContent>
 
       <ButtonGroup>
-        <Link href="/aulas" className="btn btn-secondary">
+        <Link href={backUrl || '/aulas'} className="btn btn-secondary">
           ← Voltar
         </Link>
 
-        <Link href={`/aulas/${params.id}/editar`} className="btn btn-primary">
+        <Link
+          href={`/aulas/${params.id}/editar${backUrlParam}`}
+          className="btn btn-primary"
+        >
           Editar
         </Link>
       </ButtonGroup>

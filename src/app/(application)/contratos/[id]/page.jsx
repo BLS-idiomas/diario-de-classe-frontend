@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react';
 import Link from 'next/link';
-import { notFound, useParams } from 'next/navigation';
+import { notFound, useParams, useSearchParams } from 'next/navigation';
 import { useFormater } from '@/hooks/useFormater';
 import {
   PageContent,
@@ -19,9 +19,13 @@ import {
 } from '@/components';
 import { useContrato } from '@/hooks/contratos/useContrato';
 import { IDIOMA_LABEL } from '@/constants';
+import { buildQueryString } from '@/utils/bindUrlParams';
 
 export default function Contrato() {
   const params = useParams();
+  const searchParams = useSearchParams();
+  const backUrl = searchParams.get('backUrl');
+  const backUrlParam = !backUrl ? '' : buildQueryString({ backUrl });
   const { aluno, contrato, isLoading, isNotFound } = useContrato(params.id);
   const { dataFormatter } = useFormater();
 
@@ -43,12 +47,12 @@ export default function Contrato() {
       </PageContent>
 
       <ButtonGroup>
-        <Link href="/contratos" className="btn btn-secondary">
+        <Link href={backUrl || '/contratos'} className="btn btn-secondary">
           ← Voltar
         </Link>
 
         <Link
-          href={`/contratos/${params.id}/editar`}
+          href={`/contratos/${params.id}/editar${backUrlParam}`}
           className="btn btn-primary"
         >
           Editar

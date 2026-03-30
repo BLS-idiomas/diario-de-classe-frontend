@@ -10,7 +10,7 @@ import {
 import { useRouter } from 'next/navigation';
 import { useToast } from '@/providers/ToastProvider';
 
-export function useEditarContrato(contratoId) {
+export function useEditarContrato(contratoId, backUrl = null) {
   const dispatch = useDispatch();
   const router = useRouter();
   const { success } = useToast();
@@ -41,7 +41,7 @@ export function useEditarContrato(contratoId) {
       dispatch(clearCurrent());
       dispatch(clearStatus());
       success('Contrato editado com sucesso!');
-      router.push(`/contratos/${current.id}`);
+      router.push(backUrl || `/contratos/${current.id}`);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status, current, action, message, errors]);

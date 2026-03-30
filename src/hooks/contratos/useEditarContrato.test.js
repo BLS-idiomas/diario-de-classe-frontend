@@ -273,4 +273,47 @@ describe('useEditarContrato', () => {
 
     expect(mockPush).toHaveBeenCalledWith('/contratos/999');
   });
+
+  it('should redirect to backUrl when provided on success', () => {
+    const mockContrato = { id: '999', name: 'New Contrato' };
+    const backUrl = '/alunos/123';
+
+    mockUseSelector.mockImplementation(cb =>
+      cb({
+        contratos: {
+          status: STATUS.SUCCESS,
+          message: 'Success',
+          errors: [],
+          current: mockContrato,
+          action: 'updateContrato',
+          statusError: null,
+        },
+      })
+    );
+
+    renderHook(() => useEditarContrato('123', backUrl));
+
+    expect(mockPush).toHaveBeenCalledWith(backUrl);
+  });
+
+  it('should use default route when backUrl is null', () => {
+    const mockContrato = { id: '999', name: 'New Contrato' };
+
+    mockUseSelector.mockImplementation(cb =>
+      cb({
+        contratos: {
+          status: STATUS.SUCCESS,
+          message: 'Success',
+          errors: [],
+          current: mockContrato,
+          action: 'updateContrato',
+          statusError: null,
+        },
+      })
+    );
+
+    renderHook(() => useEditarContrato('123', null));
+
+    expect(mockPush).toHaveBeenCalledWith('/contratos/999');
+  });
 });

@@ -4,11 +4,18 @@ import { notFound, useParams } from 'next/navigation';
 import { useAluno } from '@/hooks/alunos/useAluno';
 import { useFormater } from '@/hooks/useFormater';
 import { useAulasList } from '@/hooks/aulas/useAulasList';
+import { useContratosList } from '@/hooks/contratos/useContratosList';
 
 jest.mock('@/hooks/alunos/useAluno');
 jest.mock('@/hooks/useFormater');
 jest.mock('@/hooks/aulas/useAulasList');
+jest.mock('@/hooks/contratos/useContratosList');
 jest.mock('@/components');
+jest.mock('@/providers/UserAuthProvider', () => ({
+  useUserAuth: jest.fn(() => ({
+    isAdmin: jest.fn(() => true),
+  })),
+}));
 
 jest.mock('next/navigation', () => ({
   useParams: jest.fn(() => ({ id: '1' })),
@@ -34,11 +41,36 @@ describe('Aluno Detail Page', () => {
       columns: [],
       data: [],
     });
+
+    useContratosList.mockReturnValue({
+      columns: [],
+      data: [],
+    });
   });
 
   it('renders aluno detail page', () => {
     render(<Aluno />);
     expect(useAluno).toHaveBeenCalled();
+  });
+
+  it('passes correct backUrl to useAulasList', () => {
+    render(<Aluno />);
+
+    expect(useAulasList).toHaveBeenCalledWith(
+      expect.objectContaining({
+        backUrl: '/alunos/1',
+      })
+    );
+  });
+
+  it('passes correct backUrl to useContratosList', () => {
+    render(<Aluno />);
+
+    expect(useContratosList).toHaveBeenCalledWith(
+      expect.objectContaining({
+        backUrl: '/alunos/1',
+      })
+    );
   });
 
   it('calls notFound when aluno not found', () => {

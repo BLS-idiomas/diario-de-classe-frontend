@@ -1,4 +1,5 @@
 import { IDIOMA_LABEL } from '@/constants';
+import { buildQueryString } from '@/utils/bindUrlParams';
 import { Eye, Pencil, Trash2 } from 'lucide-react';
 import Link from 'next/link';
 import { useMemo } from 'react';
@@ -9,7 +10,9 @@ export function useContratosList({
   handleDeleteContrato,
   readOnly = false,
   isAdmin = false,
+  backUrl = null,
 }) {
+  const backUrlParam = !backUrl ? '' : buildQueryString({ backUrl });
   const columns = [
     {
       name: '#',
@@ -92,14 +95,14 @@ export function useContratosList({
       acoes: (
         <div className="flex gap-2">
           <Link
-            href={`/contratos/${contrato.id}`}
+            href={`/contratos/${contrato.id}${backUrlParam}`}
             className="btn-outline btn-outline-primary"
           >
             <Eye {...iconParams} stroke="currentColor" />
           </Link>
 
           <Link
-            href={`/contratos/${contrato.id}/editar`}
+            href={`/contratos/${contrato.id}/editar${backUrlParam}`}
             className="btn-outline btn-outline-secondary"
             hidden={!isAdmin}
           >
@@ -116,6 +119,6 @@ export function useContratosList({
         </div>
       ),
     }));
-  }, [contratos, dataFormatter, handleDeleteContrato, isAdmin]);
+  }, [contratos, dataFormatter, handleDeleteContrato, isAdmin, backUrlParam]);
   return { columns, data };
 }

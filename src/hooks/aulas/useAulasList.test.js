@@ -5,6 +5,16 @@ import { STATUS_AULA_LABEL } from '@/constants/statusAulas';
 import { TIPO_AULA_LABEL } from '@/constants/tipoAula';
 import { IDIOMA_LABEL } from '@/constants/idioma';
 
+jest.mock('@/utils/bindUrlParams', () => ({
+  buildQueryString: jest.fn(params => {
+    if (!params || Object.keys(params).length === 0) return '';
+    const queryString = Object.entries(params)
+      .map(([key, value]) => `${key}=${value}`)
+      .join('&');
+    return `?${queryString}`;
+  }),
+}));
+
 describe('useAulasList', () => {
   const mockFormatter = jest.fn(date => `format:${date}`);
   const mockDelete = jest.fn();
@@ -412,6 +422,50 @@ describe('useAulasList', () => {
 
       expect(result.current.data[0].idioma).toBe(IDIOMA_LABEL['ESPANHOL']);
       expect(result.current.data[1].idioma).toBe(IDIOMA_LABEL['FRANCES']);
+    });
+  });
+
+  describe('backUrl parameter', () => {
+    it('should create empty backUrlParam when backUrl is null', () => {
+      const { result } = renderHook(() =>
+        useAulasList({
+          aulas: [mockAula],
+          dataFormatter: mockFormatter,
+          handleDeleteAula: mockDelete,
+          backUrl: null,
+        })
+      );
+
+      // The hook should work without errors
+      expect(result.current.data).toHaveLength(1);
+    });
+
+    it('should create backUrlParam when backUrl is provided', () => {
+      const { result } = renderHook(() =>
+        useAulasList({
+          aulas: [mockAula],
+          dataFormatter: mockFormatter,
+          handleDeleteAula: mockDelete,
+          backUrl: '/alunos/123',
+        })
+      );
+
+      // The hook should work and create proper links
+      expect(result.current.data).toHaveLength(1);
+      expect(React.isValidElement(result.current.data[0].acoes)).toBe(true);
+    });
+
+    it('should handle empty backUrl string', () => {
+      const { result } = renderHook(() =>
+        useAulasList({
+          aulas: [mockAula],
+          dataFormatter: mockFormatter,
+          handleDeleteAula: mockDelete,
+          backUrl: '',
+        })
+      );
+
+      expect(result.current.data).toHaveLength(1);
     });
   });
 
