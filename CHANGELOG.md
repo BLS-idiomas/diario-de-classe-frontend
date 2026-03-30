@@ -1,3 +1,10 @@
+# [1.15.0](https://github.com/BLS-idiomas/diario-de-classe-frontend/compare/v1.14.0...v1.15.0) (2026-03-30)
+
+### Features
+
+- Add filter component to Contratos page and integrate with form handling ([061022f](https://github.com/BLS-idiomas/diario-de-classe-frontend/commit/061022fec68e5c2cc7455e783ac96c36d53f037a))
+- Enhance Aulas and Contratos pages with backUrl support and improve query string handling ([b3596c7](https://github.com/BLS-idiomas/diario-de-classe-frontend/commit/b3596c7ed8d4620947794278b9dbfc1ca91d89d8))
+
 # [1.14.0](https://github.com/BLS-idiomas/diario-de-classe-frontend/compare/v1.13.0...v1.14.0) (2026-03-25)
 
 ### Features
