@@ -1,3 +1,9 @@
+# [1.16.0](https://github.com/BLS-idiomas/diario-de-classe-frontend/compare/v1.15.0...v1.16.0) (2026-04-07)
+
+### Features
+
+- Integrate user authentication in AulaForm and update professor selection logic; enhance ContratoForm with additional professor details ([f6cfa1b](https://github.com/BLS-idiomas/diario-de-classe-frontend/commit/f6cfa1b60d290891fe7f979a9724172a076c4ade))
+
 # [1.15.0](https://github.com/BLS-idiomas/diario-de-classe-frontend/compare/v1.14.0...v1.15.0) (2026-03-30)
 
 ### Features
