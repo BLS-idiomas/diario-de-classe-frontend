@@ -91,7 +91,7 @@ export const ContratoForm = ({
           <SelectField
             required
             htmlFor="professorId"
-            label="Professor"
+            label="Professor principal"
             placeholder="Selecione o professor"
             onChange={handleProfessorChange}
             value={formData.professorId}
@@ -257,6 +257,11 @@ export const ContratoForm = ({
                       <strong>Aula:</strong> {dataFormatter(aula.dataAula)}{' '}
                       {aula.horaInicial} - {aula.horaFinal}
                     </p>
+                    {aula.professor && (
+                      <p>
+                        {aula.professor.nomeCompleto || aula.professor.nome}
+                      </p>
+                    )}
 
                     {aula.tipo && aula.tipo !== 'PADRAO' && (
                       <Badge

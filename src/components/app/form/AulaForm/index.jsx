@@ -11,7 +11,6 @@ import {
 import { useAlunos } from '@/hooks/alunos/useAlunos';
 import { useContratos } from '@/hooks/contratos/useContratos';
 import { useProfessores } from '@/hooks/professores/useProfessores';
-import { makeEmailLabel } from '@/utils/makeEmailLabel';
 import {
   ButtonsFields,
   Form,
@@ -23,6 +22,7 @@ import {
 } from '@/components';
 import { useFormater } from '@/hooks/useFormater';
 import { getEntityOptions } from '@/utils/getEntityOptions';
+import { useUserAuth } from '@/providers/UserAuthProvider';
 
 export const AulaForm = ({
   handleSubmit,
@@ -37,7 +37,8 @@ export const AulaForm = ({
   const { professores } = useProfessores();
   const { contratos } = useContratos();
   const { dataFormatter } = useFormater();
-
+  const { isAdmin, currentUser } = useUserAuth();
+  const professorOptions = isAdmin ? professores : [currentUser];
   const contratoOptions = useMemo(() => {
     if (contratos && contratos.length > 0 && formData.idAluno) {
       return contratos
@@ -79,7 +80,7 @@ export const AulaForm = ({
             htmlFor="idProfessor"
             label="Professor"
             placeholder="Selecione o professor"
-            options={getEntityOptions(professores)}
+            options={getEntityOptions(professorOptions)}
             onChange={handleChange}
             value={formData.idProfessor}
           />

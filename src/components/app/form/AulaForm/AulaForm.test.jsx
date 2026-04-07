@@ -129,9 +129,28 @@ jest.mock('@/hooks/useFormater', () => ({
   }),
 }));
 
-jest.mock('@/utils/makeEmailLabel', () => ({
-  makeEmailLabel: entity =>
-    `${entity.nome} ${entity.sobrenome} (${entity.email})`,
+jest.mock('@/providers/UserAuthProvider', () => ({
+  useUserAuth: () => ({
+    isAdmin: true,
+    currentUser: {
+      id: 1,
+      nome: 'Maria',
+      sobrenome: 'Santos',
+      email: 'maria@example.com',
+    },
+  }),
+}));
+
+jest.mock('@/utils/getEntityOptions', () => ({
+  getEntityOptions: entity => {
+    if (Array.isArray(entity)) {
+      return entity.map(e => ({
+        value: e.id,
+        label: `${e.nome} ${e.sobrenome} (${e.email})`,
+      }));
+    }
+    return [];
+  },
 }));
 
 describe('AulaForm', () => {
