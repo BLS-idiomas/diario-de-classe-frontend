@@ -38,7 +38,7 @@ export const AulaForm = ({
   const { contratos } = useContratos();
   const { dataFormatter } = useFormater();
   const { isAdmin, currentUser } = useUserAuth();
-  const professorOptions = isAdmin ? professores : [currentUser];
+  const professorOptions = isAdmin() ? professores : [currentUser];
   const contratoOptions = useMemo(() => {
     if (contratos && contratos.length > 0 && formData.idAluno) {
       return contratos

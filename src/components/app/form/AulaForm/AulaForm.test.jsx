@@ -131,7 +131,7 @@ jest.mock('@/hooks/useFormater', () => ({
 
 jest.mock('@/providers/UserAuthProvider', () => ({
   useUserAuth: () => ({
-    isAdmin: true,
+    isAdmin: () => true,
     currentUser: {
       id: 1,
       nome: 'Maria',
