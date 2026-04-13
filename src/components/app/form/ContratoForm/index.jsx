@@ -62,7 +62,7 @@ export const ContratoForm = ({
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setShowDiasAulas(aluno && professor && dataInicio && dataTermino);
     setShowAulas(diasAulas.some(dia => dia.ativo));
-    setShowSubmit(showDiasAulas && showAulas && aulas.length > 0);
+    setShowSubmit(showDiasAulas && showAulas && aulas?.length > 0);
   }, [formData]);
 
   return (
@@ -206,7 +206,7 @@ export const ContratoForm = ({
 
       {/* STEP 3 - AULAS */}
       <div className="flex flex-col gap-4" hidden={!showAulas}>
-        <p className="text-muted">Total de {formData.aulas.length} aulas.</p>
+        <p className="text-muted">Total de {formData.aulas?.length} aulas.</p>
         <div className="flex gap-4">
           <button
             type="button"
