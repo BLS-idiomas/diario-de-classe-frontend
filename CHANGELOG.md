@@ -1,3 +1,16 @@
+# [1.17.0](https://github.com/BLS-idiomas/diario-de-classe-frontend/compare/v1.16.0...v1.17.0) (2026-04-13)
+
+### Bug Fixes
+
+- Safely access aulas length in ContratoForm to prevent potential errors ([776a45b](https://github.com/BLS-idiomas/diario-de-classe-frontend/commit/776a45b8d7d3a5d727f222eeb30b48a73e2276c2))
+- Update isAdmin check to be a function call in AulaForm; improve getEntityOptions default parameter handling ([cff06ad](https://github.com/BLS-idiomas/diario-de-classe-frontend/commit/cff06adbacd5c9554ca1d2fa23603d17d5099fd0))
+
+### Features
+
+- Add confirm field to formData in useContratoForm and include it in submission data ([ed70542](https://github.com/BLS-idiomas/diario-de-classe-frontend/commit/ed70542c04442401ffa68cda82742515e78cd9d9))
+- Add confirmation handling and generated classes management in useGenerateAulasByContrato ([56a6a91](https://github.com/BLS-idiomas/diario-de-classe-frontend/commit/56a6a915e5ea752a9bde54652a747bb3b6d718db))
+- Enhance error handling in contratosSlice; add options to error response and initialize options state ([7f417b1](https://github.com/BLS-idiomas/diario-de-classe-frontend/commit/7f417b159accc7a8d84495188cc03fb7fecd2aae))
+
 # [1.16.0](https://github.com/BLS-idiomas/diario-de-classe-frontend/compare/v1.15.0...v1.16.0) (2026-04-07)
 
 ### Features
