@@ -26,6 +26,10 @@ jest.mock('@/constants', () => ({
     SUCCESS: 'success',
     FAILED: 'failed',
   },
+  STATUS_ERROR: {
+    CONFLICT: 'conflict',
+    VALIDATION: 'validation',
+  },
 }));
 
 jest.mock('@/utils/calculateDuracaoAula', () => ({
@@ -115,7 +119,6 @@ describe('useGenerateAulasByContrato', () => {
         () =>
           useGenerateAulasByContrato({
             errorSubmit: mockErrorSubmit,
-
             setFormData: mockSetFormData,
           }),
         { wrapper }
@@ -127,6 +130,7 @@ describe('useGenerateAulasByContrato', () => {
           dataInicio: '2024-01-01',
           dataTermino: '2024-12-31',
         },
+        professorId: 10,
         currentDiasAulas: [
           {
             diaSemana: 'SEGUNDA',
@@ -152,25 +156,29 @@ describe('useGenerateAulasByContrato', () => {
       });
 
       expect(generateAulas).toHaveBeenCalledWith({
-        id: 123,
-        data: {
+        data: expect.objectContaining({
           dataInicio: '2024-01-01',
           dataFim: '2024-12-31',
+          idProfessor: 10,
+          id: 123,
+          isEdit: true,
           diasAulas: expect.arrayContaining([
             expect.objectContaining({
               diaSemana: 'SEGUNDA',
               quantidadeAulas: 1,
+              duracaoAula: 40,
               horaInicial: '09:00',
               horaFinal: '10:00',
             }),
             expect.objectContaining({
               diaSemana: 'QUARTA',
               quantidadeAulas: 1,
+              duracaoAula: 40,
               horaInicial: '14:00',
               horaFinal: '15:00',
             }),
           ]),
-        },
+        }),
       });
     });
   });
@@ -202,7 +210,6 @@ describe('useGenerateAulasByContrato', () => {
         () =>
           useGenerateAulasByContrato({
             errorSubmit: mockErrorSubmit,
-
             setFormData: mockSetFormData,
           }),
         { wrapper }
@@ -213,9 +220,9 @@ describe('useGenerateAulasByContrato', () => {
       });
 
       const setFormDataCall = mockSetFormData.mock.calls[0][0];
-      const updatedData = setFormDataCall({ aulas: [] });
+      const updatedData = setFormDataCall({ aulasGenereted: [] });
 
-      expect(updatedData.aulas).toEqual(mockAulas);
+      expect(updatedData.aulasGenereted).toEqual(mockAulas);
     });
 
     it('should handle aulas without id by adding index-based id', async () => {
@@ -234,7 +241,6 @@ describe('useGenerateAulasByContrato', () => {
         () =>
           useGenerateAulasByContrato({
             errorSubmit: mockErrorSubmit,
-
             setFormData: mockSetFormData,
           }),
         { wrapper }
@@ -245,13 +251,14 @@ describe('useGenerateAulasByContrato', () => {
       });
 
       const setFormDataCall = mockSetFormData.mock.calls[0][0];
-      const updatedData = setFormDataCall({ aulas: [] });
+      const updatedData = setFormDataCall({ aulasGenereted: [] });
 
-      expect(updatedData.aulas[0].id).toBe(1);
-      expect(updatedData.aulas[1].id).toBe(2);
+      expect(updatedData.aulasGenereted[0].id).toBe(1);
+      expect(updatedData.aulasGenereted[1].id).toBe(2);
     });
 
-    it('should call errorSubmit on failed status', async () => {
+    it('should log error on failed status without statusError', async () => {
+      const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
       const mockMessage = 'Erro ao gerar aulas';
       const mockErrors = [{ field: 'diasAulas', message: 'Campo obrigatório' }];
 
@@ -266,18 +273,19 @@ describe('useGenerateAulasByContrato', () => {
         () =>
           useGenerateAulasByContrato({
             errorSubmit: mockErrorSubmit,
-
             setFormData: mockSetFormData,
           }),
         { wrapper }
       );
 
       await waitFor(() => {
-        expect(mockErrorSubmit).toHaveBeenCalledWith({
+        expect(consoleErrorSpy).toHaveBeenCalledWith({
           message: mockMessage,
           errors: mockErrors,
         });
       });
+
+      consoleErrorSpy.mockRestore();
     });
 
     it('should not update formData if status is not SUCCESS', async () => {
@@ -346,9 +354,9 @@ describe('useGenerateAulasByContrato', () => {
       });
 
       const setFormDataCall = mockSetFormData.mock.calls[0][0];
-      const updatedData = setFormDataCall({ aulas: [] });
+      const updatedData = setFormDataCall({ aulasGenereted: [] });
 
-      expect(updatedData.aulas).toEqual([]);
+      expect(updatedData.aulasGenereted).toEqual([]);
     });
 
     it('should handle missing extra.aulas', async () => {
@@ -362,7 +370,6 @@ describe('useGenerateAulasByContrato', () => {
         () =>
           useGenerateAulasByContrato({
             errorSubmit: mockErrorSubmit,
-
             setFormData: mockSetFormData,
           }),
         { wrapper }
@@ -373,9 +380,9 @@ describe('useGenerateAulasByContrato', () => {
       });
 
       const setFormDataCall = mockSetFormData.mock.calls[0][0];
-      const updatedData = setFormDataCall({ aulas: [] });
+      const updatedData = setFormDataCall({ aulasGenereted: [] });
 
-      expect(updatedData.aulas).toEqual([]);
+      expect(updatedData.aulasGenereted).toEqual([]);
     });
   });
 
@@ -385,7 +392,6 @@ describe('useGenerateAulasByContrato', () => {
         () =>
           useGenerateAulasByContrato({
             errorSubmit: mockErrorSubmit,
-
             setFormData: mockSetFormData,
           }),
         { wrapper }
@@ -394,6 +400,9 @@ describe('useGenerateAulasByContrato', () => {
       const formData = {
         contratoId: 789,
         currentDiasAulas: [],
+        professorId: 5,
+        dataInicio: '2024-01-01',
+        dataTermino: '2024-12-31',
       };
 
       act(() => {
@@ -401,12 +410,14 @@ describe('useGenerateAulasByContrato', () => {
       });
 
       expect(generateAulas).toHaveBeenCalledWith({
-        id: 789,
-        data: {
-          dataInicio: undefined,
-          dataFim: undefined,
+        data: expect.objectContaining({
+          dataInicio: '2024-01-01',
+          dataFim: '2024-12-31',
+          idProfessor: 5,
+          id: 789,
+          isEdit: true,
           diasAulas: [],
-        },
+        }),
       });
     });
 
@@ -415,7 +426,6 @@ describe('useGenerateAulasByContrato', () => {
         () =>
           useGenerateAulasByContrato({
             errorSubmit: mockErrorSubmit,
-
             setFormData: mockSetFormData,
           }),
         { wrapper }
@@ -427,6 +437,7 @@ describe('useGenerateAulasByContrato', () => {
           dataInicio: '2024-01-01',
           dataTermino: '2024-12-31',
         },
+        professorId: 10,
         currentDiasAulas: [],
       };
 
@@ -435,12 +446,14 @@ describe('useGenerateAulasByContrato', () => {
       });
 
       expect(generateAulas).toHaveBeenCalledWith({
-        id: 100,
-        data: {
+        data: expect.objectContaining({
           dataInicio: '2024-01-01',
           dataFim: '2024-12-31',
+          idProfessor: 10,
+          id: 100,
+          isEdit: true,
           diasAulas: [],
-        },
+        }),
       });
     });
   });
@@ -880,6 +893,7 @@ describe('useGenerateAulasByContrato', () => {
     });
 
     it('should handle error with multiple errors array', async () => {
+      const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
       const mockErrors = [
         { field: 'diasAulas', message: 'Campo obrigatório' },
         { field: 'dataInicio', message: 'Data invalida' },
@@ -903,11 +917,13 @@ describe('useGenerateAulasByContrato', () => {
       );
 
       await waitFor(() => {
-        expect(mockErrorSubmit).toHaveBeenCalledWith({
+        expect(consoleErrorSpy).toHaveBeenCalledWith({
           message: 'Erro de validação',
           errors: mockErrors,
         });
       });
+
+      consoleErrorSpy.mockRestore();
     });
 
     it('should not process if extra is null on success', async () => {
@@ -983,11 +999,11 @@ describe('useGenerateAulasByContrato', () => {
       });
 
       const setFormDataCall = mockSetFormData.mock.calls[0][0];
-      const updatedData = setFormDataCall({ aulas: [] });
+      const updatedData = setFormDataCall({ aulasGenereted: [] });
 
-      expect(updatedData.aulas[0].id).toBe(1);
-      expect(updatedData.aulas[1].id).toBe(2);
-      expect(updatedData.aulas[2].id).toBe('custom-id');
+      expect(updatedData.aulasGenereted[0].id).toBe(1);
+      expect(updatedData.aulasGenereted[1].id).toBe(2);
+      expect(updatedData.aulasGenereted[2].id).toBe('custom-id');
     });
 
     it('should handle large number of dias correctly', () => {

@@ -39,7 +39,8 @@ export function useContratoForm({
     diasAulas: [],
     currentDiasAulas: [],
     aulas: [],
-    confirm: {},
+    aulasGenereted: [],
+    confirm: null,
   });
 
   // Sets
@@ -386,6 +387,38 @@ export function useContratoForm({
   useEffect(() => {
     setInitialDiasAulas();
   }, []);
+
+  useEffect(() => {
+    if (!formData.aulasGenereted || formData.aulasGenereted.length === 0) {
+      return;
+    }
+
+    let newAulas = [];
+    if (formData.confirm) {
+      if (formData.confirm === 'overwrite') {
+        // Sobrescrever todas as aulas para o novo professor ou data
+        newAulas = formData.aulasGenereted;
+      }
+      if (formData.confirm === 'generateNew') {
+        // Gerar novas aulas a partir da data atual (manter antigas para correção manual)
+        const hoje = new Date();
+        const newAulas1 = formData.aulas.filter(
+          aula => new Date(aula.dataAula) < hoje
+        );
+        const newAulas2 = formData.aulasGenereted.filter(
+          aula => new Date(aula.dataAula) >= hoje
+        );
+        newAulas = [...newAulas1, ...newAulas2];
+      }
+    } else {
+      newAulas = formData.aulasGenereted;
+    }
+
+    setFormData(prev => ({
+      ...prev,
+      aulas: newAulas,
+    }));
+  }, [formData.aulasGenereted]);
 
   return {
     formData,
