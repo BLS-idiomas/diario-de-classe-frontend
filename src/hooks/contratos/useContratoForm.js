@@ -39,6 +39,7 @@ export function useContratoForm({
     diasAulas: [],
     currentDiasAulas: [],
     aulas: [],
+    confirm: {},
   });
 
   // Sets
@@ -133,6 +134,8 @@ export function useContratoForm({
       status: formData.status,
       diasAulas: formData.diasAulas,
       aulas: formData.aulas,
+      confirm: formData.confirm,
+      isEdit,
     };
 
     formData.diasAulas.forEach(diaAula => {
