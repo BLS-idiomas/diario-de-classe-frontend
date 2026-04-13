@@ -171,6 +171,7 @@ export const generateAulas = createAsyncThunk(
       return rejectWithValue({
         message: errorMessage,
         statusError: error.response?.status,
+        options: error.response?.data?.options || [],
       });
     }
   }
@@ -425,6 +426,7 @@ const contratosSlice = createSlice({
         state.extra = null;
         state.statusError = null;
         state.action = 'generateAulas';
+        state.options = [];
       })
       .addCase(generateAulas.fulfilled, (state, action) => {
         state.status = STATUS.SUCCESS;
@@ -435,6 +437,7 @@ const contratosSlice = createSlice({
         state.errors = action.payload?.errors || [];
         state.message = action.payload?.message || 'Erro ao gerar aulas';
         state.statusError = action.payload.statusError;
+        state.options = action.payload?.options || [];
       })
       // getAulasByContrato
       .addCase(getAulasByContrato.pending, state => {
