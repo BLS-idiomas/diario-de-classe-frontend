@@ -5,7 +5,7 @@ import { Search as LucideSearch } from 'lucide-react';
 export const SearchForm = ({ placeholder, perform }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const handleSearch = e => {
-    const value = e.target.value.trim();
+    const value = e.target.value;
     setSearchTerm(value);
     perform(value);
   };
