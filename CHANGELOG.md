@@ -1,3 +1,9 @@
+## [1.17.1](https://github.com/BLS-idiomas/diario-de-classe-frontend/compare/v1.17.0...v1.17.1) (2026-05-15)
+
+### Bug Fixes
+
+- Update SearchForm to call perform with raw input value, preserving spaces ([9d8f70a](https://github.com/BLS-idiomas/diario-de-classe-frontend/commit/9d8f70a5c17b22e9e454f907d5fd4f97b50770e2))
+
 # [1.17.0](https://github.com/BLS-idiomas/diario-de-classe-frontend/compare/v1.16.0...v1.17.0) (2026-04-13)
 
 ### Bug Fixes
