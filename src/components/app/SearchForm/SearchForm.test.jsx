@@ -25,12 +25,13 @@ describe('SearchForm component', () => {
     expect(input.value).toBe('abc');
   });
 
-  it('trims value before calling perform', async () => {
+  it('calls perform with raw value including spaces', async () => {
     const perform = jest.fn();
-    render(<SearchForm placeholder="Trim" perform={perform} />);
-    const input = screen.getByPlaceholderText('Trim');
+    render(<SearchForm placeholder="Search" perform={perform} />);
+    const input = screen.getByPlaceholderText('Search');
     await userEvent.type(input, '  x  ');
-    // value stored inside state includes spaces; call count reflects each keystroke
-    expect(perform).toHaveBeenLastCalledWith('x');
+    // value includes spaces and each keystroke triggers perform
+    expect(perform).toHaveBeenLastCalledWith('  x  ');
+    expect(input.value).toBe('  x  ');
   });
 });
