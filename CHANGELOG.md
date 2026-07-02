@@ -1,3 +1,9 @@
+# [1.19.0](https://github.com/BLS-idiomas/diario-de-classe-frontend/compare/v1.18.0...v1.19.0) (2026-07-02)
+
+### Features
+
+- Add startOfTodayUTC utility to return today's date at UTC midnight and update useContratoForm to utilize it for consistent date comparisons ([d71660b](https://github.com/BLS-idiomas/diario-de-classe-frontend/commit/d71660b407083a87bc5b0e3f2a0250838add23f7))
+
 # [1.18.0](https://github.com/BLS-idiomas/diario-de-classe-frontend/compare/v1.17.1...v1.18.0) (2026-07-02)
 
 ### Bug Fixes
