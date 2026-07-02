@@ -16,6 +16,7 @@ export default function Contratos() {
     searchParams,
     handleSubmit,
     handleChange,
+    handleClearFilter,
     formData,
   } = useContratos();
   const { alunos } = useAlunos();
@@ -45,11 +46,13 @@ export default function Contratos() {
       search={{
         title: 'Buscar pelo nome do aluno...',
         searchParams: searchParams,
+        initialValue: formData?.q,
       }}
       Filter={Filter}
       filterParams={{
         handleSubmit,
         handleChange,
+        handleClearFilter,
         formData,
         alunos,
       }}

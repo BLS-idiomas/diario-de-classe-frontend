@@ -7,3 +7,4 @@ export * from './details/BlockQuoteInfo';
 export * from './form/ContratoForm';
 export * from './SearchForm';
 export * from './DisponibilidadeCard';
+export * from './ClearFiltersButton';

@@ -13,6 +13,7 @@ jest.mock('@/store/slices/authSlice', () => ({
   logout: jest.fn(),
   clearStatus: jest.fn(),
 }));
+jest.mock('@/utils/filterStorage', () => ({ clearAllFilters: jest.fn() }));
 
 describe('useLogout', () => {
   let dispatchMock, routerMock, infoMock, removeAuthenticateMock;
@@ -53,6 +54,15 @@ describe('useLogout', () => {
     expect(removeAuthenticateMock).toHaveBeenCalled();
     expect(infoMock).toHaveBeenCalledWith('Você saiu.');
     expect(routerMock.push).toHaveBeenCalledWith('/login');
+  });
+
+  it('should clear all persisted filters on logout', () => {
+    const { result } = renderHook(() => useLogout());
+    const { clearAllFilters } = require('@/utils/filterStorage');
+
+    result.current.logoutUser();
+
+    expect(clearAllFilters).toHaveBeenCalled();
   });
 
   it('should handle logout without refreshToken', () => {

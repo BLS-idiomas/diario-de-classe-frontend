@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import { useToast } from '@/providers/ToastProvider';
 import { useUserAuth } from '@/providers/UserAuthProvider';
 import { logout, clearStatus } from '@/store/slices/authSlice';
+import { clearAllFilters } from '@/utils/filterStorage';
 
 export function useLogout() {
   const dispatch = useDispatch();
@@ -14,6 +15,7 @@ export function useLogout() {
   const logoutUser = () => {
     dispatch(logout(refreshToken));
     removeAuthenticate();
+    clearAllFilters();
     info('Você saiu.');
     router.push('/login');
   };

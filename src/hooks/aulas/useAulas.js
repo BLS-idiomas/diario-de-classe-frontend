@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { STATUS } from '@/constants';
+import { STATUS, FILTER_STORAGE_KEYS } from '@/constants';
 import { getAulas } from '@/store/slices/aulasSlice';
-import { searchFunction } from '@/utils/searchFunction';
+import { loadFilters, saveFilters, clearFilters } from '@/utils/filterStorage';
 
 export function useAulas() {
   const dispatch = useDispatch();
@@ -14,7 +14,7 @@ export function useAulas() {
   dataFim.setMonth(dataFim.getMonth() + 3);
   const dataTerminoFormatada = dataFim.toISOString().split('T')[0];
 
-  const [formData, setFormData] = useState({
+  const defaultFormData = {
     dataInicio: dataInicioFormatada,
     dataTermino: dataTerminoFormatada,
     tipo: '',
@@ -22,7 +22,11 @@ export function useAulas() {
     idAluno: '',
     idProfessor: '',
     q: '',
-  });
+  };
+
+  const [formData, setFormData] = useState(() =>
+    loadFilters(FILTER_STORAGE_KEYS.aulas, defaultFormData)
+  );
 
   const searchParams = query =>
     setFormData(prevState => ({
@@ -45,7 +49,13 @@ export function useAulas() {
     }));
   };
 
+  const handleClearFilter = () => {
+    clearFilters(FILTER_STORAGE_KEYS.aulas);
+    setFormData(defaultFormData);
+  };
+
   useEffect(() => {
+    saveFilters(FILTER_STORAGE_KEYS.aulas, formData);
     handleSubmit(formData);
   }, [handleSubmit, formData]);
 
@@ -60,6 +70,7 @@ export function useAulas() {
     searchParams,
     handleSubmit,
     handleChange,
+    handleClearFilter,
     formData,
   };
 }

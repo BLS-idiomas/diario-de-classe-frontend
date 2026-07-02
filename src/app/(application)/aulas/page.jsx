@@ -18,6 +18,7 @@ export default function Aulas() {
     searchParams,
     handleSubmit,
     handleChange,
+    handleClearFilter,
     formData,
   } = useAulas();
   const { alunos } = useAlunos();
@@ -50,6 +51,7 @@ export default function Aulas() {
         search={{
           title: 'Buscar pelo nome do aluno ou professor...',
           searchParams: searchParams,
+          initialValue: formData?.q,
         }}
         columns={columns}
         data={data}
@@ -59,6 +61,7 @@ export default function Aulas() {
         filterParams={{
           handleSubmit,
           handleChange,
+          handleClearFilter,
           formData,
           alunos,
           professores,

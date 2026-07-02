@@ -20,6 +20,7 @@ import {
   SelectField,
   CheckboxField,
   Loading,
+  ClearFiltersButton,
 } from '@/components';
 
 // TODO passas os componetes para arquivos separados
@@ -156,6 +157,7 @@ export default function Home() {
     homeCardValues,
     handleSubmit,
     handleChange,
+    handleClearFilter,
     handleClick,
   } = useDashboard();
 
@@ -248,6 +250,8 @@ export default function Home() {
               />
             </FormGroup>
           )}
+
+          <ClearFiltersButton onClick={handleClearFilter} />
         </Form>
       </div>
 

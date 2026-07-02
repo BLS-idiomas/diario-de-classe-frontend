@@ -53,6 +53,11 @@ jest.mock('@/components', () => ({
       </select>
     </div>
   ),
+  ClearFiltersButton: ({ onClick }) => (
+    <button type="button" data-testid="clear-filters-button" onClick={onClick}>
+      Limpar filtros
+    </button>
+  ),
 }));
 
 describe('Filter Component', () => {
@@ -164,6 +169,24 @@ describe('Filter Component', () => {
 
       // +1 for placeholder option
       expect(options.length).toBe(mockAlunos.length + 1);
+    });
+  });
+
+  describe('Clear Filters', () => {
+    it('should render clear filters button and call handleClearFilter on click', () => {
+      const handleClearFilter = jest.fn();
+      render(
+        <Filter
+          handleSubmit={mockHandleSubmit}
+          handleChange={mockHandleChange}
+          handleClearFilter={handleClearFilter}
+          formData={mockFormData}
+          alunos={mockAlunos}
+        />
+      );
+
+      fireEvent.click(screen.getByTestId('clear-filters-button'));
+      expect(handleClearFilter).toHaveBeenCalled();
     });
   });
 

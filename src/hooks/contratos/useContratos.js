@@ -1,19 +1,24 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { STATUS } from '@/constants';
+import { STATUS, FILTER_STORAGE_KEYS } from '@/constants';
 import { getContratos } from '@/store/slices/contratosSlice';
+import { loadFilters, saveFilters, clearFilters } from '@/utils/filterStorage';
 
 export function useContratos() {
   const dispatch = useDispatch();
   const { list, status, action } = useSelector(state => state.contratos);
 
-  const [formData, setFormData] = useState({
+  const defaultFormData = {
     dataInicio: '',
     dataTermino: '',
     idioma: '',
     idAluno: '',
     q: '',
-  });
+  };
+
+  const [formData, setFormData] = useState(() =>
+    loadFilters(FILTER_STORAGE_KEYS.contratos, defaultFormData)
+  );
 
   const searchParams = query =>
     setFormData(prevState => ({
@@ -36,7 +41,13 @@ export function useContratos() {
     }));
   };
 
+  const handleClearFilter = () => {
+    clearFilters(FILTER_STORAGE_KEYS.contratos);
+    setFormData(defaultFormData);
+  };
+
   useEffect(() => {
+    saveFilters(FILTER_STORAGE_KEYS.contratos, formData);
     handleSubmit(formData);
   }, [handleSubmit, formData]);
 
@@ -51,6 +62,7 @@ export function useContratos() {
     searchParams,
     handleSubmit,
     handleChange,
+    handleClearFilter,
     formData,
   };
 }

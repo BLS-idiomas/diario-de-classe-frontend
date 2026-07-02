@@ -25,7 +25,11 @@ export const ListPage = ({
     >
       <ButtonsPage buttons={buttons} extraButton={extraButton} />
       {Boolean(search) && (
-        <SearchForm placeholder={search.title} perform={search.searchParams} />
+        <SearchForm
+          placeholder={search.title}
+          perform={search.searchParams}
+          initialValue={search.initialValue}
+        />
       )}
     </div>
 

@@ -1,11 +1,18 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { STATUS, STATUS_AULA, STATUS_AULA_LABEL, TIPO_AULA } from '@/constants';
+import {
+  STATUS,
+  STATUS_AULA,
+  STATUS_AULA_LABEL,
+  TIPO_AULA,
+  FILTER_STORAGE_KEYS,
+} from '@/constants';
 import { getDashboard } from '@/store/slices/dashboardSlice';
 import { updateAula, clearStatus } from '@/store/slices/aulasSlice';
 import { useToast } from '@/providers/ToastProvider';
 import useSweetAlert from '@/hooks/useSweetAlert';
 import { classNameDefault } from '@/components/ui/Fields/base';
+import { loadFilters, saveFilters, clearFilters } from '@/utils/filterStorage';
 
 export function useDashboard() {
   const dispatch = useDispatch();
@@ -28,7 +35,7 @@ export function useDashboard() {
       { title: 'Contratos ativos', color: 'purple', value: totalContratos },
     ];
   }, [data]);
-  const [formData, setFormData] = useState({
+  const defaultFormData = {
     dataInicio: dataInicioFormatada,
     dataTermino: dataTerminoFormatada,
     status: STATUS_AULA[0],
@@ -36,7 +43,11 @@ export function useDashboard() {
     minhasAulas: true,
     professorId: '',
     alunoId: '',
-  });
+  };
+
+  const [formData, setFormData] = useState(() =>
+    loadFilters(FILTER_STORAGE_KEYS.dashboard, defaultFormData)
+  );
 
   const handleSubmit = useCallback(
     formData => {
@@ -51,6 +62,11 @@ export function useDashboard() {
       ...prevState,
       [name]: type === 'checkbox' ? checked : value,
     }));
+  };
+
+  const handleClearFilter = () => {
+    clearFilters(FILTER_STORAGE_KEYS.dashboard);
+    setFormData(defaultFormData);
   };
 
   const handleClick = async id => {
@@ -111,6 +127,7 @@ export function useDashboard() {
   };
 
   useEffect(() => {
+    saveFilters(FILTER_STORAGE_KEYS.dashboard, formData);
     handleSubmit(formData);
   }, [handleSubmit, formData]);
 
@@ -146,6 +163,7 @@ export function useDashboard() {
     homeCardValues,
     handleSubmit,
     handleChange,
+    handleClearFilter,
     handleClick,
   };
 }

@@ -40,6 +40,11 @@ jest.mock('@/components', () => ({
       </select>
     </div>
   ),
+  ClearFiltersButton: ({ onClick }) => (
+    <button type="button" data-testid="clear-filters-button" onClick={onClick}>
+      Limpar filtros
+    </button>
+  ),
 }));
 
 // Mock da função getEntityOptions
@@ -132,6 +137,15 @@ describe('Filter Component', () => {
     fireEvent.submit(form);
 
     expect(handleSubmit).toHaveBeenCalled();
+  });
+
+  it('should call handleClearFilter when clear button is clicked', () => {
+    const handleClearFilter = jest.fn();
+    render(<Filter {...defaultProps} handleClearFilter={handleClearFilter} />);
+
+    fireEvent.click(screen.getByTestId('clear-filters-button'));
+
+    expect(handleClearFilter).toHaveBeenCalled();
   });
 
   it('should display form data values', () => {

@@ -1,8 +1,20 @@
-import { Form, FormGroup, InputField, SelectField } from '@/components';
+import {
+  Form,
+  FormGroup,
+  InputField,
+  SelectField,
+  ClearFiltersButton,
+} from '@/components';
 import { IDIOMA_ARRAY, IDIOMA_LABEL } from '@/constants';
 import { getEntityOptions } from '@/utils/getEntityOptions';
 
-export const Filter = ({ handleSubmit, handleChange, formData, alunos }) => {
+export const Filter = ({
+  handleSubmit,
+  handleChange,
+  handleClearFilter,
+  formData,
+  alunos,
+}) => {
   return (
     <Form handleSubmit={handleSubmit}>
       <h3 className="text-xl font-semibold text-main mb-4">Filtros</h3>
@@ -42,6 +54,7 @@ export const Filter = ({ handleSubmit, handleChange, formData, alunos }) => {
           value={formData.idAluno}
         />
       </FormGroup>
+      <ClearFiltersButton onClick={handleClearFilter} />
     </Form>
   );
 };

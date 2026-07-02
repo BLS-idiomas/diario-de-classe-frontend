@@ -1,4 +1,10 @@
-import { Form, FormGroup, InputField, SelectField } from '@/components';
+import {
+  Form,
+  FormGroup,
+  InputField,
+  SelectField,
+  ClearFiltersButton,
+} from '@/components';
 import {
   STATUS_AULA,
   STATUS_AULA_LABEL,
@@ -10,6 +16,7 @@ import { getEntityOptions } from '@/utils/getEntityOptions';
 export const Filter = ({
   handleSubmit,
   handleChange,
+  handleClearFilter,
   formData,
   alunos,
   professores,
@@ -73,6 +80,7 @@ export const Filter = ({
           value={formData.idProfessor}
         />
       </FormGroup>
+      <ClearFiltersButton onClick={handleClearFilter} />
     </Form>
   );
 };
