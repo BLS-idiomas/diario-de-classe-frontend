@@ -1,5 +1,5 @@
 'use client';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronRight } from 'lucide-react';
 import { SidebarItem } from '../SidebarItem';
 import { useSidebar } from './useSidebar';
 import { useUserAuth } from '@/providers/UserAuthProvider';
@@ -59,20 +59,23 @@ export const Sidebar = ({
               sidebarExpanded ? 'Recolher sidebar' : 'Expandir sidebar'
             }
             title={sidebarExpanded ? 'Recolher' : 'Expandir'}
-            className="w-full flex items-center justify-center p-2 text-main rounded-lg"
+            className="w-full flex items-center justify-center p-2 text-main rounded-lg hover:bg-main transition-colors duration-200 cursor-pointer"
           >
-            {sidebarExpanded ? (
-              <>
-                <span className="mr-2">
-                  <ChevronLeft strokeWidth={strokeWidth} />
-                </span>
-                <span>Recolher</span>
-              </>
-            ) : (
-              <span>
-                <ChevronRight strokeWidth={strokeWidth} />
-              </span>
-            )}
+            <ChevronRight
+              strokeWidth={strokeWidth}
+              className={`shrink-0 transition-transform duration-300 ease-in-out ${
+                sidebarExpanded ? 'rotate-180' : 'rotate-0'
+              }`}
+            />
+            <span
+              className={`overflow-hidden whitespace-nowrap transition-all duration-300 ease-in-out ${
+                sidebarExpanded
+                  ? 'ml-2 max-w-[120px] opacity-100'
+                  : 'ml-0 max-w-0 opacity-0'
+              }`}
+            >
+              Recolher
+            </span>
           </button>
         </div>
       </div>
