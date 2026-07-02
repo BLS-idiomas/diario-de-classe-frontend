@@ -1,6 +1,6 @@
 /* DataTable dark mode hover fix */
 .dark .rdt_TableRow:hover {
-  background-color: #374151 !important; /* bg-gray-700 */
+  background-color: #334155 !important; /* bg-slate-700 */
 }
 
 .dark .rdt_TableRow {

@@ -104,57 +104,58 @@
   }
 
   [data-theme='dark'] {
+    /* Elevação: página (secondary) é o tom mais escuro; superfícies (main) sobem um nível */
     .bg-main {
-      @apply bg-gray-900;
+      @apply bg-slate-800;
     }
     .bg-secondary {
-      @apply bg-gray-800;
+      @apply bg-slate-900;
     }
     .bg-sidebar {
-      @apply hover:bg-gray-700;
+      @apply hover:bg-slate-700;
     }
     .bg-login-gradient {
-      @apply bg-linear-to-br from-gray-800 via-gray-900 to-black;
+      @apply bg-linear-to-br from-slate-800 via-slate-900 to-slate-950;
     }
     .text-main {
-      @apply text-white;
+      @apply text-slate-100;
     }
     .text-muted {
-      @apply text-gray-400;
+      @apply text-slate-400;
     }
     .primary-color {
       @apply text-blue-400;
     }
     .border-main {
-      @apply border-gray-700;
+      @apply border-slate-700;
     }
     .sidebar-expanded-colors {
-      @apply bg-gray-700 text-white;
+      @apply bg-slate-700 text-white;
     }
     .input-field {
-      @apply focus:ring-blue-400 disabled:bg-gray-100 disabled:text-gray-500 disabled:opacity-60 bg-gray-800 text-white;
+      @apply focus:ring-blue-400 bg-slate-800 text-slate-100 disabled:bg-slate-700 disabled:text-slate-500 disabled:opacity-60;
     }
     .page-title {
-      @apply text-white;
+      @apply text-slate-100;
     }
 
     .btn-outline {
       &.btn-outline-primary {
-        @apply hover:bg-blue-300;
+        @apply border-blue-400 text-blue-400 hover:bg-blue-400/10;
       }
       &.btn-outline-secondary {
-        @apply hover:bg-gray-300;
+        @apply border-slate-400 text-slate-300 hover:bg-slate-400/10;
       }
       &.btn-outline-danger {
-        @apply hover:bg-red-300;
+        @apply border-red-400 text-red-400 hover:bg-red-400/10;
       }
       &.btn-outline-success {
-        @apply hover:bg-green-300;
+        @apply border-green-400 text-green-400 hover:bg-green-400/10;
       }
     }
 
     .toast {
-      @apply text-gray-400 bg-gray-800;
+      @apply text-slate-300 bg-slate-800;
       .toast-info {
         @apply bg-blue-800 text-blue-200;
       }
@@ -168,25 +169,25 @@
         @apply bg-yellow-800 text-yellow-200;
       }
       button {
-        @apply text-gray-500 hover:text-white bg-gray-800 hover:bg-gray-700;
+        @apply text-slate-400 hover:text-white bg-slate-800 hover:bg-slate-700;
       }
     }
 
     .swal2-modal {
-      background-color: var(--color-gray-800) !important;
-      color: var(--color-white) !important;
+      background-color: var(--color-slate-800) !important;
+      color: var(--color-slate-100) !important;
     }
     .swal2-title {
-      color: var(--color-white) !important;
+      color: var(--color-slate-100) !important;
     }
 
     #pagination-first-page,
     #pagination-previous-page,
     #pagination-next-page,
     #pagination-last-page {
-      fill: var(--color-white) !important;
+      fill: var(--color-slate-100) !important;
       &[aria-disabled='true'] {
-        fill: var(--color-gray-700) !important;
+        fill: var(--color-slate-700) !important;
       }
     }
   }
