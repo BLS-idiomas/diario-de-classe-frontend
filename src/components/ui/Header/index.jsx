@@ -16,7 +16,7 @@ export const Header = () => {
           <div>
             <Image
               className="h-full "
-              src="/bls.png"
+              src={theme === 'dark' ? '/bls-dark.png' : '/bls.png'}
               alt="Logo da empresa BLS"
               width={50}
               height={50}
