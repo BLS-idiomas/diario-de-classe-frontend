@@ -1,3 +1,17 @@
+# [1.18.0](https://github.com/BLS-idiomas/diario-de-classe-frontend/compare/v1.17.1...v1.18.0) (2026-07-02)
+
+### Bug Fixes
+
+- Clear localStorage before each test to isolate test cases in useAulas and useContratos ([8ba81b0](https://github.com/BLS-idiomas/diario-de-classe-frontend/commit/8ba81b08173c4b3fa528cb27ab5094b74f0555a8))
+- Refactor Sidebar button to improve expand/collapse animation and styling ([460a0e3](https://github.com/BLS-idiomas/diario-de-classe-frontend/commit/460a0e39d9d26905cfe1ad8acc9e136b713b11a9))
+- Update dark mode styles to use slate color palette for consistency ([5f6d153](https://github.com/BLS-idiomas/diario-de-classe-frontend/commit/5f6d153bf97b21ab75ebbd5fe3e279c221d939aa))
+
+### Features
+
+- Add CLAUDE.md for frontend guidelines and structure ([9a210a5](https://github.com/BLS-idiomas/diario-de-classe-frontend/commit/9a210a59bc297f544e4c3416603be57dffea4dce))
+- Implement ClearFiltersButton component and integrate filter clearing functionality across Aulas and Contratos pages ([2880439](https://github.com/BLS-idiomas/diario-de-classe-frontend/commit/2880439f9aa28a3f52a195d636d9c01b920a7796))
+- Update Header component to use dark mode logo ([20297b1](https://github.com/BLS-idiomas/diario-de-classe-frontend/commit/20297b1d3406f32de811ed796ff6a3ede7d1495b))
+
 ## [1.17.1](https://github.com/BLS-idiomas/diario-de-classe-frontend/compare/v1.17.0...v1.17.1) (2026-05-15)
 
 ### Bug Fixes
