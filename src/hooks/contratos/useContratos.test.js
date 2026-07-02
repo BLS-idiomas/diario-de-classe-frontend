@@ -17,6 +17,11 @@ jest.mock('@/constants', () => ({
     SUCCESS: 'success',
     FAILED: 'failed',
   },
+  FILTER_STORAGE_KEYS: {
+    aulas: 'filters_aulas',
+    contratos: 'filters_contratos',
+    dashboard: 'filters_dashboard',
+  },
 }));
 
 // Mock store
@@ -42,6 +47,8 @@ describe('useContratos', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    // Filtros são persistidos em localStorage; limpa para isolar cada teste.
+    localStorage.clear();
 
     // Mock do getContratos action
     getContratos.mockImplementation(() => ({

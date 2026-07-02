@@ -17,6 +17,8 @@ const mockDispatch = jest.fn();
 beforeEach(() => {
   useDispatch.mockReturnValue(mockDispatch);
   jest.clearAllMocks();
+  // Filtros são persistidos em localStorage; limpa para isolar cada teste.
+  localStorage.clear();
 });
 
 describe('useAulas', () => {
