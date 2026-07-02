@@ -13,6 +13,7 @@ import {
   calculateHoraFimByDuracaoAula,
 } from '@/utils/calculateHoraFim';
 import { calculateDuracaoAula } from '@/utils/calculateDuracaoAula';
+import { startOfTodayUTC } from '@/utils/startOfTodayUTC';
 
 export function useContratoForm({
   alunos,
@@ -400,8 +401,9 @@ export function useContratoForm({
         newAulas = formData.aulasGenereted;
       }
       if (formData.confirm === 'generateNew') {
-        // Gerar novas aulas a partir da data atual (manter antigas para correção manual)
-        const hoje = new Date();
+        // Gerar novas aulas a partir de hoje (mantém as passadas para correção
+        // manual). Corte por dia em UTC, consistente com as datas de aula.
+        const hoje = startOfTodayUTC();
         const newAulas1 = formData.aulas.filter(
           aula => new Date(aula.dataAula) < hoje
         );
