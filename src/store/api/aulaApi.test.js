@@ -51,4 +51,22 @@ describe('AulaApi', () => {
     await api.updateAndamento(id, data);
     expect(api.put).toHaveBeenCalledWith('/aulas/101/andamento', data);
   });
+
+  describe('updateConteudo', () => {
+    it('should call put with the conteudo endpoint wrapping the id', async () => {
+      api.put = jest.fn();
+      await api.updateConteudo('aula-1', 'conteudo-1');
+      expect(api.put).toHaveBeenCalledWith('/aulas/aula-1/conteudo', {
+        idConteudo: 'conteudo-1',
+      });
+    });
+
+    it('should send null to hand the aula back to automatic sequencing', async () => {
+      api.put = jest.fn();
+      await api.updateConteudo('aula-1', null);
+      expect(api.put).toHaveBeenCalledWith('/aulas/aula-1/conteudo', {
+        idConteudo: null,
+      });
+    });
+  });
 });

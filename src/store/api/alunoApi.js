@@ -25,6 +25,22 @@ export class AlunoApi extends AbstractEntityApi {
     return this.get(`${this.baseEndpoint}/${id}/contratos`);
   }
 
+  async getCronogramaByAluno(id) {
+    return this.get(`${this.baseEndpoint}/${id}/cronograma`);
+  }
+
+  async createCronogramaByAluno(id, data) {
+    return this.post(`${this.baseEndpoint}/${id}/cronograma`, data);
+  }
+
+  async downloadCronogramaExcel(id) {
+    // responseType blob: a resposta e um xlsx binario, nao JSON. Sem isso o
+    // axios tenta interpretar como texto e corrompe o arquivo.
+    return await this.api.get(`${this.baseEndpoint}/${id}/cronograma/excel`, {
+      responseType: 'blob',
+    });
+  }
+
   async uploadAlunoList(file) {
     const originalContentType = this.api.defaults.headers['Content-Type'];
     delete this.api.defaults.headers['Content-Type'];

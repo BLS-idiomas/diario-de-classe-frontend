@@ -5,6 +5,8 @@ export * from './form/DisponibilidadeForm';
 export * from './details/HeaderAvatar';
 export * from './details/BlockQuoteInfo';
 export * from './form/ContratoForm';
+export * from './form/LivroForm';
+export * from './details/CronogramaSection';
 export * from './SearchForm';
 export * from './DisponibilidadeCard';
 export * from './ClearFiltersButton';

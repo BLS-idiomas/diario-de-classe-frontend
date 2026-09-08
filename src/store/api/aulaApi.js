@@ -12,4 +12,8 @@ export class AulaApi extends AbstractEntityApi {
   async updateAndamento(id, data) {
     return this.put(`${this.baseEndpoint}/${id}/andamento`, data);
   }
+
+  async updateConteudo(id, idConteudo) {
+    return this.put(`${this.baseEndpoint}/${id}/conteudo`, { idConteudo });
+  }
 }
