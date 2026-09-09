@@ -20,6 +20,7 @@ import {
   BlockQuoteInfo,
   SectionTitle,
   Table,
+  CronogramaSection,
 } from '@/components';
 import { IDIOMA_LABEL } from '@/constants';
 import { useAulasList } from '@/hooks/aulas/useAulasList';
@@ -167,6 +168,9 @@ export default function Aluno() {
             {aluno.material}
           </BlockQuoteInfo>
         </Section>
+
+        {/*Cronograma*/}
+        <CronogramaSection aluno={aluno} contratos={contratos} />
 
         {/*Aulas*/}
         <Section>

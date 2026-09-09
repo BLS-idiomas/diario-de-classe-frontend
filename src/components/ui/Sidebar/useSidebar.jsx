@@ -5,6 +5,7 @@ import { IS_DEVELOPMENT } from '@/constants';
 import {
   Book,
   CircleUser,
+  Library,
   ClipboardClock,
   GraduationCap,
   Home,
@@ -46,6 +47,12 @@ export function useSidebar(isAdmin) {
       href: '/aulas',
       label: 'Aulas',
       icon: <Book strokeWidth={strokeWidth} />,
+      show: true,
+    },
+    {
+      href: '/livros',
+      label: 'Livros',
+      icon: <Library strokeWidth={strokeWidth} />,
       show: true,
     },
     {

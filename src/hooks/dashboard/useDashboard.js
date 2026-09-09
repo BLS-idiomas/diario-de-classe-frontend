@@ -82,26 +82,26 @@ export function useDashboard() {
     const result = await showForm({
       title: 'Sobre a aula',
       html: `
-            <div class="flex flex-col gap-4 ">
-              <div class="flex flex-col items-start">
-                <label htmlFor="swal-select" className="block text-sm font-medium text-gray-700 mb-2">
+            <div class="flex flex-col gap-4 w-full">
+              <div class="flex flex-col items-start w-full min-w-0">
+                <label for="swal-select" class="block text-sm font-medium text-main mb-2">
                   Status da aula
                 </label>
                 <select
                   id="swal-select"
-                  class="${classNameDefault} pr-10 appearance-none disabled:bg-gray-100 disabled:text-gray-500 disabled:cursor-not-allowed disabled:opacity-60"
+                  class="${classNameDefault} max-w-full min-w-0 box-border disabled:bg-gray-100 disabled:text-gray-500 disabled:cursor-not-allowed disabled:opacity-60"
                   >
                   ${options}
                 </select>
               </div>
 
-              <div class="flex flex-col items-start">
-                <label htmlFor="swal-textarea" className="block text-sm font-medium text-gray-700 mb-2">
+              <div class="flex flex-col items-start w-full min-w-0">
+                <label for="swal-textarea" class="block text-sm font-medium text-main mb-2">
                   Conteúdo / Observações
                 </label>
                 <textarea
                   id="swal-textarea"
-                  class="${classNameDefault}"
+                  class="${classNameDefault} max-w-full min-w-0 box-border"
                   >
                   ${aula?.observacao || ''}
                 </textarea>

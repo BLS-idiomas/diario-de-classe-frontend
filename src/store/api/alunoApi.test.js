@@ -112,4 +112,30 @@ describe('AlunoApi', () => {
     // Verifica se o Content-Type foi restaurado mesmo após erro
     expect(api.api.defaults.headers['Content-Type']).toBe('application/json');
   });
+
+  describe('cronograma', () => {
+    it('should call get with the cronograma endpoint', async () => {
+      api.get = jest.fn();
+      await api.getCronogramaByAluno('aluno-1');
+      expect(api.get).toHaveBeenCalledWith('/alunos/aluno-1/cronograma');
+    });
+
+    it('should call post with the cronograma endpoint and data', async () => {
+      const data = { idContrato: 'contrato-1', idLivro: 'livro-1' };
+      api.post = jest.fn();
+      await api.createCronogramaByAluno('aluno-1', data);
+      expect(api.post).toHaveBeenCalledWith('/alunos/aluno-1/cronograma', data);
+    });
+
+    it('should request the excel as a blob, not as JSON', async () => {
+      api.api.get = jest.fn().mockResolvedValue({ data: 'binario' });
+
+      await api.downloadCronogramaExcel('aluno-1');
+
+      expect(api.api.get).toHaveBeenCalledWith(
+        '/alunos/aluno-1/cronograma/excel',
+        { responseType: 'blob' }
+      );
+    });
+  });
 });
