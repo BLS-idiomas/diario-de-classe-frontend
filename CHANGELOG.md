@@ -1,3 +1,13 @@
+# [1.20.0](https://github.com/BLS-idiomas/diario-de-classe-frontend/compare/v1.19.0...v1.20.0) (2026-09-13)
+
+### Bug Fixes
+
+- Correct label attributes and dark mode colors in SweetAlert form modals ([d304512](https://github.com/BLS-idiomas/diario-de-classe-frontend/commit/d3045129ae6c843cf719a11f51397d9e5c5ffdd2))
+
+### Features
+
+- **cronograma:** telas de livros e cronograma de conteúdo ([e5f0d8d](https://github.com/BLS-idiomas/diario-de-classe-frontend/commit/e5f0d8d236a084a078ad71d3d448ddc80e67f64e))
+
 # [1.19.0](https://github.com/BLS-idiomas/diario-de-classe-frontend/compare/v1.18.0...v1.19.0) (2026-07-02)
 
 ### Features
