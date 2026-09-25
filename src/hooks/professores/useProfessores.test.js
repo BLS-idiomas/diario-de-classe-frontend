@@ -67,6 +67,7 @@ describe('useProfessores', () => {
     expect(result.current).toEqual({
       professores: [],
       status: STATUS.IDLE,
+      action: 'getProfessores',
       isLoading: true,
       professorOptions: [],
       searchParams: expect.any(Function),
@@ -230,5 +231,36 @@ describe('useProfessores', () => {
     expect(mockDispatch).toHaveBeenCalledWith(
       getProfessores({ q: 'search term' })
     );
+  });
+
+  describe('campo action', () => {
+    it('expõe o valor de action lido do slice quando o store o fornece', () => {
+      const initialState = {
+        list: [],
+        status: STATUS.FAILED,
+        action: 'getProfessores',
+      };
+      const store = createMockStore(initialState);
+      store.dispatch = mockDispatch;
+
+      const wrapper = createWrapper(store);
+      const { result } = renderHook(() => useProfessores(), { wrapper });
+
+      expect(result.current.action).toBe('getProfessores');
+    });
+
+    it('expõe action undefined quando o slice não fornece a ação (default)', () => {
+      const initialState = {
+        list: [],
+        status: STATUS.IDLE,
+      };
+      const store = createMockStore(initialState);
+      store.dispatch = mockDispatch;
+
+      const wrapper = createWrapper(store);
+      const { result } = renderHook(() => useProfessores(), { wrapper });
+
+      expect(result.current.action).toBeUndefined();
+    });
   });
 });

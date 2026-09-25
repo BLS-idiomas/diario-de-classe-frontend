@@ -9,6 +9,7 @@ import { UpdateDiaAulaService } from '@/services/diaAula/updateDiaAulaService';
 import { DeleteDiaAulaService } from '@/services/diaAula/deleteDiaAulaService';
 import { CreateGroupDiaAulaService } from '@/services/diaAula/createGroupDiaAulaService';
 import { UpdateGroupDiaAulaService } from '@/services/diaAula/updateGroupDiaAulaService';
+import { getRequestErrorMessage } from '@/utils/thunkErrorPayload';
 
 // GET ALL
 export const getDiasAulas = createAsyncThunk(
@@ -19,8 +20,7 @@ export const getDiasAulas = createAsyncThunk(
       return res.data;
     } catch (error) {
       // Capturar a mensagem de erro da resposta da API
-      const errorMessage =
-        error.response?.data?.message || error.message || 'Erro desconhecido';
+      const errorMessage = getRequestErrorMessage(error, 'Erro desconhecido');
       return rejectWithValue({
         message: errorMessage,
         statusError: error.response?.status,
@@ -38,8 +38,7 @@ export const getDiaAula = createAsyncThunk(
       return res.data;
     } catch (error) {
       // Capturar a mensagem de erro da resposta da API
-      const errorMessage =
-        error.response?.data?.message || error.message || 'Erro desconhecido';
+      const errorMessage = getRequestErrorMessage(error, 'Erro desconhecido');
       return rejectWithValue({
         message: errorMessage,
         statusError: error.response?.status,
@@ -56,10 +55,10 @@ export const createDiaAula = createAsyncThunk(
       const res = await CreateDiaAulaService.handle(data);
       return res.data;
     } catch (error) {
-      const errorMessage =
-        error.response?.data?.message ||
-        error.message ||
-        'Erro ao criar dia de aula';
+      const errorMessage = getRequestErrorMessage(
+        error,
+        'Erro ao criar dia de aula'
+      );
 
       const validationErrors = error.response?.data?.errors || [];
 
@@ -80,10 +79,10 @@ export const updateDiaAula = createAsyncThunk(
       const res = await UpdateDiaAulaService.handle(id, data);
       return res.data;
     } catch (error) {
-      const errorMessage =
-        error.response?.data?.message ||
-        error.message ||
-        'Erro ao atualizar dia de aula';
+      const errorMessage = getRequestErrorMessage(
+        error,
+        'Erro ao atualizar dia de aula'
+      );
 
       const validationErrors = error.response?.data?.errors || [];
 
@@ -104,10 +103,10 @@ export const deleteDiaAula = createAsyncThunk(
       await DeleteDiaAulaService.handle(id);
       return id;
     } catch (error) {
-      const errorMessage =
-        error.response?.data?.message ||
-        error.message ||
-        'Erro ao deletar dia de aula';
+      const errorMessage = getRequestErrorMessage(
+        error,
+        'Erro ao deletar dia de aula'
+      );
       return rejectWithValue({
         message: errorMessage,
         statusError: error.response?.status,
@@ -124,10 +123,10 @@ export const createGroupDiaAula = createAsyncThunk(
       const res = await CreateGroupDiaAulaService.handle(data);
       return res.data;
     } catch (error) {
-      const errorMessage =
-        error.response?.data?.message ||
-        error.message ||
-        'Erro ao criar dias de aula em grupo';
+      const errorMessage = getRequestErrorMessage(
+        error,
+        'Erro ao criar dias de aula em grupo'
+      );
 
       const validationErrors = error.response?.data?.errors || [];
 
@@ -148,10 +147,10 @@ export const updateGroupDiaAula = createAsyncThunk(
       const res = await UpdateGroupDiaAulaService.handle(id, data);
       return res.data;
     } catch (error) {
-      const errorMessage =
-        error.response?.data?.message ||
-        error.message ||
-        'Erro ao atualizar dias de aula em grupo';
+      const errorMessage = getRequestErrorMessage(
+        error,
+        'Erro ao atualizar dias de aula em grupo'
+      );
 
       const validationErrors = error.response?.data?.errors || [];
 

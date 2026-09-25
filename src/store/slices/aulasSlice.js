@@ -8,6 +8,7 @@ import { CreateAulaService } from '@/services/aula/createAulaService';
 import { UpdateAulaService } from '@/services/aula/updateAulaService';
 import { DeleteAulaService } from '@/services/aula/deleteAulaService';
 import { UpdateAndamentoAulaService } from '@/services/aula/updateAndamentoAulaService';
+import { getRequestErrorMessage } from '@/utils/thunkErrorPayload';
 
 // GET ALL
 export const getAulas = createAsyncThunk(
@@ -17,8 +18,7 @@ export const getAulas = createAsyncThunk(
       const res = await GetAulaListService.handle(params);
       return res.data;
     } catch (error) {
-      const errorMessage =
-        error.response?.data?.message || error.message || 'Erro desconhecido';
+      const errorMessage = getRequestErrorMessage(error, 'Erro desconhecido');
       return rejectWithValue({
         message: errorMessage,
         statusError: error.response?.status,
@@ -35,8 +35,7 @@ export const getAula = createAsyncThunk(
       const res = await GetAulaByIdService.handle(id);
       return res.data;
     } catch (error) {
-      const errorMessage =
-        error.response?.data?.message || error.message || 'Erro desconhecido';
+      const errorMessage = getRequestErrorMessage(error, 'Erro desconhecido');
       return rejectWithValue({
         message: errorMessage,
         statusError: error.response?.status,
@@ -53,8 +52,7 @@ export const createAula = createAsyncThunk(
       const res = await CreateAulaService.handle(data);
       return res.data;
     } catch (error) {
-      const errorMessage =
-        error.response?.data?.message || error.message || 'Erro ao criar aula';
+      const errorMessage = getRequestErrorMessage(error, 'Erro ao criar aula');
       const validationErrors = error.response?.data?.errors || [];
       return rejectWithValue({
         message: errorMessage,
@@ -73,10 +71,10 @@ export const updateAula = createAsyncThunk(
       const res = await UpdateAulaService.handle(id, data);
       return res.data;
     } catch (error) {
-      const errorMessage =
-        error.response?.data?.message ||
-        error.message ||
-        'Erro ao atualizar aula';
+      const errorMessage = getRequestErrorMessage(
+        error,
+        'Erro ao atualizar aula'
+      );
       const validationErrors = error.response?.data?.errors || [];
       return rejectWithValue({
         message: errorMessage,
@@ -95,10 +93,10 @@ export const deleteAula = createAsyncThunk(
       await DeleteAulaService.handle(id);
       return id;
     } catch (error) {
-      const errorMessage =
-        error.response?.data?.message ||
-        error.message ||
-        'Erro ao deletar aula';
+      const errorMessage = getRequestErrorMessage(
+        error,
+        'Erro ao deletar aula'
+      );
       return rejectWithValue({
         message: errorMessage,
         statusError: error.response?.status,
@@ -115,10 +113,10 @@ export const updateAndamentoAula = createAsyncThunk(
       const res = await UpdateAndamentoAulaService.handle(id, data);
       return res.data;
     } catch (error) {
-      const errorMessage =
-        error.response?.data?.message ||
-        error.message ||
-        'Erro ao atualizar o status da aula';
+      const errorMessage = getRequestErrorMessage(
+        error,
+        'Erro ao atualizar o status da aula'
+      );
       const validationErrors = error.response?.data?.errors || [];
       return rejectWithValue({
         message: errorMessage,

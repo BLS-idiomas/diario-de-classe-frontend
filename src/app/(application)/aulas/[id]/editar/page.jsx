@@ -13,12 +13,13 @@ export default function EditarAula() {
   const backUrl = searchParams.get('backUrl');
   const { message, errors, isLoading, current, statusError, submit } =
     useEditarAula(params.id, backUrl);
-  const { formData, handleChange, handleSubmit, setFormData } = useAulaForm({
-    submit,
-    isEdit: true,
-    id: params.id,
-    backUrl,
-  });
+  const { formData, fieldErrors, handleChange, handleSubmit, setFormData } =
+    useAulaForm({
+      submit,
+      isEdit: true,
+      id: params.id,
+      backUrl,
+    });
 
   useEffect(() => {
     if (current) {
@@ -64,6 +65,7 @@ export default function EditarAula() {
         isLoading={isLoading}
         message={message}
         errors={errors}
+        fieldErrors={fieldErrors}
         isEdit
       />
     </FormPage>

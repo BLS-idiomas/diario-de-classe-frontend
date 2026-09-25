@@ -2,37 +2,44 @@ import { IDIOMA_LABEL } from '@/constants';
 import { Eye, Pencil, Trash2 } from 'lucide-react';
 import Link from 'next/link';
 import { useMemo } from 'react';
+import { withStickyColumns } from '@/utils/tableResponsivo';
 
 export function useLivrosList({ livros, handleDeleteLivro, readOnly = false }) {
   const columns = [
     {
       name: '#',
+      essential: true,
       selector: row => row.id,
       sortable: true,
       width: '75px',
     },
     {
       name: 'Livro',
+      essential: true,
       selector: row => row.nome,
       sortable: true,
     },
     {
       name: 'Idioma',
+      essential: true,
       selector: row => row.idioma,
       sortable: true,
     },
     {
       name: 'Nível',
+      essential: false,
       selector: row => row.nivel,
       sortable: true,
     },
     {
       name: 'Situação',
+      essential: false,
       selector: row => row.ativo,
       sortable: true,
     },
     {
       name: 'Ações',
+      isAction: true,
       selector: row => row.acoes,
       sortable: false,
       width: 'auto',
@@ -42,6 +49,8 @@ export function useLivrosList({ livros, handleDeleteLivro, readOnly = false }) {
   if (readOnly) {
     columns.splice(columns.length - 1, 1);
   }
+
+  const stickyColumns = withStickyColumns(columns);
 
   const data = useMemo(() => {
     if (!livros) return [];
@@ -80,5 +89,5 @@ export function useLivrosList({ livros, handleDeleteLivro, readOnly = false }) {
     }));
   }, [livros, handleDeleteLivro]);
 
-  return { columns, data };
+  return { columns: stickyColumns, data };
 }

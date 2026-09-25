@@ -152,4 +152,21 @@ describe('PasswordField', () => {
     const toggleButton = screen.getByRole('button', { name: /mostrar senha/i });
     expect(toggleButton).toHaveAttribute('type', 'button');
   });
+
+  // Guarda de configuração: confirma que a classe está presente na marcação
+  // (NFR-001-002, piso de 44px). Não mede a caixa computada real — jsdom não
+  // calcula layout — a medição real fica para o `qa` re-verificar em browser.
+  it('toggle button has tap-target class applied for touch target size (NFR-001-002)', () => {
+    const handleChange = jest.fn();
+    render(
+      <PasswordField
+        htmlFor="senha"
+        label="Senha"
+        value="test123"
+        onChange={handleChange}
+      />
+    );
+    const toggleButton = screen.getByRole('button', { name: /mostrar senha/i });
+    expect(toggleButton).toHaveClass('tap-target');
+  });
 });

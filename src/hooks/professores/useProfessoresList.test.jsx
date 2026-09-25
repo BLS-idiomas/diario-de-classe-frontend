@@ -1,5 +1,4 @@
-import React from 'react';
-import { render } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { useProfessoresList } from './useProfessoresList';
 
 function TestComponent(props) {
@@ -135,5 +134,83 @@ describe('useProfessoresList', () => {
     const acoes = getByTestId('row-0-acoes');
     const button = acoes.querySelector('button');
     expect(button).not.toBeNull();
+  });
+
+  it('marca a coluna Email com wrap para permitir quebra de linha em vez de truncar', () => {
+    const professores = [];
+    const currentUser = { id: 999, nome: 'Admin User' };
+    const telefoneFormatter = jest.fn();
+    const dataFormatter = jest.fn();
+    const handleDeleteProfessor = jest.fn();
+
+    // A coluna precisa ficar sem `cell` customizado: passar `cell` desliga
+    // o truncamento nativo da lib (nowrap+ellipsis) e o wrap deixa de ter
+    // efeito — `wrap: true` sozinho é o mecanismo que quebra a linha.
+    function ColumnsInspector() {
+      const { columns } = useProfessoresList({
+        currentUser,
+        professores,
+        telefoneFormatter,
+        dataFormatter,
+        handleDeleteProfessor,
+      });
+      const emailColumn = columns.find(col => col.name === 'Email');
+      return (
+        <div data-testid="email-column-config">
+          {JSON.stringify({
+            wrap: emailColumn.wrap,
+            hasCell: typeof emailColumn.cell === 'function',
+          })}
+        </div>
+      );
+    }
+
+    const { getByTestId } = render(<ColumnsInspector />);
+    expect(JSON.parse(getByTestId('email-column-config').textContent)).toEqual({
+      wrap: true,
+      hasCell: false,
+    });
+  });
+
+  it('data carrega o e-mail completo, sem corte no mapeamento', () => {
+    const longEmail =
+      'pesquisadora.assistente.convidada@dominio-extenso-de-teste.com.br';
+    const professores = [
+      {
+        id: 10,
+        nome: 'Pesquisadora',
+        sobrenome: 'Convidada',
+        telefone: '11987654321',
+        email: longEmail,
+        permissao: 'admin',
+        dataCriacao: '2024-05-10T12:00:00Z',
+      },
+    ];
+
+    const currentUser = { id: 999, nome: 'Admin User' };
+    const telefoneFormatter = jest.fn(t => t);
+    const dataFormatter = jest.fn(d => d);
+    const handleDeleteProfessor = jest.fn();
+
+    function RowsWithEmail() {
+      const { data } = useProfessoresList({
+        currentUser,
+        professores,
+        telefoneFormatter,
+        dataFormatter,
+        handleDeleteProfessor,
+      });
+      return (
+        <div>
+          {data.map((row, i) => (
+            <div key={i}>{row.email}</div>
+          ))}
+        </div>
+      );
+    }
+
+    render(<RowsWithEmail />);
+
+    expect(screen.getByText(longEmail)).toBeInTheDocument();
   });
 });

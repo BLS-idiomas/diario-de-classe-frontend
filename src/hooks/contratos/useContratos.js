@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { STATUS, FILTER_STORAGE_KEYS } from '@/constants';
 import { getContratos } from '@/store/slices/contratosSlice';
 import { loadFilters, saveFilters, clearFilters } from '@/utils/filterStorage';
+import { countAppliedFilters } from '@/utils/filterCount';
 
 export function useContratos() {
   const dispatch = useDispatch();
@@ -55,14 +56,18 @@ export function useContratos() {
   const isLoading =
     isAction && (status === STATUS.IDLE || status === STATUS.LOADING);
 
+  const appliedCount = countAppliedFilters(formData, defaultFormData);
+
   return {
     contratos: list,
     status,
+    action,
     isLoading,
     searchParams,
     handleSubmit,
     handleChange,
     handleClearFilter,
     formData,
+    appliedCount,
   };
 }

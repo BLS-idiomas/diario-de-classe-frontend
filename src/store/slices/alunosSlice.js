@@ -12,6 +12,7 @@ import { GetDiasAulasByAlunoService } from '@/services/aluno/getDiasAulasByAluno
 import { GetContratoByAlunoService } from '@/services/aluno/getContratoByAlunoService';
 import { GetContratosByAlunoService } from '@/services/aluno/getContratosByAlunoService';
 import { UploadAlunoListService } from '@/services/aluno/uploadAlunoListService';
+import { getRequestErrorMessage } from '@/utils/thunkErrorPayload';
 
 // GET ALL
 export const getAlunos = createAsyncThunk(
@@ -22,8 +23,7 @@ export const getAlunos = createAsyncThunk(
       return res.data;
     } catch (error) {
       // Capturar a mensagem de erro da resposta da API
-      const errorMessage =
-        error.response?.data?.message || error.message || 'Erro desconhecido';
+      const errorMessage = getRequestErrorMessage(error, 'Erro desconhecido');
       return rejectWithValue({
         message: errorMessage,
         statusError: error.response?.status,
@@ -41,8 +41,7 @@ export const getAluno = createAsyncThunk(
       return res.data;
     } catch (error) {
       // Capturar a mensagem de erro da resposta da API
-      const errorMessage =
-        error.response?.data?.message || error.message || 'Erro desconhecido';
+      const errorMessage = getRequestErrorMessage(error, 'Erro desconhecido');
       return rejectWithValue({
         message: errorMessage,
         statusError: error.response?.status,
@@ -59,8 +58,7 @@ export const createAluno = createAsyncThunk(
       const res = await CreateAlunoService.handle(data);
       return res.data;
     } catch (error) {
-      const errorMessage =
-        error.response?.data?.message || error.message || 'Erro ao criar aluno';
+      const errorMessage = getRequestErrorMessage(error, 'Erro ao criar aluno');
 
       const validationErrors = error.response?.data?.errors || [];
 
@@ -81,10 +79,10 @@ export const updateAluno = createAsyncThunk(
       const res = await UpdateAlunoService.handle(id, data);
       return res.data;
     } catch (error) {
-      const errorMessage =
-        error.response?.data?.message ||
-        error.message ||
-        'Erro ao atualizar aluno';
+      const errorMessage = getRequestErrorMessage(
+        error,
+        'Erro ao atualizar aluno'
+      );
 
       const validationErrors = error.response?.data?.errors || [];
 
@@ -105,10 +103,10 @@ export const deleteAluno = createAsyncThunk(
       await DeleteAlunoService.handle(id);
       return id;
     } catch (error) {
-      const errorMessage =
-        error.response?.data?.message ||
-        error.message ||
-        'Erro ao deletar aluno';
+      const errorMessage = getRequestErrorMessage(
+        error,
+        'Erro ao deletar aluno'
+      );
       return rejectWithValue({
         message: errorMessage,
         statusError: error.response?.status,
@@ -126,10 +124,10 @@ export const getAulasAluno = createAsyncThunk(
       const res = await GetAulasByAlunoService.handle(id);
       return res.data;
     } catch (error) {
-      const errorMessage =
-        error.response?.data?.message ||
-        error.message ||
-        'Erro ao buscar aulas do aluno';
+      const errorMessage = getRequestErrorMessage(
+        error,
+        'Erro ao buscar aulas do aluno'
+      );
       return rejectWithValue({
         message: errorMessage,
         statusError: error.response?.status,
@@ -147,10 +145,10 @@ export const getDiasAulasAluno = createAsyncThunk(
       const res = await GetDiasAulasByAlunoService.handle(id);
       return res.data;
     } catch (error) {
-      const errorMessage =
-        error.response?.data?.message ||
-        error.message ||
-        'Erro ao buscar dias de aulas do aluno';
+      const errorMessage = getRequestErrorMessage(
+        error,
+        'Erro ao buscar dias de aulas do aluno'
+      );
       return rejectWithValue({
         message: errorMessage,
         statusError: error.response?.status,
@@ -168,10 +166,10 @@ export const getContratoAluno = createAsyncThunk(
       const res = await GetContratoByAlunoService.handle(id);
       return res.data;
     } catch (error) {
-      const errorMessage =
-        error.response?.data?.message ||
-        error.message ||
-        'Erro ao buscar contrato do aluno';
+      const errorMessage = getRequestErrorMessage(
+        error,
+        'Erro ao buscar contrato do aluno'
+      );
       return rejectWithValue({
         message: errorMessage,
         statusError: error.response?.status,
@@ -189,10 +187,10 @@ export const getContratosAluno = createAsyncThunk(
       const res = await GetContratosByAlunoService.handle(id);
       return res.data;
     } catch (error) {
-      const errorMessage =
-        error.response?.data?.message ||
-        error.message ||
-        'Erro ao buscar contratos do aluno';
+      const errorMessage = getRequestErrorMessage(
+        error,
+        'Erro ao buscar contratos do aluno'
+      );
       return rejectWithValue({
         message: errorMessage,
         statusError: error.response?.status,
@@ -209,10 +207,10 @@ export const uploadAlunos = createAsyncThunk(
       const res = await UploadAlunoListService.handle(file);
       return res.data;
     } catch (error) {
-      const errorMessage =
-        error.response?.data?.message ||
-        error.message ||
-        'Erro ao fazer upload de alunos';
+      const errorMessage = getRequestErrorMessage(
+        error,
+        'Erro ao fazer upload de alunos'
+      );
 
       const validationErrors = error.response?.data?.errors || [];
 

@@ -3,6 +3,7 @@ import { buildQueryString } from '@/utils/bindUrlParams';
 import { Eye, Pencil, Trash2 } from 'lucide-react';
 import Link from 'next/link';
 import { useMemo } from 'react';
+import { withStickyColumns } from '@/utils/tableResponsivo';
 
 export function useAulasList({
   aulas,
@@ -17,52 +18,63 @@ export function useAulasList({
   const columns = [
     {
       name: '#',
+      essential: true,
       selector: row => row.id,
       sortable: true,
       width: '75px',
     },
     {
       name: 'Aluno',
+      essential: true,
       selector: row => row.aluno,
       sortable: true,
     },
     {
       name: 'Professor',
+      essential: false,
       selector: row => row.professor,
       sortable: true,
+      wrap: true,
     },
     {
       name: 'Data',
+      essential: true,
       selector: row => row.dataAula,
       sortable: true,
     },
     {
       name: 'Hora inicial',
+      essential: true,
       selector: row => row.horaInicial,
       sortable: true,
     },
     {
       name: 'Hora final',
+      essential: false,
       selector: row => row.horaFinal,
       sortable: true,
     },
     {
       name: 'Tipo',
+      essential: false,
       selector: row => row.tipo,
       sortable: true,
     },
     {
       name: 'Status',
+      essential: false,
       selector: row => row.status,
       sortable: true,
     },
     {
       name: 'Idioma',
+      essential: false,
       selector: row => row.idioma,
       sortable: true,
     },
     {
       name: 'Ações',
+      isAction: true,
       selector: row => row.acoes,
       sortable: false,
       width: 'auto',
@@ -72,6 +84,8 @@ export function useAulasList({
   if (readOnly) {
     columns.splice(columns.length - 1, 1);
   }
+
+  const stickyColumns = withStickyColumns(columns);
 
   const data = useMemo(() => {
     if (!aulas) return [];
@@ -119,5 +133,5 @@ export function useAulasList({
     isLoadingSubmit,
     backUrlParam,
   ]);
-  return { columns, data };
+  return { columns: stickyColumns, data };
 }

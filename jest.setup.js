@@ -1,4 +1,12 @@
 import '@testing-library/jest-dom';
+import { TextEncoder, TextDecoder } from 'node:util';
+
+// jest-environment-jsdom não expõe TextEncoder/TextDecoder no global — falta
+// que `whatwg-url` (usado internamente por uma segunda instância de `jsdom`
+// construída dentro de um teste, ex.: `new JSDOM(..., { url: '...' })`) exige
+// para resolver a URL passada.
+global.TextEncoder = global.TextEncoder || TextEncoder;
+global.TextDecoder = global.TextDecoder || TextDecoder;
 
 // Mock Next.js router
 jest.mock('next/navigation', () => ({

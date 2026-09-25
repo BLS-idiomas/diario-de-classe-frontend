@@ -14,6 +14,7 @@ export default function NovoContrato() {
   const { message, errors, isLoading, submit } = useNovoContrato();
   const {
     formData,
+    fieldErrors,
     handleSubmit,
     handleChange,
     handleAlunoChange,
@@ -52,6 +53,7 @@ export default function NovoContrato() {
         isSubmitting={isSubmitting}
         errors={errors}
         message={message}
+        fieldErrors={fieldErrors}
         handleSubmit={handleSubmit}
         handleChange={handleChange}
         handleAlunoChange={handleAlunoChange}

@@ -111,6 +111,99 @@ jest.mock('@/components', () => ({
       </select>
     </div>
   ),
+  // Estande equivalente ao SelectField acima (mesma superfície observável:
+  // label, options, onChange no formato { target: { name, value } }), mas
+  // sem <select>/<option> nativos — reflete o widget combobox real
+  // (SearchableSelectField exibe o rótulo resolvido, não o id bruto).
+  // Contrato espelhado do componente real: `onChange` só dispara ao
+  // selecionar uma opção ou ao limpar — nunca ao digitar no campo de busca; e
+  // `requiredError` renderiza um `role="alert"` ligado ao input via
+  // `aria-describedby` (DEC-002-006).
+  SearchableSelectField: ({
+    htmlFor,
+    label,
+    placeholder,
+    options,
+    onChange,
+    value,
+    required,
+    selectedLabel,
+    isLoading,
+    errorMessage,
+    requiredError,
+  }) => {
+    const selectedOption = options.find(option => option.value === value);
+    const displayValue = selectedOption
+      ? selectedOption.label
+      : value
+        ? selectedLabel || String(value)
+        : '';
+    const requiredErrorId = `${htmlFor}-required-error`;
+    return (
+      <div data-testid={`contrato-select-${htmlFor}`}>
+        <label htmlFor={htmlFor}>
+          {label}
+          {required && ' *'}
+        </label>
+        <input
+          id={htmlFor}
+          name={htmlFor}
+          role="combobox"
+          aria-expanded="false"
+          aria-controls={`${htmlFor}-listbox`}
+          aria-busy={isLoading ? 'true' : undefined}
+          aria-invalid={requiredError ? 'true' : undefined}
+          aria-describedby={requiredError ? requiredErrorId : undefined}
+          placeholder={placeholder}
+          value={displayValue}
+          readOnly
+          data-testid={`select-${htmlFor}`}
+        />
+        {isLoading && (
+          <p data-testid={`select-field-${htmlFor}-loading`}>Carregando...</p>
+        )}
+        {errorMessage && (
+          <p data-testid={`select-field-${htmlFor}-error`}>{errorMessage}</p>
+        )}
+        {value && (
+          <button
+            type="button"
+            data-testid={`select-field-${htmlFor}-clear`}
+            onClick={() => onChange({ target: { name: htmlFor, value: '' } })}
+          >
+            Limpar
+          </button>
+        )}
+        <ul
+          id={`${htmlFor}-listbox`}
+          data-testid={`select-field-${htmlFor}-options`}
+        >
+          {options.map((option, idx) => (
+            <li
+              key={idx}
+              role="option"
+              aria-selected={option.value === value}
+              data-testid={`select-field-${htmlFor}-option`}
+              onClick={() =>
+                onChange({ target: { name: htmlFor, value: option.value } })
+              }
+            >
+              {option.label}
+            </li>
+          ))}
+        </ul>
+        {requiredError && (
+          <p
+            id={requiredErrorId}
+            role="alert"
+            data-testid={`select-field-${htmlFor}-required-error`}
+          >
+            {requiredError}
+          </p>
+        )}
+      </div>
+    );
+  },
   CheckboxField: ({ htmlFor, label, checked, onChange }) => (
     <div data-testid={`contrato-checkbox-${htmlFor}`}>
       <input
@@ -362,11 +455,12 @@ describe('ContratoForm Component', () => {
       );
 
       const alunoSelect = screen.getByTestId('select-alunoId');
-      expect(alunoSelect.value).toBe('1');
+      // SearchableSelectField exibe o rótulo resolvido, não o id bruto.
+      expect(alunoSelect.value).toBe('João Silva');
     });
 
-    it('should call handleAlunoChange when aluno changes', async () => {
-      const { rerender } = render(
+    it('should call handleAlunoChange when an aluno option is selected', () => {
+      render(
         <ContratoForm
           alunoOptions={mockAlunoOptions}
           professorOptions={mockProfessorOptions}
@@ -380,10 +474,84 @@ describe('ContratoForm Component', () => {
         />
       );
 
-      const alunoSelect = screen.getByTestId('select-alunoId');
-      fireEvent.change(alunoSelect, { target: { value: '2' } });
+      // Contrato real: `onChange` só dispara ao selecionar uma opção, nunca
+      // ao digitar no campo de busca.
+      const options = screen.getAllByTestId('select-field-alunoId-option');
+      fireEvent.click(options[1]);
 
-      expect(mockHandlers.handleAlunoChange).toHaveBeenCalled();
+      expect(mockHandlers.handleAlunoChange).toHaveBeenCalledWith({
+        target: { name: 'alunoId', value: 2 },
+      });
+    });
+  });
+
+  describe('Validação obrigatória de Aluno/Professor (AC-001-014)', () => {
+    it('repassa fieldErrors.alunoId como requiredError do campo Aluno, visível via role="alert"', () => {
+      render(
+        <ContratoForm
+          alunoOptions={mockAlunoOptions}
+          professorOptions={mockProfessorOptions}
+          formData={mockFormData}
+          isLoading={false}
+          isSubmitting={false}
+          errors={null}
+          message=""
+          fieldErrors={{ alunoId: 'Selecione um aluno.' }}
+          {...mockHandlers}
+          dataFormatter={mockDataFormatter}
+        />
+      );
+
+      expect(
+        screen.getByTestId('select-field-alunoId-required-error')
+      ).toHaveTextContent('Selecione um aluno.');
+      expect(
+        screen.queryByTestId('select-field-professorId-required-error')
+      ).not.toBeInTheDocument();
+    });
+
+    it('repassa fieldErrors.professorId como requiredError do campo Professor principal, visível via role="alert"', () => {
+      render(
+        <ContratoForm
+          alunoOptions={mockAlunoOptions}
+          professorOptions={mockProfessorOptions}
+          formData={mockFormData}
+          isLoading={false}
+          isSubmitting={false}
+          errors={null}
+          message=""
+          fieldErrors={{ professorId: 'Selecione um professor principal.' }}
+          {...mockHandlers}
+          dataFormatter={mockDataFormatter}
+        />
+      );
+
+      expect(
+        screen.getByTestId('select-field-professorId-required-error')
+      ).toHaveTextContent('Selecione um professor principal.');
+    });
+
+    it('sem fieldErrors (prop ausente), nenhum requiredError é exibido', () => {
+      render(
+        <ContratoForm
+          alunoOptions={mockAlunoOptions}
+          professorOptions={mockProfessorOptions}
+          formData={mockFormData}
+          isLoading={false}
+          isSubmitting={false}
+          errors={null}
+          message=""
+          {...mockHandlers}
+          dataFormatter={mockDataFormatter}
+        />
+      );
+
+      expect(
+        screen.queryByTestId('select-field-alunoId-required-error')
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByTestId('select-field-professorId-required-error')
+      ).not.toBeInTheDocument();
     });
   });
 

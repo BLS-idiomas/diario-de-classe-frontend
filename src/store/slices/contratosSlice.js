@@ -13,6 +13,7 @@ import { GenerateAulasService } from '@/services/contrato/generateAulasService';
 import { GetAulasByContratoService } from '@/services/contrato/getAulasByContratoService';
 import { GetDiasAulasByContratoService } from '@/services/contrato/getDiasAulasByContratoService';
 import { ValidateContratoService } from '@/services/contrato/validateContratoService';
+import { getRequestErrorMessage } from '@/utils/thunkErrorPayload';
 
 // GET ALL
 export const getContratos = createAsyncThunk(
@@ -23,8 +24,7 @@ export const getContratos = createAsyncThunk(
       return res.data;
     } catch (error) {
       // Capturar a mensagem de erro da resposta da API
-      const errorMessage =
-        error.response?.data?.message || error.message || 'Erro desconhecido';
+      const errorMessage = getRequestErrorMessage(error, 'Erro desconhecido');
       return rejectWithValue({
         message: errorMessage,
         statusError: error.response?.status,
@@ -42,8 +42,7 @@ export const getContrato = createAsyncThunk(
       return res.data;
     } catch (error) {
       // Capturar a mensagem de erro da resposta da API
-      const errorMessage =
-        error.response?.data?.message || error.message || 'Erro desconhecido';
+      const errorMessage = getRequestErrorMessage(error, 'Erro desconhecido');
       return rejectWithValue({
         message: errorMessage,
         statusError: error.response?.status,
@@ -60,10 +59,10 @@ export const createContrato = createAsyncThunk(
       const res = await CreateContratoService.handle(data);
       return res.data;
     } catch (error) {
-      const errorMessage =
-        error.response?.data?.message ||
-        error.message ||
-        'Erro ao criar contrato';
+      const errorMessage = getRequestErrorMessage(
+        error,
+        'Erro ao criar contrato'
+      );
 
       const validationErrors = error.response?.data?.errors || [];
 
@@ -84,10 +83,10 @@ export const updateContrato = createAsyncThunk(
       const res = await UpdateContratoService.handle(id, data);
       return res.data;
     } catch (error) {
-      const errorMessage =
-        error.response?.data?.message ||
-        error.message ||
-        'Erro ao atualizar contrato';
+      const errorMessage = getRequestErrorMessage(
+        error,
+        'Erro ao atualizar contrato'
+      );
 
       const validationErrors = error.response?.data?.errors || [];
 
@@ -108,10 +107,10 @@ export const deleteContrato = createAsyncThunk(
       await DeleteContratoService.handle(id);
       return id;
     } catch (error) {
-      const errorMessage =
-        error.response?.data?.message ||
-        error.message ||
-        'Erro ao deletar contrato';
+      const errorMessage = getRequestErrorMessage(
+        error,
+        'Erro ao deletar contrato'
+      );
       return rejectWithValue({
         message: errorMessage,
         statusError: error.response?.status,
@@ -128,8 +127,7 @@ export const createManyAulas = createAsyncThunk(
       const res = await CreateManyAulasService.handle(id, data);
       return res.data;
     } catch (error) {
-      const errorMessage =
-        error.response?.data?.message || error.message || 'Erro ao criar aulas';
+      const errorMessage = getRequestErrorMessage(error, 'Erro ao criar aulas');
       return rejectWithValue({
         message: errorMessage,
         statusError: error.response?.status,
@@ -146,10 +144,10 @@ export const createManyDiasAulas = createAsyncThunk(
       const res = await CreateManyDiasAulasService.handle(id, data);
       return res.data;
     } catch (error) {
-      const errorMessage =
-        error.response?.data?.message ||
-        error.message ||
-        'Erro ao criar dias de aula';
+      const errorMessage = getRequestErrorMessage(
+        error,
+        'Erro ao criar dias de aula'
+      );
       return rejectWithValue({
         message: errorMessage,
         statusError: error.response?.status,
@@ -166,8 +164,7 @@ export const generateAulas = createAsyncThunk(
       const res = await GenerateAulasService.handle({ data });
       return res.data;
     } catch (error) {
-      const errorMessage =
-        error.response?.data?.message || error.message || 'Erro ao gerar aulas';
+      const errorMessage = getRequestErrorMessage(error, 'Erro ao gerar aulas');
       return rejectWithValue({
         message: errorMessage,
         statusError: error.response?.status,
@@ -185,10 +182,10 @@ export const getAulasByContrato = createAsyncThunk(
       const res = await GetAulasByContratoService.handle(id);
       return res.data;
     } catch (error) {
-      const errorMessage =
-        error.response?.data?.message ||
-        error.message ||
-        'Erro ao buscar aulas';
+      const errorMessage = getRequestErrorMessage(
+        error,
+        'Erro ao buscar aulas'
+      );
       return rejectWithValue({
         message: errorMessage,
         statusError: error.response?.status,
@@ -205,10 +202,10 @@ export const getDiasAulasByContrato = createAsyncThunk(
       const res = await GetDiasAulasByContratoService.handle(id);
       return res.data;
     } catch (error) {
-      const errorMessage =
-        error.response?.data?.message ||
-        error.message ||
-        'Erro ao buscar dias de aula';
+      const errorMessage = getRequestErrorMessage(
+        error,
+        'Erro ao buscar dias de aula'
+      );
       return rejectWithValue({
         message: errorMessage,
         statusError: error.response?.status,
@@ -225,10 +222,10 @@ export const validateContrato = createAsyncThunk(
       const res = await ValidateContratoService.handle(id);
       return res.data;
     } catch (error) {
-      const errorMessage =
-        error.response?.data?.message ||
-        error.message ||
-        'Erro ao validar contrato';
+      const errorMessage = getRequestErrorMessage(
+        error,
+        'Erro ao validar contrato'
+      );
       return rejectWithValue({
         message: errorMessage,
         statusError: error.response?.status,

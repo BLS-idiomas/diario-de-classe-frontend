@@ -10,7 +10,8 @@ import { clearErrors as clearProfessoresErrors } from '@/store/slices/professore
 import { clearErrors as clearAlunosErrors } from '@/store/slices/alunosSlice';
 import { clearErrors as clearAulasErrors } from '@/store/slices/aulasSlice';
 import { clearErrors as clearContratoErrors } from '@/store/slices/contratosSlice';
-import { isMobileFunction } from '@/utils/isMobileFunction';
+import { clearErrors as clearConfiguracaoErrors } from '@/store/slices/configuracaoSlice';
+import { clearAppCache } from '@/utils/appCache';
 
 export function useApplicationLayout() {
   const router = useRouter();
@@ -20,8 +21,6 @@ export function useApplicationLayout() {
   const [isLoading, setIsLoading] = useState(true);
   const [isUnauthorized, setIsUnauthorized] = useState(false);
   const [sidebarExpanded, setSidebarExpanded] = useState({
-    mainClass: 'ml-18',
-    sidebarClass: 'w-18',
     isExpanded: false,
   });
 
@@ -29,42 +28,57 @@ export function useApplicationLayout() {
   const alunosState = useSelector(state => state.alunos);
   const aulasState = useSelector(state => state.aulas);
   const contratosState = useSelector(state => state.contratos);
+  const configuracaoState = useSelector(state => state.configuracao);
+
+  // Fonte única dos slices observados pelo 401: cada par {state, clearErrors}
+  // alimenta tanto a lista de estados vigiada pelo efeito de logout forçado
+  // quanto a limpeza de statusError residual no mount — evita que um slice
+  // novo entre em uma lista e fique de fora da outra.
+  const sessionSlices = useMemo(
+    () => [
+      { state: professoresState, clearErrors: clearProfessoresErrors },
+      { state: alunosState, clearErrors: clearAlunosErrors },
+      { state: aulasState, clearErrors: clearAulasErrors },
+      { state: contratosState, clearErrors: clearContratoErrors },
+      { state: configuracaoState, clearErrors: clearConfiguracaoErrors },
+    ],
+    [
+      professoresState,
+      alunosState,
+      aulasState,
+      contratosState,
+      configuracaoState,
+    ]
+  );
   const states = useMemo(
-    () => [professoresState, alunosState, aulasState, contratosState],
-    [professoresState, alunosState, aulasState, contratosState]
+    () => sessionSlices.map(({ state }) => state),
+    [sessionSlices]
   );
 
   const toggleSidebar = () => {
-    const isMobile = isMobileFunction();
-    let mainClass = 'ml-18';
-    let sidebarClass = 'w-18';
-
-    if (!sidebarExpanded.isExpanded) {
-      if (isMobile === true) {
-        sidebarClass = 'absolute w-full';
-      } else {
-        sidebarClass = 'w-[180px]';
-        mainClass = 'ml-[150px]';
-      }
-    }
-
     setSidebarExpanded({
-      mainClass: mainClass,
-      sidebarClass: sidebarClass,
       isExpanded: !sidebarExpanded.isExpanded,
     });
   };
 
   useEffect(() => {
-    dispatch(clearProfessoresErrors());
-    dispatch(clearAlunosErrors());
-    dispatch(clearAulasErrors());
-    dispatch(clearContratoErrors());
+    sessionSlices.forEach(({ clearErrors }) => dispatch(clearErrors()));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
+    let isCurrent = true;
+
     async function checkAuth() {
-      const userIsAuth = await isAuthenticated();
+      let userIsAuth;
+      try {
+        userIsAuth = await isAuthenticated();
+      } catch {
+        userIsAuth = false;
+      }
+      if (!isCurrent) {
+        return;
+      }
       if (!userIsAuth) {
         error('Por favor, faça login para acessar o sistema.');
         router.push('/login');
@@ -74,6 +88,10 @@ export function useApplicationLayout() {
       }
     }
     checkAuth();
+
+    return () => {
+      isCurrent = false;
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -84,7 +102,8 @@ export function useApplicationLayout() {
       setIsUnauthorized(true);
       dispatch(logout(refreshToken));
       removeAuthenticate();
-      error('Sua sessão expirou.');
+      clearAppCache();
+      error('Sua sessão expirou. Entre novamente para continuar.');
       router.push('/login');
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -94,7 +113,6 @@ export function useApplicationLayout() {
     isUnauthorized,
     isLoading,
     sidebarExpanded,
-    isMobile: isMobileFunction(),
     toggleSidebar,
   };
 }

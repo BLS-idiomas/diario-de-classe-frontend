@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react';
+import { act, renderHook } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
 import { useAlunos } from './useAlunos';
@@ -18,6 +18,15 @@ jest.mock('@/constants', () => ({
     SUCCESS: 'success',
     FAILED: 'failed',
   },
+}));
+
+const mockRouterReplace = jest.fn();
+let mockSearchParamsValue = '';
+
+jest.mock('next/navigation', () => ({
+  useRouter: jest.fn(() => ({ replace: mockRouterReplace })),
+  usePathname: jest.fn(() => '/alunos'),
+  useSearchParams: jest.fn(() => new URLSearchParams(mockSearchParamsValue)),
 }));
 
 // Mock store
@@ -44,9 +53,12 @@ describe('useAlunos', () => {
   beforeEach(() => {
     jest.clearAllMocks();
 
+    mockSearchParamsValue = '';
+
     // Mock do getAlunos action
-    getAlunos.mockImplementation(() => ({
+    getAlunos.mockImplementation(query => ({
       type: 'alunos/getAlunos',
+      payload: query,
     }));
 
     mockDispatch = jest.fn();
@@ -67,9 +79,11 @@ describe('useAlunos', () => {
     expect(result.current).toEqual({
       alunos: [],
       status: STATUS.IDLE,
+      action: 'getAlunos',
       isLoading: true,
       alunoOptions: [],
       searchParams: expect.any(Function),
+      initialValue: '',
     });
   });
 
@@ -85,9 +99,7 @@ describe('useAlunos', () => {
     const wrapper = createWrapper(store);
     renderHook(() => useAlunos(), { wrapper });
 
-    expect(mockDispatch).toHaveBeenCalledWith({
-      type: 'alunos/getAlunos',
-    });
+    expect(mockDispatch).toHaveBeenCalledWith(getAlunos(null));
   });
 
   it('should return loading state correctly', () => {
@@ -130,9 +142,11 @@ describe('useAlunos', () => {
     expect(result.current).toEqual({
       alunos: mockAlunos,
       status: STATUS.SUCCESS,
+      action: 'getAlunos',
       isLoading: false,
       alunoOptions: expectedOptions,
       searchParams: expect.any(Function),
+      initialValue: '',
     });
   });
 
@@ -184,7 +198,7 @@ describe('useAlunos', () => {
 
     expect(mockDispatch).toHaveBeenCalledTimes(1);
 
-    // Re-render não deve chamar dispatch novamente
+    // Re-render sem mudança no `q` da URL não deve disparar um novo dispatch.
     rerender();
     expect(mockDispatch).toHaveBeenCalledTimes(1);
   });
@@ -241,11 +255,13 @@ describe('useAlunos', () => {
     expect(typeof result.current.searchParams).toBe('function');
   });
 
-  it('should dispatch getAlunos with query when searchParams is called', () => {
+  it('should read q from the URL on mount and dispatch getAlunos with it', () => {
+    mockSearchParamsValue = 'q=termo-inicial';
+
     const initialState = {
       list: [],
       status: STATUS.IDLE,
-      action: 'getAlunos',
+      action: null,
     };
     const store = createMockStore(initialState);
     store.dispatch = mockDispatch;
@@ -253,8 +269,158 @@ describe('useAlunos', () => {
     const wrapper = createWrapper(store);
     const { result } = renderHook(() => useAlunos(), { wrapper });
 
-    result.current.searchParams('test query');
+    expect(getAlunos).toHaveBeenCalledWith('termo-inicial');
+    expect(result.current.initialValue).toBe('termo-inicial');
+  });
 
-    expect(mockDispatch).toHaveBeenCalledWith(getAlunos({ q: 'test query' }));
+  describe('escrita da URL (debounced)', () => {
+    beforeEach(() => {
+      jest.useFakeTimers();
+    });
+
+    afterEach(() => {
+      act(() => {
+        jest.runOnlyPendingTimers();
+      });
+      jest.useRealTimers();
+    });
+
+    it('should NOT call router.replace nor dispatch synchronously when searchParams is called', () => {
+      const initialState = {
+        list: [],
+        status: STATUS.IDLE,
+        action: 'getAlunos',
+      };
+      const store = createMockStore(initialState);
+      store.dispatch = mockDispatch;
+
+      const wrapper = createWrapper(store);
+      const { result } = renderHook(() => useAlunos(), { wrapper });
+
+      mockDispatch.mockClear();
+
+      act(() => {
+        result.current.searchParams('termo');
+      });
+
+      expect(mockRouterReplace).not.toHaveBeenCalled();
+      expect(mockDispatch).not.toHaveBeenCalled();
+    });
+
+    it('should update the URL via router.replace after the debounce delay when searchParams is called with a value', () => {
+      const initialState = {
+        list: [],
+        status: STATUS.IDLE,
+        action: 'getAlunos',
+      };
+      const store = createMockStore(initialState);
+      store.dispatch = mockDispatch;
+
+      const wrapper = createWrapper(store);
+      const { result } = renderHook(() => useAlunos(), { wrapper });
+
+      act(() => {
+        result.current.searchParams('termo');
+      });
+
+      act(() => {
+        jest.advanceTimersByTime(300);
+      });
+
+      expect(mockRouterReplace).toHaveBeenCalledWith('/alunos?q=termo', {
+        scroll: false,
+      });
+    });
+
+    it('should remove q from the URL (without leaving a dangling ?q=) when searchParams is called with an empty value', () => {
+      mockSearchParamsValue = 'q=valor-antigo';
+
+      const initialState = {
+        list: [],
+        status: STATUS.IDLE,
+        action: 'getAlunos',
+      };
+      const store = createMockStore(initialState);
+      store.dispatch = mockDispatch;
+
+      const wrapper = createWrapper(store);
+      const { result } = renderHook(() => useAlunos(), { wrapper });
+
+      act(() => {
+        result.current.searchParams('');
+      });
+
+      act(() => {
+        jest.advanceTimersByTime(300);
+      });
+
+      expect(mockRouterReplace).toHaveBeenCalledWith('/alunos', {
+        scroll: false,
+      });
+    });
+
+    it('should debounce successive calls to searchParams, calling router.replace only once with the last value', () => {
+      const initialState = {
+        list: [],
+        status: STATUS.IDLE,
+        action: 'getAlunos',
+      };
+      const store = createMockStore(initialState);
+      store.dispatch = mockDispatch;
+
+      const wrapper = createWrapper(store);
+      const { result } = renderHook(() => useAlunos(), { wrapper });
+
+      act(() => {
+        result.current.searchParams('t');
+        jest.advanceTimersByTime(100);
+        result.current.searchParams('te');
+        jest.advanceTimersByTime(100);
+        result.current.searchParams('term');
+      });
+
+      act(() => {
+        jest.advanceTimersByTime(300);
+      });
+
+      expect(mockRouterReplace).toHaveBeenCalledTimes(1);
+      expect(mockRouterReplace).toHaveBeenCalledWith('/alunos?q=term', {
+        scroll: false,
+      });
+    });
+  });
+
+  it('should dispatch a new getAlunos when the `q` value read from the URL changes without a remount', () => {
+    // Prova do bug do A1: hoje (código antigo) o fetch só era disparado pelo
+    // handler `searchParams` — uma mudança na URL "por fora" (navegação sem
+    // remount, refresh do valor de useSearchParams) não disparava refetch
+    // nenhum, mesmo com o campo de busca sincronizando para o novo valor.
+    mockSearchParamsValue = 'q=ana';
+
+    const initialState = {
+      list: [],
+      status: STATUS.IDLE,
+      action: null,
+    };
+    const store = createMockStore(initialState);
+    store.dispatch = mockDispatch;
+
+    const wrapper = createWrapper(store);
+    const { result, rerender } = renderHook(() => useAlunos(), { wrapper });
+
+    expect(getAlunos).toHaveBeenCalledWith('ana');
+    expect(result.current.initialValue).toBe('ana');
+
+    mockDispatch.mockClear();
+    getAlunos.mockClear();
+
+    // Simula a URL perdendo o `q` sem remount do componente (ex.: navegação
+    // que reseta a query string) — useSearchParams passa a retornar vazio.
+    mockSearchParamsValue = '';
+    rerender();
+
+    expect(getAlunos).toHaveBeenCalledWith(null);
+    expect(mockDispatch).toHaveBeenCalledWith(getAlunos(null));
+    expect(result.current.initialValue).toBe('');
   });
 });

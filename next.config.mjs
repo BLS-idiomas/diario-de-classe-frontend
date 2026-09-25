@@ -1,22 +1,14 @@
-import withPWA from 'next-pwa';
-
-const isDev = process.env.NODE_ENV === 'development';
-
-const nextConfig = withPWA({
-  pwa: {
-    dest: 'public',
-    disable: isDev,
-    register: true,
-    skipWaiting: true,
-    manifest: '/manifest.json',
-  },
-  // ...outras configs do next
-});
-
 // Adiciona configuração turbopack vazia para Next.js 16
+
+// Alimenta `NEXT_PUBLIC_BUILD_ID` — mecanismo `?v=` de invalidação de cache
+// do SW documentado em `public/sw.js`.
+const BUILD_ID = process.env.BUILD_ID || String(Date.now());
+
 const config = {
-  ...nextConfig,
   turbopack: {},
+  env: {
+    NEXT_PUBLIC_BUILD_ID: BUILD_ID,
+  },
 };
 
 export default config;

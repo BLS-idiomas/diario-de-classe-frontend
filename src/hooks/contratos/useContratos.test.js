@@ -1,9 +1,11 @@
-import { renderHook } from '@testing-library/react';
+import { renderHook, act } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
 import { useContratos } from './useContratos';
 import { getContratos } from '@/store/slices/contratosSlice';
 import { STATUS } from '@/constants';
+import { useCollapsiblePanelState } from '@/hooks/useCollapsiblePanelState';
+import { countAppliedFilters } from '@/utils/filterCount';
 
 // Mock dos módulos
 jest.mock('@/store/slices/contratosSlice', () => ({
@@ -92,6 +94,21 @@ describe('useContratos', () => {
 
     expect(mockDispatch).toHaveBeenCalledWith(getContratos());
     expect(mockDispatch).toHaveBeenCalledTimes(1);
+  });
+
+  it('expõe action do state, no mesmo contrato de useAlunos/useProfessores (achado convergente de code-reviewer/product-designer, TASK-002-007)', () => {
+    const store = createMockStore({
+      list: [],
+      status: STATUS.FAILED,
+      action: 'getContratos',
+    });
+    store.dispatch = mockDispatch;
+
+    const { result } = renderHook(() => useContratos(), {
+      wrapper: createWrapper(store),
+    });
+
+    expect(result.current.action).toBe('getContratos');
   });
 
   it('should return contratos list when available', () => {
@@ -322,5 +339,121 @@ describe('useContratos', () => {
     expect(mockDispatch).toHaveBeenCalledWith(
       getContratos({ q: 'contrato search' })
     );
+  });
+
+  describe('appliedCount (COMP-002-004) e AC-001-013 — cenário irmão (achado B1 do qa)', () => {
+    it('formData alterado do default: appliedCount reflete countAppliedFilters(formData, defaultFormData)', () => {
+      const store = createMockStore({ list: [], status: STATUS.IDLE });
+      store.dispatch = mockDispatch;
+
+      const { result } = renderHook(() => useContratos(), {
+        wrapper: createWrapper(store),
+      });
+
+      act(() => {
+        result.current.handleChange({
+          target: { name: 'idioma', value: 'INGLES', type: 'text' },
+        });
+      });
+
+      const defaultFormData = { ...result.current.formData, idioma: '' };
+      expect(result.current.appliedCount).toBe(
+        countAppliedFilters(result.current.formData, defaultFormData)
+      );
+      expect(result.current.appliedCount).toBe(1);
+    });
+
+    it('AC-001-013: handleClearFilter zera appliedCount na sequência, sem remontar', () => {
+      const store = createMockStore({ list: [], status: STATUS.IDLE });
+      store.dispatch = mockDispatch;
+
+      const { result } = renderHook(() => useContratos(), {
+        wrapper: createWrapper(store),
+      });
+
+      act(() => {
+        result.current.handleChange({
+          target: { name: 'idioma', value: 'INGLES', type: 'text' },
+        });
+      });
+      act(() => {
+        result.current.handleChange({
+          target: { name: 'idAluno', value: '123', type: 'text' },
+        });
+      });
+
+      expect(result.current.appliedCount).toBe(2);
+
+      act(() => {
+        result.current.handleClearFilter();
+      });
+
+      expect(result.current.appliedCount).toBe(0);
+    });
+  });
+
+  describe('AC-001-011 (não-regressão, FR-001-002, cenário irmão): toggle() do painel não toca formData/dispatch de useContratos', () => {
+    it('alternar isOpen via toggle() do hook do painel não dispara novo dispatch nem altera o formData já modificado', () => {
+      const store = createMockStore({ list: [], status: STATUS.IDLE });
+      store.dispatch = mockDispatch;
+
+      const { result } = renderHook(
+        () => ({
+          contratos: useContratos(),
+          painel: useCollapsiblePanelState('panel_contratos_teste_ac011'),
+        }),
+        { wrapper: createWrapper(store) }
+      );
+
+      act(() => {
+        result.current.contratos.handleChange({
+          target: { name: 'idioma', value: 'INGLES', type: 'text' },
+        });
+      });
+
+      const formDataAntesDoToggle = result.current.contratos.formData;
+      expect(formDataAntesDoToggle.idioma).toBe('INGLES');
+
+      getContratos.mockClear();
+      mockDispatch.mockClear();
+
+      act(() => {
+        result.current.painel.toggle();
+      });
+
+      // Mutante: fazer toggle() chamar handleClearFilter por engano faria
+      // getContratos/dispatch serem chamados de novo, com o formData
+      // resetado ao default (idioma === '') — divergente do modificado acima.
+      expect(getContratos).not.toHaveBeenCalled();
+      expect(mockDispatch).not.toHaveBeenCalled();
+      expect(result.current.contratos.formData).toEqual(formDataAntesDoToggle);
+      expect(result.current.painel.isOpen).toBe(false);
+    });
+  });
+
+  describe('AC-001-008 (FR-001-012, achado B1 do qa, cenário irmão): handleClearFilter não altera isOpen do painel', () => {
+    it('painel recolhido: acionar handleClearFilter do hook real mantém isOpen inalterado', () => {
+      const store = createMockStore({ list: [], status: STATUS.IDLE });
+      store.dispatch = mockDispatch;
+
+      const { result } = renderHook(
+        () => ({
+          contratos: useContratos(),
+          painel: useCollapsiblePanelState('panel_contratos_teste_ac008'),
+        }),
+        { wrapper: createWrapper(store) }
+      );
+
+      act(() => {
+        result.current.painel.toggle();
+      });
+      expect(result.current.painel.isOpen).toBe(false);
+
+      act(() => {
+        result.current.contratos.handleClearFilter();
+      });
+
+      expect(result.current.painel.isOpen).toBe(false);
+    });
   });
 });

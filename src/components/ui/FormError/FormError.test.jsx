@@ -25,4 +25,17 @@ describe('FormError', () => {
     expect(screen.getByText(/erro:/i)).toBeInTheDocument();
     expect(screen.getByRole('list')).toBeEmptyDOMElement();
   });
+
+  it('não trunca nem força uma linha na mensagem de erro', () => {
+    render(
+      <FormError
+        title="Erro"
+        errors={['Campo obrigatório', 'Formato inválido']}
+      />
+    );
+    const el = screen.getByTestId('form-error');
+    expect(el).not.toHaveClass('whitespace-nowrap');
+    expect(el).not.toHaveClass('truncate');
+    expect(el).not.toHaveClass('overflow-hidden');
+  });
 });

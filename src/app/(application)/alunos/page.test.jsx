@@ -1,4 +1,5 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { render } from '@testing-library/react';
+import { ListPage } from '@/components';
 import Alunos from './page';
 import { useUserAuth } from '@/providers/UserAuthProvider';
 import { useAlunos } from '@/hooks/alunos/useAlunos';
@@ -31,6 +32,7 @@ describe('Alunos List Page', () => {
       ],
       isLoading: false,
       searchParams: {},
+      initialValue: '',
     });
 
     useDeletarAluno.mockReturnValue({
@@ -76,5 +78,19 @@ describe('Alunos List Page', () => {
     render(<Alunos />);
 
     expect(useAlunosList).toHaveBeenCalled();
+  });
+
+  it('passes initialValue from useAlunos down to ListPage search prop', () => {
+    useAlunos.mockReturnValue({
+      alunos: [],
+      isLoading: false,
+      searchParams: jest.fn(),
+      initialValue: 'termo-restaurado',
+    });
+
+    render(<Alunos />);
+
+    const [{ search }] = ListPage.mock.calls.at(-1);
+    expect(search.initialValue).toBe('termo-restaurado');
   });
 });

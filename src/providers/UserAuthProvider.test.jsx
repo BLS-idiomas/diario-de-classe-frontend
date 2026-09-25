@@ -2,6 +2,8 @@ import React from 'react';
 import { render, act, waitFor } from '@testing-library/react';
 import { UserAuthProvider, useUserAuth } from './UserAuthProvider';
 
+jest.mock('@/utils/appCache', () => ({ clearAppCache: jest.fn() }));
+
 beforeAll(() => {
   const localStorageMock = (function () {
     let store = {};
@@ -72,6 +74,23 @@ function TestComponent() {
       </button>
       <button data-testid="remove" onClick={removeAuthenticate}>
         Remove
+      </button>
+      <button
+        data-testid="save-professor-b"
+        onClick={() =>
+          authenticate({
+            accessToken: 'token-b',
+            refreshToken: 'refresh-b',
+            tokenType: 'Bearer',
+            expiresIn: 3600,
+            currentUser: { nome: 'Professor B', permissao: 'user' },
+            duracaoAula: 45,
+            tolerancia: 5,
+            diasDeFuncionamento: [1, 3, 5],
+          })
+        }
+      >
+        Save Professor B
       </button>
     </div>
   );
@@ -217,5 +236,53 @@ describe('UserAuthProvider', () => {
     expect(getByTestId('duracaoAula').textContent).toBe('90');
     expect(getByTestId('tolerancia').textContent).toBe('15');
     expect(getByTestId('diasDeFuncionamento').textContent).toBe('3');
+  });
+
+  it('should purge the app cache before overwriting token/settings on user switch without logout (AC-001-011)', async () => {
+    const { clearAppCache } = require('@/utils/appCache');
+    const setItemSpy = jest.spyOn(localStorage, 'setItem');
+    const { getByTestId } = render(
+      <UserAuthProvider>
+        <TestComponent />
+      </UserAuthProvider>
+    );
+
+    await act(async () => {
+      getByTestId('save').click();
+    });
+    await waitFor(() => {
+      expect(getByTestId('user').textContent).toBe('Marcos');
+    });
+
+    // Purga defensiva já ocorre no primeiro login (toda `authenticate()`
+    // purga); zera os espiões para isolar só a chamada da troca de usuário.
+    clearAppCache.mockClear();
+    setItemSpy.mockClear();
+
+    await act(async () => {
+      getByTestId('save-professor-b').click();
+    });
+    await waitFor(() => {
+      expect(getByTestId('user').textContent).toBe('Professor B');
+    });
+
+    expect(clearAppCache).toHaveBeenCalledTimes(1);
+    const tokenWriteCallIndex = setItemSpy.mock.calls.findIndex(
+      ([key]) => key === 'token'
+    );
+    expect(tokenWriteCallIndex).toBeGreaterThanOrEqual(0);
+    const clearAppCacheOrder = clearAppCache.mock.invocationCallOrder[0];
+    const tokenWriteOrder =
+      setItemSpy.mock.invocationCallOrder[tokenWriteCallIndex];
+    expect(clearAppCacheOrder).toBeLessThan(tokenWriteOrder);
+
+    const settingsData = JSON.parse(localStorage.getItem('settings'));
+    expect(settingsData).toEqual({
+      duracaoAula: 45,
+      tolerancia: 5,
+      diasDeFuncionamento: [1, 3, 5],
+    });
+
+    setItemSpy.mockRestore();
   });
 });

@@ -214,6 +214,13 @@ describe('useLogin', () => {
     });
     expect(mockPush).toHaveBeenCalledWith('/');
     expect(store.dispatch).toHaveBeenCalledWith({ type: 'auth/clearStatus' });
+
+    // AC-002-005/NFR-002-003: toast e authenticate() precisam ocorrer antes do redirect
+    const [toastCallOrder] = mockSuccess.mock.invocationCallOrder;
+    const [authenticateCallOrder] = mockAuthenticate.mock.invocationCallOrder;
+    const [pushCallOrder] = mockPush.mock.invocationCallOrder;
+    expect(toastCallOrder).toBeLessThan(pushCallOrder);
+    expect(authenticateCallOrder).toBeLessThan(pushCallOrder);
   });
 
   it('should not handle success if action is not login', () => {

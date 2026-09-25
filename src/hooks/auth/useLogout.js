@@ -5,6 +5,7 @@ import { useToast } from '@/providers/ToastProvider';
 import { useUserAuth } from '@/providers/UserAuthProvider';
 import { logout, clearStatus } from '@/store/slices/authSlice';
 import { clearAllFilters } from '@/utils/filterStorage';
+import { clearAppCache } from '@/utils/appCache';
 
 export function useLogout() {
   const dispatch = useDispatch();
@@ -16,6 +17,7 @@ export function useLogout() {
     dispatch(logout(refreshToken));
     removeAuthenticate();
     clearAllFilters();
+    clearAppCache();
     info('Você saiu.');
     router.push('/login');
   };

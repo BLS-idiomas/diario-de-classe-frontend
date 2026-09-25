@@ -1,4 +1,3 @@
-import React from 'react';
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { useAlunosList } from './useAlunosList';
@@ -90,5 +89,72 @@ describe('useAlunosList hook', () => {
     expect(row).toHaveTextContent('tel:123456');
     expect(row).toHaveTextContent('joao@example.com');
     expect(row).toHaveTextContent('date:2023-01-01');
+  });
+
+  it('marca a coluna Email com wrap para permitir quebra de linha em vez de truncar', () => {
+    const alunos = [];
+    const telefoneFormatter = jest.fn();
+    const dataFormatter = jest.fn();
+
+    render(
+      <TestComponent
+        alunos={alunos}
+        telefoneFormatter={telefoneFormatter}
+        dataFormatter={dataFormatter}
+      />
+    );
+
+    // A coluna precisa ficar sem `cell` customizado: passar `cell` desliga
+    // o truncamento nativo da lib (nowrap+ellipsis) e o wrap deixa de ter
+    // efeito — `wrap: true` sozinho é o mecanismo que quebra a linha.
+    function ColumnsInspector() {
+      const { columns } = useAlunosList({
+        alunos,
+        telefoneFormatter,
+        dataFormatter,
+      });
+      const emailColumn = columns.find(col => col.name === 'Email');
+      return (
+        <div data-testid="email-column-config">
+          {JSON.stringify({
+            wrap: emailColumn.wrap,
+            hasCell: typeof emailColumn.cell === 'function',
+          })}
+        </div>
+      );
+    }
+
+    const { getByTestId } = render(<ColumnsInspector />);
+    expect(JSON.parse(getByTestId('email-column-config').textContent)).toEqual({
+      wrap: true,
+      hasCell: false,
+    });
+  });
+
+  it('data carrega o e-mail completo, sem corte no mapeamento', () => {
+    const longEmail =
+      'pesquisadora.assistente.convidada@dominio-extenso-de-teste.com.br';
+    const alunos = [
+      {
+        nome: 'Pesquisadora',
+        sobrenome: 'Convidada',
+        telefone: '123456',
+        email: longEmail,
+        dataCriacao: '2023-01-01',
+      },
+    ];
+
+    const telefoneFormatter = jest.fn(t => t);
+    const dataFormatter = jest.fn(d => d);
+
+    render(
+      <TestComponent
+        alunos={alunos}
+        telefoneFormatter={telefoneFormatter}
+        dataFormatter={dataFormatter}
+      />
+    );
+
+    expect(screen.getByText(longEmail)).toBeInTheDocument();
   });
 });

@@ -1,4 +1,4 @@
-import { classNameDefault, BaseField } from './base';
+import { classNameDefault, BaseField, describedByIds } from './base';
 
 export const InputField = ({
   htmlFor,
@@ -12,6 +12,8 @@ export const InputField = ({
   labelClass,
   className,
   icon, // novo prop opcional
+  hint,
+  error,
   ...props
 }) => {
   type ||= 'text';
@@ -23,6 +25,8 @@ export const InputField = ({
       label={label}
       inputGroupClass={inputGroupClass}
       labelClass={labelClass}
+      hint={hint}
+      error={error}
     >
       <div className="relative">
         {icon && (
@@ -40,6 +44,8 @@ export const InputField = ({
           className={icon ? className + ' pl-10' : className}
           placeholder={placeholder}
           data-testid="input-field"
+          aria-describedby={describedByIds(htmlFor, { hint, error })}
+          aria-invalid={error ? 'true' : undefined}
           {...props}
         />
       </div>

@@ -3,6 +3,7 @@ import {
   FormGroup,
   InputField,
   SelectField,
+  SearchableSelectField,
   ClearFiltersButton,
 } from '@/components';
 import {
@@ -20,10 +21,13 @@ export const Filter = ({
   formData,
   alunos,
   professores,
+  isLoadingAlunos,
+  erroAlunos,
+  isLoadingProfessores,
+  erroProfessores,
 }) => {
   return (
     <Form handleSubmit={handleSubmit}>
-      <h3 className="text-xl font-semibold text-main mb-4">Filtros</h3>
       <FormGroup cols={2}>
         <InputField
           required
@@ -63,21 +67,25 @@ export const Filter = ({
           onChange={handleChange}
           value={formData.status}
         />
-        <SelectField
+        <SearchableSelectField
           htmlFor="idAluno"
           label="Aluno"
           placeholder="Selecione o aluno"
           options={getEntityOptions(alunos)}
           onChange={handleChange}
           value={formData.idAluno}
+          isLoading={isLoadingAlunos}
+          errorMessage={erroAlunos}
         />
-        <SelectField
+        <SearchableSelectField
           htmlFor="idProfessor"
           label="Professor"
           placeholder="Selecione o professor"
           options={getEntityOptions(professores)}
           onChange={handleChange}
           value={formData.idProfessor}
+          isLoading={isLoadingProfessores}
+          errorMessage={erroProfessores}
         />
       </FormGroup>
       <ClearFiltersButton onClick={handleClearFilter} />

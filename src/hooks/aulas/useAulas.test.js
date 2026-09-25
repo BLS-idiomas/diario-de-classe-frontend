@@ -1,8 +1,12 @@
+import { createElement } from 'react';
 import { renderHook, act, waitFor } from '@testing-library/react';
 import { useDispatch, useSelector } from 'react-redux';
+import { mountRaw } from '@/utils/mountRaw';
 import { useAulas } from './useAulas';
 import { getAulas } from '@/store/slices/aulasSlice';
-import { STATUS } from '@/constants';
+import { STATUS, FILTER_STORAGE_KEYS } from '@/constants';
+import { useCollapsiblePanelState } from '@/hooks/useCollapsiblePanelState';
+import { countAppliedFilters } from '@/utils/filterCount';
 
 jest.mock('react-redux', () => ({
   useDispatch: jest.fn(),
@@ -21,6 +25,35 @@ beforeEach(() => {
   localStorage.clear();
 });
 
+// `mountRaw` (ACH-10) cuida do `flushSync`/supressão de aviso de `act`
+// compartilhados entre os 7 testes que precisam observar estado pré-efeito;
+// só o que varia por hook fica aqui: o `Harness` e como ler
+// dataInicio/dataTermino do DOM (não de uma variável capturada por fora do
+// componente, para manter o harness puro).
+function mountHookRaw() {
+  function Harness() {
+    const { formData } = useAulas();
+    return createElement(
+      'div',
+      { 'data-testid': 'datas' },
+      JSON.stringify({
+        dataInicio: formData.dataInicio,
+        dataTermino: formData.dataTermino,
+      })
+    );
+  }
+  const hook = mountRaw(createElement(Harness));
+  return {
+    ...hook,
+    getDatas() {
+      const text = hook.container.querySelector(
+        '[data-testid="datas"]'
+      ).textContent;
+      return JSON.parse(text);
+    },
+  };
+}
+
 describe('useAulas', () => {
   const mockSelectorState = {
     aulas: {
@@ -31,17 +64,21 @@ describe('useAulas', () => {
   };
 
   describe('initialization', () => {
+    afterEach(() => {
+      jest.useRealTimers();
+    });
+
     it('should initialize with default date range (today to 3 months later)', () => {
+      jest.useFakeTimers();
+      jest.setSystemTime(new Date('2026-01-15T12:00:00.000-03:00'));
       useSelector.mockImplementation(cb => cb(mockSelectorState));
       const { result } = renderHook(() => useAulas());
 
-      const today = new Date().toISOString().split('T')[0];
-      expect(result.current.formData.dataInicio).toBe(today);
-
-      const threeMonthsLater = new Date();
-      threeMonthsLater.setMonth(threeMonthsLater.getMonth() + 3);
-      const expectedDate = threeMonthsLater.toISOString().split('T')[0];
-      expect(result.current.formData.dataTermino).toBe(expectedDate);
+      // Literais fixos (fuso local, `todayLocalDate`) — não recalculados
+      // pelo mesmo algoritmo da produção, para o teste discriminar um bug
+      // real de fuso/mês (ACH-08).
+      expect(result.current.formData.dataInicio).toBe('2026-01-15');
+      expect(result.current.formData.dataTermino).toBe('2026-04-15');
     });
 
     it('should return aulas and status from Redux', () => {
@@ -449,6 +486,218 @@ describe('useAulas', () => {
 
       expect(result.current.formData.dataInicio).toBe(initialDataInicio);
       expect(result.current.formData.dataTermino).toBe('2024-09-30');
+    });
+  });
+
+  describe('dataInicio/dataTermino default estável até montar (AC-001-006)', () => {
+    beforeEach(() => {
+      useSelector.mockImplementation(cb => cb(mockSelectorState));
+    });
+
+    afterEach(() => {
+      jest.useRealTimers();
+    });
+
+    it('paridade: dataInicio/dataTermino nascem null independente do relógio', () => {
+      jest.useFakeTimers();
+      jest.setSystemTime(new Date('2026-06-30T23:59:59.000Z'));
+      const hook1 = mountHookRaw();
+      expect(hook1.getDatas()).toEqual({
+        dataInicio: null,
+        dataTermino: null,
+      });
+      hook1.unmount();
+
+      jest.setSystemTime(new Date('2026-07-01T00:00:01.000Z'));
+      const hook2 = mountHookRaw();
+      expect(hook2.getDatas()).toEqual({
+        dataInicio: null,
+        dataTermino: null,
+      });
+      hook2.unmount();
+    });
+
+    it('preenchimento pós-montagem: datas passam a refletir o relógio real (sem filtro salvo)', async () => {
+      jest.useFakeTimers();
+      jest.setSystemTime(new Date('2026-06-30T00:00:00.000-03:00'));
+
+      const hook = mountHookRaw();
+      expect(hook.getDatas()).toEqual({ dataInicio: null, dataTermino: null });
+      await hook.flush();
+
+      // Literais fixos (fuso local, `todayLocalDate`) — não recalculados
+      // pelo mesmo algoritmo da produção, para o teste discriminar um bug
+      // real de fuso/mês (ACH-08).
+      expect(hook.getDatas()).toEqual({
+        dataInicio: '2026-06-30',
+        dataTermino: '2026-09-30',
+      });
+      hook.unmount();
+    });
+
+    it('filtro salvo não é sobrescrito pelo efeito de default', async () => {
+      localStorage.setItem(
+        FILTER_STORAGE_KEYS.aulas,
+        JSON.stringify({ dataInicio: '2024-05-05', dataTermino: '2024-08-08' })
+      );
+      jest.useFakeTimers();
+      jest.setSystemTime(new Date('2026-06-30T00:00:00.000-03:00'));
+
+      const hook = mountHookRaw();
+      expect(hook.getDatas()).toEqual({
+        dataInicio: '2024-05-05',
+        dataTermino: '2024-08-08',
+      });
+      await hook.flush();
+      expect(hook.getDatas()).toEqual({
+        dataInicio: '2024-05-05',
+        dataTermino: '2024-08-08',
+      });
+      hook.unmount();
+    });
+
+    it('busca dispara uma única vez por montagem, nunca com datas null (ACH-06)', async () => {
+      jest.useFakeTimers();
+      jest.setSystemTime(new Date('2026-06-30T00:00:00.000-03:00'));
+
+      const hook = mountHookRaw();
+      await hook.flush();
+
+      // Antes da correção: 2 dispatches (o primeiro com dataInicio/
+      // dataTermino ainda null, descartado pelo backend como "sem filtro" —
+      // tabela inteira sem paginação). Depois: 1, só com datas resolvidas.
+      expect(mockDispatch).toHaveBeenCalledTimes(1);
+      expect(getAulas).toHaveBeenCalledWith(
+        expect.objectContaining({
+          dataInicio: '2026-06-30',
+          dataTermino: '2026-09-30',
+        })
+      );
+      hook.unmount();
+    });
+
+    it('busca dispara uma única vez por montagem quando há filtro salvo (NOVO-05)', async () => {
+      localStorage.setItem(
+        FILTER_STORAGE_KEYS.aulas,
+        JSON.stringify({ dataInicio: '2024-05-05', dataTermino: '2024-08-08' })
+      );
+      jest.useFakeTimers();
+      jest.setSystemTime(new Date('2026-06-30T00:00:00.000-03:00'));
+
+      const hook = mountHookRaw();
+      await hook.flush();
+
+      // Com filtro salvo (datas já não-nulas), o efeito de preenchimento não
+      // pode gerar identidade nova de `formData` — senão o efeito de busca,
+      // que depende dela, dispara de novo com os mesmos parâmetros.
+      expect(mockDispatch).toHaveBeenCalledTimes(1);
+      expect(getAulas).toHaveBeenCalledWith(
+        expect.objectContaining({
+          dataInicio: '2024-05-05',
+          dataTermino: '2024-08-08',
+        })
+      );
+      hook.unmount();
+    });
+  });
+
+  describe('appliedCount (COMP-002-004) e AC-001-013', () => {
+    it('formData alterado do default: appliedCount reflete countAppliedFilters(formData, defaultFormData)', () => {
+      useSelector.mockImplementation(cb => cb(mockSelectorState));
+      const { result } = renderHook(() => useAulas());
+
+      act(() => {
+        result.current.handleChange({
+          target: { name: 'tipo', value: 'PADRAO', type: 'text' },
+        });
+      });
+
+      const defaultFormData = { ...result.current.formData, tipo: '' };
+      expect(result.current.appliedCount).toBe(
+        countAppliedFilters(result.current.formData, defaultFormData)
+      );
+      expect(result.current.appliedCount).toBe(1);
+    });
+
+    it('AC-001-013: handleClearFilter zera appliedCount na sequência, sem remontar', () => {
+      useSelector.mockImplementation(cb => cb(mockSelectorState));
+      const { result } = renderHook(() => useAulas());
+
+      act(() => {
+        result.current.handleChange({
+          target: { name: 'tipo', value: 'PADRAO', type: 'text' },
+        });
+      });
+      act(() => {
+        result.current.handleChange({
+          target: { name: 'idAluno', value: '123', type: 'text' },
+        });
+      });
+
+      expect(result.current.appliedCount).toBe(2);
+
+      act(() => {
+        result.current.handleClearFilter();
+      });
+
+      expect(result.current.appliedCount).toBe(0);
+    });
+  });
+
+  describe('AC-001-011 (não-regressão, FR-001-002): toggle() do painel não toca formData/dispatch de useAulas', () => {
+    it('alternar isOpen via toggle() do hook do painel não dispara novo dispatch nem altera o formData já modificado', () => {
+      useSelector.mockImplementation(cb => cb(mockSelectorState));
+
+      const { result } = renderHook(() => ({
+        aulas: useAulas(),
+        painel: useCollapsiblePanelState('panel_aulas_teste_ac011'),
+      }));
+
+      act(() => {
+        result.current.aulas.handleChange({
+          target: { name: 'tipo', value: 'PADRAO', type: 'text' },
+        });
+      });
+
+      const formDataAntesDoToggle = result.current.aulas.formData;
+      expect(formDataAntesDoToggle.tipo).toBe('PADRAO');
+
+      getAulas.mockClear();
+      mockDispatch.mockClear();
+
+      act(() => {
+        result.current.painel.toggle();
+      });
+
+      // Mutante: fazer toggle() chamar handleClearFilter por engano faria
+      // getAulas/dispatch serem chamados de novo, com o formData resetado ao
+      // default (tipo === '') — divergente do formData modificado acima.
+      expect(getAulas).not.toHaveBeenCalled();
+      expect(mockDispatch).not.toHaveBeenCalled();
+      expect(result.current.aulas.formData).toEqual(formDataAntesDoToggle);
+      expect(result.current.painel.isOpen).toBe(false);
+    });
+  });
+
+  describe('AC-001-008 (FR-001-012, achado B1 do qa): handleClearFilter não altera isOpen do painel', () => {
+    it('painel recolhido: acionar handleClearFilter do hook real mantém isOpen inalterado', () => {
+      useSelector.mockImplementation(cb => cb(mockSelectorState));
+
+      const { result } = renderHook(() => ({
+        aulas: useAulas(),
+        painel: useCollapsiblePanelState('panel_aulas_teste_ac008'),
+      }));
+
+      act(() => {
+        result.current.painel.toggle();
+      });
+      expect(result.current.painel.isOpen).toBe(false);
+
+      act(() => {
+        result.current.aulas.handleClearFilter();
+      });
+
+      expect(result.current.painel.isOpen).toBe(false);
     });
   });
 });

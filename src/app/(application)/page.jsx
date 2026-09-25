@@ -1,15 +1,19 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import {
+  STATUS,
   STATUS_AULA,
   STATUS_AULA_LABEL,
   TIPO_AULA,
   TIPO_AULA_LABEL,
+  FILTER_PANEL_STORAGE_KEYS,
 } from '@/constants';
 import { useUserAuth } from '@/providers/UserAuthProvider';
 import { useAlunos } from '@/hooks/alunos/useAlunos';
 import { useDashboard } from '@/hooks/dashboard/useDashboard';
 import { useProfessores } from '@/hooks/professores/useProfessores';
+import { useCollapsiblePanelState } from '@/hooks/useCollapsiblePanelState';
 import { makeEmailLabel } from '@/utils/makeEmailLabel';
 import { makeFullNameLabel } from '@/utils/makeFullNameLabel';
 import {
@@ -18,10 +22,20 @@ import {
   FormGroup,
   InputField,
   SelectField,
+  SearchableSelectField,
   CheckboxField,
   Loading,
   ClearFiltersButton,
+  PainelFiltrosColapsavel,
 } from '@/components';
+
+// Mensagens fixas em pt-BR (nunca o `message` cru do slice): `status` é
+// compartilhado entre ações do slice, por isso o erro só é afirmado quando a
+// ação em curso é realmente a de listagem consumida aqui.
+const ERRO_CARREGAR_ALUNOS =
+  'Não foi possível carregar os alunos. Tente novamente.';
+const ERRO_CARREGAR_PROFESSORES =
+  'Não foi possível carregar os professores. Tente novamente.';
 
 // TODO passas os componetes para arquivos separados
 const HomeCard = ({ title, value, color, isLoading }) => {
@@ -34,7 +48,10 @@ const HomeCard = ({ title, value, color, isLoading }) => {
   return (
     <div className="bg-main p-6 rounded-lg shadow-md border border-main ">
       <h3 className="text-lg font-semibold text-main mb-2">{title}</h3>
-      <p className={`text-3xl font-bold ${textColorClass}`}>
+      <p
+        key={isLoading ? 'loading' : 'value'}
+        className={`text-3xl font-bold ${textColorClass} ${!isLoading ? 'animate-block-in' : ''}`}
+      >
         {isLoading ? '...' : value || 0}
       </p>
     </div>
@@ -122,8 +139,19 @@ const HomeInfoCard = ({
     return `Há ${Math.abs(diffDays)} dias`;
   };
 
+  const [time, setTime] = useState(null);
+
+  useEffect(() => {
+    setTime(getTimeText(dataAula, horaInicial, horaFinal));
+    // Efeito roda uma única vez, na montagem, para preencher `time` que
+    // nasceu nulo por desenho (paridade SSR — ver DEC-002-003/PLAN-002);
+    // dependências vazias são intencionais, não esquecidas — recalcular a
+    // cada mudança de `dataAula`/`horaInicial`/`horaFinal` está fora do
+    // escopo desta correção (só a paridade da primeira renderização).
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const action = getActionText(status, tipo);
-  const time = getTimeText(dataAula, horaInicial, horaFinal);
   const onClick = () => {
     handleClick(id);
   };
@@ -134,12 +162,12 @@ const HomeInfoCard = ({
       className={`flex items-center gap-5 p-4 bg-secondary rounded-lg transition-transform duration-200 ${canEdit ? 'cursor-pointer bg-sidebar hover:scale-105' : ''}  `}
     >
       <Avatar text={name} className="w-10 h-10" />
-      <div>
-        <p className="font-medium text-main">
+      <div className="min-w-0 flex-1">
+        <p className="font-medium text-main break-words">
           <b>{name}</b> {action}
         </p>
 
-        <p className="text-sm text-muted">{professorName}</p>
+        <p className="text-sm text-muted break-words">{professorName}</p>
         <p className="text-sm text-muted">{time}</p>
       </div>
     </div>
@@ -148,8 +176,27 @@ const HomeInfoCard = ({
 
 export default function Home() {
   const { isAdmin, currentUser } = useUserAuth();
-  const { professorOptions } = useProfessores(currentUser);
-  const { alunoOptions } = useAlunos();
+  const {
+    professorOptions,
+    isLoading: isLoadingProfessores,
+    status: statusProfessores,
+    action: actionProfessores,
+  } = useProfessores(currentUser);
+  const erroProfessores =
+    statusProfessores === STATUS.FAILED &&
+    actionProfessores === 'getProfessores'
+      ? ERRO_CARREGAR_PROFESSORES
+      : undefined;
+  const {
+    alunoOptions,
+    isLoading: isLoadingAlunos,
+    status: statusAlunos,
+    action: actionAlunos,
+  } = useAlunos();
+  const erroAlunos =
+    statusAlunos === STATUS.FAILED && actionAlunos === 'getAlunos'
+      ? ERRO_CARREGAR_ALUNOS
+      : undefined;
   const {
     aulas,
     isLoading,
@@ -159,7 +206,11 @@ export default function Home() {
     handleChange,
     handleClearFilter,
     handleClick,
+    appliedCount,
   } = useDashboard();
+  const { isOpen, toggle } = useCollapsiblePanelState(
+    FILTER_PANEL_STORAGE_KEYS.dashboard
+  );
 
   return (
     <>
@@ -178,81 +229,92 @@ export default function Home() {
       </div>
 
       <div className="mb-8">
-        <Form handleSubmit={handleSubmit}>
-          <h3 className="text-xl font-semibold text-main mb-4">Filtros</h3>
-          <FormGroup cols={2}>
-            <InputField
-              required
-              htmlFor="dataInicio"
-              label="Data de inicio do contrato"
-              type="date"
-              onChange={handleChange}
-              value={formData.dataInicio}
-            />
-            <InputField
-              required
-              htmlFor="dataTermino"
-              label="Data de término do contrato"
-              type="date"
-              onChange={handleChange}
-              value={formData.dataTermino}
-            />
-            <SelectField
-              required
-              htmlFor="tipo"
-              label="Tipo da aula"
-              options={TIPO_AULA.map(tipo => ({
-                label: TIPO_AULA_LABEL[tipo],
-                value: tipo,
-              }))}
-              onChange={handleChange}
-              value={formData.tipo}
-            />
-            <SelectField
-              required
-              htmlFor="status"
-              label="Status da aula"
-              options={STATUS_AULA.map(status => ({
-                label: STATUS_AULA_LABEL[status],
-                value: status,
-              }))}
-              onChange={handleChange}
-              value={formData.status}
-            />
-            <SelectField
-              htmlFor="alunoId"
-              label="Aluno"
-              placeholder="Selecione o aluno"
-              onChange={handleChange}
-              value={formData.alunoId}
-              options={alunoOptions}
-            />
-            {isAdmin() && !formData.minhasAulas && (
+        <PainelFiltrosColapsavel
+          titulo="Filtros"
+          isOpen={isOpen}
+          onToggle={toggle}
+          appliedCount={appliedCount}
+          storageKey={FILTER_PANEL_STORAGE_KEYS.dashboard}
+        >
+          <Form handleSubmit={handleSubmit}>
+            <FormGroup cols={2}>
+              <InputField
+                required
+                htmlFor="dataInicio"
+                label="Data de inicio do contrato"
+                type="date"
+                onChange={handleChange}
+                value={formData.dataInicio}
+              />
+              <InputField
+                required
+                htmlFor="dataTermino"
+                label="Data de término do contrato"
+                type="date"
+                onChange={handleChange}
+                value={formData.dataTermino}
+              />
               <SelectField
                 required
-                htmlFor="professorId"
-                label="Professor"
-                placeholder="Selecione o professor"
+                htmlFor="tipo"
+                label="Tipo da aula"
+                options={TIPO_AULA.map(tipo => ({
+                  label: TIPO_AULA_LABEL[tipo],
+                  value: tipo,
+                }))}
                 onChange={handleChange}
-                value={formData.professorId}
-                options={professorOptions}
+                value={formData.tipo}
               />
-            )}
-          </FormGroup>
-
-          {isAdmin() && (
-            <FormGroup cols={1} className=" mt-6">
-              <CheckboxField
-                htmlFor={'minhasAulas'}
-                label="Somente minhas Aulas"
-                checked={formData.minhasAulas}
+              <SelectField
+                required
+                htmlFor="status"
+                label="Status da aula"
+                options={STATUS_AULA.map(status => ({
+                  label: STATUS_AULA_LABEL[status],
+                  value: status,
+                }))}
                 onChange={handleChange}
+                value={formData.status}
               />
+              <SearchableSelectField
+                htmlFor="alunoId"
+                label="Aluno"
+                placeholder="Selecione o aluno"
+                onChange={handleChange}
+                value={formData.alunoId}
+                options={alunoOptions}
+                isLoading={isLoadingAlunos}
+                errorMessage={erroAlunos}
+              />
+              {isAdmin() && !formData.minhasAulas && (
+                <SearchableSelectField
+                  required
+                  htmlFor="professorId"
+                  label="Professor"
+                  placeholder="Selecione o professor"
+                  onChange={handleChange}
+                  value={formData.professorId}
+                  options={professorOptions}
+                  isLoading={isLoadingProfessores}
+                  errorMessage={erroProfessores}
+                />
+              )}
             </FormGroup>
-          )}
 
-          <ClearFiltersButton onClick={handleClearFilter} />
-        </Form>
+            {isAdmin() && (
+              <FormGroup cols={1} className=" mt-6">
+                <CheckboxField
+                  htmlFor={'minhasAulas'}
+                  label="Somente minhas Aulas"
+                  checked={formData.minhasAulas}
+                  onChange={handleChange}
+                />
+              </FormGroup>
+            )}
+
+            <ClearFiltersButton onClick={handleClearFilter} />
+          </Form>
+        </PainelFiltrosColapsavel>
       </div>
 
       <section className="bg-main p-8 rounded-lg shadow-md border border-main mb-8">
@@ -260,7 +322,7 @@ export default function Home() {
           {formData.minhasAulas ? 'Minhas Aulas' : 'Todas as Aulas'}
         </h3>
 
-        <div className="space-y-4">
+        <div className={`space-y-4 ${!isLoading ? 'animate-block-in' : ''}`}>
           {isLoading && <Loading />}
           {!isLoading && aulas && aulas.length > 0 ? (
             aulas.map(aula => (

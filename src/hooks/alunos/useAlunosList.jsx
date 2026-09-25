@@ -1,6 +1,7 @@
 import { Eye, Pencil, Trash2 } from 'lucide-react';
 import Link from 'next/link';
 import { useMemo } from 'react';
+import { withStickyColumns } from '@/utils/tableResponsivo';
 
 export function useAlunosList({
   alunos,
@@ -12,37 +13,45 @@ export function useAlunosList({
   const columns = [
     {
       name: '#',
+      essential: true,
       selector: row => row.id,
       sortable: true,
       width: '75px',
     },
     {
       name: 'Nome',
+      essential: true,
       selector: row => row.name,
       sortable: true,
     },
     {
       name: 'Sobrenome',
+      essential: true,
       selector: row => row.sobrenome,
       sortable: true,
     },
     {
       name: 'Telefone',
+      essential: false,
       selector: row => row.telefone,
       sortable: true,
     },
     {
       name: 'Email',
+      essential: false,
       selector: row => row.email,
       sortable: true,
+      wrap: true,
     },
     {
       name: 'Data de criação',
+      essential: false,
       selector: row => row.dataCriacao,
       sortable: true,
     },
     {
       name: 'Ações',
+      isAction: true,
       selector: row => row.acoes,
       sortable: false,
       width: 'auto',
@@ -52,6 +61,8 @@ export function useAlunosList({
   if (readOnly) {
     columns.splice(columns.length - 1, 1);
   }
+
+  const stickyColumns = withStickyColumns(columns);
 
   const data = useMemo(() => {
     if (!alunos) return [];
@@ -90,5 +101,5 @@ export function useAlunosList({
       ),
     }));
   }, [alunos, telefoneFormatter, dataFormatter, handleDeleteAluno]);
-  return { columns, data };
+  return { columns: stickyColumns, data };
 }

@@ -30,8 +30,11 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# env files (can opt-in for committing if needed)
-.env.local
+# env files — exclusão por glob, nunca por arquivo (lição
+# segredo-nao-tem-default-e-env-se-exclui-por-glob): cada arquivo .env novo
+# nasce protegido por padrão.
+.env*
+!.env.example
 
 # vercel
 .vercel

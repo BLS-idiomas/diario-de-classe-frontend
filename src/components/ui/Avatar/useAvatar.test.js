@@ -2,14 +2,6 @@ import { renderHook } from '@testing-library/react';
 import { useAvatar } from './useAvatar';
 
 describe('useAvatar', () => {
-  beforeEach(() => {
-    localStorage.clear();
-  });
-
-  afterEach(() => {
-    localStorage.clear();
-  });
-
   describe('getTitleByText', () => {
     it('should return first letter of a single word in uppercase', () => {
       const { result } = renderHook(() => useAvatar());
@@ -95,30 +87,7 @@ describe('useAvatar', () => {
       expect(color1).toBe(color2);
     });
 
-    it('should save color to localStorage', () => {
-      const { result } = renderHook(() => useAvatar());
-      const text = 'Maria Santos';
-      result.current.getColorByText(text);
-
-      const key = result.current.getKeyByText(text);
-      const savedColor = localStorage.getItem(key);
-      expect(savedColor).toBeTruthy();
-      expect(savedColor).toMatch(/bg-\w+-\d+/);
-    });
-
-    it('should retrieve color from localStorage if exists', () => {
-      const { result } = renderHook(() => useAvatar());
-      const text = 'Pedro Oliveira';
-      const key = result.current.getKeyByText(text);
-
-      // Pré-salva uma cor no cache
-      localStorage.setItem(key, 'bg-red-400');
-
-      const color = result.current.getColorByText(text);
-      expect(color).toBe('bg-red-400 text-white');
-    });
-
-    it('should generate random color if not in cache', () => {
+    it('should generate a deterministic color from the text hash', () => {
       const { result } = renderHook(() => useAvatar());
       const color = result.current.getColorByText('Novo Usuario');
 
@@ -170,10 +139,6 @@ describe('useAvatar', () => {
       // Recupera a mesma cor
       const color2 = result.current.getColorByText(text);
       expect(color1).toBe(color2);
-
-      // Verifica que está no localStorage
-      const cachedColor = localStorage.getItem(key);
-      expect(cachedColor).toBeTruthy();
     });
 
     it('should generate title and color for complete avatar', () => {

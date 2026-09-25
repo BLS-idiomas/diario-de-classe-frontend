@@ -1,0 +1,75 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`ListPage AC-001-010 (não-regressão, FR-001-014): shape observável sem filterStorageKey/Filter caso Filter=null: árvore contém só title/controls/table — snapshot é a baseline anti-regressão 1`] = `
+<DocumentFragment>
+  <h1
+    class="page-title"
+    data-testid="list-page-title"
+  >
+    Alunos
+  </h1>
+  <div
+    class="lg:grid lg:grid-cols-2 gap-4"
+    data-testid="list-page-controls"
+  >
+    <div
+      data-testid="buttons-page-mock"
+    >
+      <button
+        data-testid="button-primary"
+      >
+        Novo Aluno
+      </button>
+      <button
+        data-testid="button-secondary"
+      >
+        Voltar
+      </button>
+    </div>
+    <div
+      data-testid="search-form-mock"
+    >
+      <input
+        data-testid="search-input"
+        placeholder="Buscar aluno"
+      />
+    </div>
+  </div>
+  <div
+    data-testid="list-page-table"
+  >
+    <div
+      data-testid="table-mock"
+    >
+      <table>
+        <tbody
+          data-testid="table-body"
+        >
+          <tr>
+            <td>
+              1
+            </td>
+            <td>
+              João Silva
+            </td>
+            <td>
+              joao@example.com
+            </td>
+          </tr>
+          <tr>
+            <td>
+              2
+            </td>
+            <td>
+              Maria Santos
+            </td>
+            <td>
+              maria@example.com
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</DocumentFragment>
+`;

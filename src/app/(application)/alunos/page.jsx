@@ -9,7 +9,7 @@ import { ListPage } from '@/components';
 
 export default function Alunos() {
   const { currentUser, isAdmin } = useUserAuth();
-  const { alunos, isLoading, searchParams } = useAlunos();
+  const { alunos, isLoading, searchParams, initialValue } = useAlunos();
   const { handleDeleteAluno } = useDeletarAluno();
   const { telefoneFormatter, dataFormatter } = useFormater();
   const { handleModalUpload, isUploading } = useUploadAlunos();
@@ -44,6 +44,7 @@ export default function Alunos() {
       search={{
         title: 'Buscar pelo nome, sobrenome, email ou telefone...',
         searchParams: searchParams,
+        initialValue,
       }}
       columns={columns}
       data={data}

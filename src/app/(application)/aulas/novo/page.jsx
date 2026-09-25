@@ -5,7 +5,7 @@ import { AulaForm, FormPage } from '@/components';
 
 export default function NovoAula() {
   const { message, errors, isLoading, submit } = useNovaAula();
-  const { formData, handleChange, handleSubmit } = useAulaForm({
+  const { formData, fieldErrors, handleChange, handleSubmit } = useAulaForm({
     submit,
   });
 
@@ -28,6 +28,7 @@ export default function NovoAula() {
         isLoading={isLoading}
         message={message}
         errors={errors}
+        fieldErrors={fieldErrors}
       />
     </FormPage>
   );

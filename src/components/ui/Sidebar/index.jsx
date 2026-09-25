@@ -5,12 +5,7 @@ import { useSidebar } from './useSidebar';
 import { useUserAuth } from '@/providers/UserAuthProvider';
 import { useState, useEffect } from 'react';
 
-export const Sidebar = ({
-  isMobile,
-  sidebarExpanded,
-  toggleSidebar,
-  sidebarClass,
-}) => {
+export const Sidebar = ({ isExpanded, toggleSidebar }) => {
   const { isAdmin } = useUserAuth();
   const [mounted, setMounted] = useState(false);
   const { strokeWidth, sidebarItems, isActive } = useSidebar(isAdmin);
@@ -22,8 +17,13 @@ export const Sidebar = ({
 
   return (
     <aside
+      id="main-navigation"
       aria-label="Main navigation"
-      className={`fixed left-0 top-16 bottom-0 bg-secondary border-r border-main transition-all duration-300 ease-in-out z-30 ${sidebarClass}`}
+      className={`fixed left-0 top-16 bottom-0 bg-secondary border-r border-main transition-all duration-300 ease-in-out z-30 ${
+        isExpanded
+          ? 'translate-x-0 w-full visible'
+          : '-translate-x-full invisible'
+      } md:translate-x-0 md:visible ${isExpanded ? 'md:w-[180px]' : 'md:w-18'}`}
       data-testid="sidebar"
     >
       <div className="flex flex-col h-full">
@@ -38,9 +38,9 @@ export const Sidebar = ({
                       <SidebarItem
                         href={item.href}
                         label={item.label}
-                        sidebarExpanded={sidebarExpanded}
+                        sidebarExpanded={isExpanded}
                         active={isActive(item.href)}
-                        isMobile={isMobile}
+                        onNavigate={toggleSidebar}
                       >
                         {item.icon}
                       </SidebarItem>
@@ -54,22 +54,20 @@ export const Sidebar = ({
         <div className="px-4 pb-4 pt-9 border-t border-main">
           <button
             onClick={toggleSidebar}
-            aria-expanded={!!sidebarExpanded}
-            aria-label={
-              sidebarExpanded ? 'Recolher sidebar' : 'Expandir sidebar'
-            }
-            title={sidebarExpanded ? 'Recolher' : 'Expandir'}
+            aria-expanded={!!isExpanded}
+            aria-label={isExpanded ? 'Recolher sidebar' : 'Expandir sidebar'}
+            title={isExpanded ? 'Recolher' : 'Expandir'}
             className="w-full flex items-center justify-center p-2 text-main rounded-lg hover:bg-main transition-colors duration-200 cursor-pointer"
           >
             <ChevronRight
               strokeWidth={strokeWidth}
               className={`shrink-0 transition-transform duration-300 ease-in-out ${
-                sidebarExpanded ? 'rotate-180' : 'rotate-0'
+                isExpanded ? 'rotate-180' : 'rotate-0'
               }`}
             />
             <span
               className={`overflow-hidden whitespace-nowrap transition-all duration-300 ease-in-out ${
-                sidebarExpanded
+                isExpanded
                   ? 'ml-2 max-w-[120px] opacity-100'
                   : 'ml-0 max-w-0 opacity-0'
               }`}

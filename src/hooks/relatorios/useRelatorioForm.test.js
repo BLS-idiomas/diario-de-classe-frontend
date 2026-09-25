@@ -1,5 +1,36 @@
+import { createElement } from 'react';
 import { renderHook, act } from '@testing-library/react';
+import { mountRaw } from '@/utils/mountRaw';
 import { useRelatorioForm } from './useRelatorioForm';
+
+// `mountRaw` (ACH-10) cuida do `flushSync`/supressão de aviso de `act`
+// compartilhados entre os 7 testes que precisam observar estado pré-efeito;
+// só o que varia por hook fica aqui: o `Harness` e como ler
+// dataInicial/dataFinal do DOM (não de uma variável capturada por fora do
+// componente, para manter o harness puro).
+function mountHookRaw(hookArgs) {
+  function Harness() {
+    const { filtros } = useRelatorioForm(hookArgs);
+    return createElement(
+      'div',
+      { 'data-testid': 'filtros' },
+      JSON.stringify({
+        dataInicial: filtros.dataInicial,
+        dataFinal: filtros.dataFinal,
+      })
+    );
+  }
+  const hook = mountRaw(createElement(Harness));
+  return {
+    ...hook,
+    getFiltros() {
+      const text = hook.container.querySelector(
+        '[data-testid="filtros"]'
+      ).textContent;
+      return JSON.parse(text);
+    },
+  };
+}
 
 describe('useRelatorioForm', () => {
   const mockSubmit = jest.fn();
@@ -36,8 +67,8 @@ describe('useRelatorioForm', () => {
   });
 
   it('should set initial dataInicial to current date', () => {
-    const now = new Date();
-    const expectedDate = now.toISOString().split('T')[0];
+    jest.useFakeTimers();
+    jest.setSystemTime(new Date('2026-01-15T12:00:00.000-03:00'));
 
     const relatorio = {
       filters: [{ htmlFor: 'dataInicial', label: 'Data Inicial' }],
@@ -48,14 +79,16 @@ describe('useRelatorioForm', () => {
       useRelatorioForm({ relatorio, submit: mockSubmit })
     );
 
-    expect(result.current.filtros.dataInicial).toBe(expectedDate);
+    // Literal fixo (fuso local, `todayLocalDate`) — não recalculado pelo
+    // mesmo algoritmo da produção, para o teste discriminar um bug real de
+    // fuso/mês (ACH-08).
+    expect(result.current.filtros.dataInicial).toBe('2026-01-15');
+    jest.useRealTimers();
   });
 
   it('should set initial dataFinal to 6 months from now', () => {
-    const now = new Date();
-    const expected = new Date();
-    expected.setMonth(expected.getMonth() + 6);
-    const expectedDate = expected.toISOString().split('T')[0];
+    jest.useFakeTimers();
+    jest.setSystemTime(new Date('2026-01-15T12:00:00.000-03:00'));
 
     const relatorio = {
       filters: [{ htmlFor: 'dataFinal', label: 'Data Final' }],
@@ -66,7 +99,8 @@ describe('useRelatorioForm', () => {
       useRelatorioForm({ relatorio, submit: mockSubmit })
     );
 
-    expect(result.current.filtros.dataFinal).toBe(expectedDate);
+    expect(result.current.filtros.dataFinal).toBe('2026-07-15');
+    jest.useRealTimers();
   });
 
   it('should initialize other filter fields as empty strings', () => {
@@ -309,5 +343,59 @@ describe('useRelatorioForm', () => {
     expect(typeof result.current.handleChange).toBe('function');
     expect(typeof result.current.handleSubmit).toBe('function');
     expect(typeof result.current.filtros).toBe('object');
+  });
+
+  describe('dataInicial/dataFinal default estável até montar (AC-001-006)', () => {
+    const relatorio = {
+      filters: [
+        { htmlFor: 'dataInicial', label: 'Data Inicial' },
+        { htmlFor: 'dataFinal', label: 'Data Final' },
+      ],
+      endpoint: '/api/relatorios/vendas',
+    };
+
+    afterEach(() => {
+      jest.useRealTimers();
+    });
+
+    it('paridade: dataInicial/dataFinal nascem null independente do relógio', () => {
+      jest.useFakeTimers();
+      jest.setSystemTime(new Date('2026-06-30T23:59:59.000Z'));
+      const hook1 = mountHookRaw({ relatorio, submit: mockSubmit });
+      expect(hook1.getFiltros()).toEqual({
+        dataInicial: null,
+        dataFinal: null,
+      });
+      hook1.unmount();
+
+      jest.setSystemTime(new Date('2026-07-01T00:00:01.000Z'));
+      const hook2 = mountHookRaw({ relatorio, submit: mockSubmit });
+      expect(hook2.getFiltros()).toEqual({
+        dataInicial: null,
+        dataFinal: null,
+      });
+      hook2.unmount();
+    });
+
+    it('preenchimento pós-montagem: datas passam a refletir o relógio real no instante T', async () => {
+      jest.useFakeTimers();
+      jest.setSystemTime(new Date('2026-06-30T00:00:00.000-03:00'));
+
+      const hook = mountHookRaw({ relatorio, submit: mockSubmit });
+      expect(hook.getFiltros()).toEqual({
+        dataInicial: null,
+        dataFinal: null,
+      });
+      await hook.flush();
+
+      // Literais fixos (fuso local, `todayLocalDate`) — não recalculados
+      // pelo mesmo algoritmo da produção, para o teste discriminar um bug
+      // real de fuso/mês (ACH-08).
+      expect(hook.getFiltros()).toEqual({
+        dataInicial: '2026-06-30',
+        dataFinal: '2026-12-30',
+      });
+      hook.unmount();
+    });
   });
 });

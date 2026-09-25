@@ -1,4 +1,7 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { getDatasPadrao } from '@/utils/getDatasPadrao';
+
+const JANELA_PADRAO_MESES = 6;
 
 export function useRelatorioForm({ relatorio, submit }) {
   const setInitialFiltros = filtros => {
@@ -8,16 +11,10 @@ export function useRelatorioForm({ relatorio, submit }) {
     filtros.forEach(filtro => {
       switch (filtro.htmlFor) {
         case 'dataInicial':
-          const hoje = new Date();
-          const dataInicioFormatada = hoje.toISOString().split('T')[0];
-          initial[filtro.htmlFor] = dataInicioFormatada;
-          break;
-
         case 'dataFinal':
-          const dataFinal = new Date();
-          dataFinal.setMonth(dataFinal.getMonth() + 6);
-          const dataFinalFormatada = dataFinal.toISOString().split('T')[0];
-          initial[filtro.htmlFor] = dataFinalFormatada;
+          // Literal, nunca calculado aqui: `new Date()` só entra em jogo no
+          // useEffect([]) pós-montagem, abaixo.
+          initial[filtro.htmlFor] = null;
           break;
 
         default:
@@ -32,6 +29,30 @@ export function useRelatorioForm({ relatorio, submit }) {
   const [filtros, setFiltros] = useState(() =>
     setInitialFiltros(relatorio.filters)
   );
+
+  useEffect(() => {
+    const { dataInicioFormatada, dataTerminoFormatada: dataFinalFormatada } =
+      getDatasPadrao(JANELA_PADRAO_MESES);
+
+    // Efeito roda uma única vez, na montagem, para preencher datas que
+    // nasceram nulas por desenho (paridade SSR — ver DEC-002-003/PLAN-002);
+    // dependências vazias são intencionais, não esquecidas.
+    // Mesma causa raiz de useAulas.js/useDashboard.js (identidade nova mesmo
+    // sem nada a preencher): devolve `prev` quando as duas já estão
+    // preenchidas — aqui sem consequência de rede, mas pela mesma disciplina.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setFiltros(prev =>
+      prev.dataInicial !== null && prev.dataFinal !== null
+        ? prev
+        : {
+            ...prev,
+            ...(prev.dataInicial === null && {
+              dataInicial: dataInicioFormatada,
+            }),
+            ...(prev.dataFinal === null && { dataFinal: dataFinalFormatada }),
+          }
+    );
+  }, []);
 
   const handleSubmit = () => {
     submit(relatorio.endpoint, filtros);

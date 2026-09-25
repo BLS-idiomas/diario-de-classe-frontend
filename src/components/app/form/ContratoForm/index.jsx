@@ -18,6 +18,7 @@ import {
   FormError,
   FormGroup,
   SelectField,
+  SearchableSelectField,
   InputField,
   CheckboxField,
   Badge,
@@ -33,6 +34,7 @@ export const ContratoForm = ({
   isSubmitting,
   errors,
   message,
+  fieldErrors = {},
   handleSubmit,
   handleChange,
   handleAlunoChange,
@@ -79,7 +81,7 @@ export const ContratoForm = ({
       <div className="grid gap-6">
         <FormGroup col={2} dataTestId="contrato-form-group">
           {/* STEP 1 - SELECIONE O ALUNO E PROFESSOR */}
-          <SelectField
+          <SearchableSelectField
             required
             htmlFor="alunoId"
             label="Aluno"
@@ -87,8 +89,9 @@ export const ContratoForm = ({
             onChange={handleAlunoChange}
             value={formData.alunoId}
             options={alunoOptions}
+            requiredError={fieldErrors.alunoId}
           />
-          <SelectField
+          <SearchableSelectField
             required
             htmlFor="professorId"
             label="Professor principal"
@@ -96,6 +99,7 @@ export const ContratoForm = ({
             onChange={handleProfessorChange}
             value={formData.professorId}
             options={professorOptions}
+            requiredError={fieldErrors.professorId}
           />
           <SelectField
             required

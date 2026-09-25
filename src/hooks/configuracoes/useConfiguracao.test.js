@@ -75,6 +75,26 @@ describe('useConfiguracao', () => {
     );
   });
 
+  it('deve retornar action e statusError quando updateConfiguracao falha (ex.: 500) — amarra o campo consumido por page.jsx ao contrato real do hook', () => {
+    useSelectorMock.mockImplementation(fn =>
+      fn({
+        configuracao: {
+          data: null,
+          status: STATUS.FAILED,
+          action: 'updateConfiguracao',
+          message: 'Erro ao atualizar configuração',
+          errors: [],
+          statusError: 500,
+        },
+      })
+    );
+
+    const { result } = renderHook(() => useConfiguracao());
+
+    expect(result.current.action).toBe('updateConfiguracao');
+    expect(result.current.statusError).toBe(500);
+  });
+
   it('deve despachar clearStatus, mostrar toast e redirecionar após update com sucesso', () => {
     useSelectorMock.mockImplementation(fn =>
       fn({

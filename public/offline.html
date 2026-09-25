@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#1e293b" />
+    <title>Sem conexão — Diário de Classe</title>
+    <style>
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #1e293b;
+        color: #f8fafc;
+        font-family:
+          system-ui,
+          -apple-system,
+          'Segoe UI',
+          sans-serif;
+        text-align: center;
+        padding: 24px;
+        box-sizing: border-box;
+      }
+      main {
+        max-width: 360px;
+      }
+      img {
+        width: 72px;
+        height: 72px;
+        margin-bottom: 16px;
+      }
+      h1 {
+        font-size: 1.25rem;
+        margin: 0 0 12px;
+      }
+      p {
+        font-size: 0.95rem;
+        line-height: 1.5;
+        color: #cbd5e1;
+        margin: 0 0 8px;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <img src="/icon-192.png" alt="" />
+      <h1>Sem conexão com a internet</h1>
+      <p>Não é um defeito do Diário de Classe — sua conexão de rede caiu.</p>
+      <p>
+        Tente novamente quando a rede voltar. Esta página é atualizada sozinha
+        assim que a conexão for restabelecida.
+      </p>
+    </main>
+    <script>
+      // AC-001-014: reaparecimento automático da aplicação real, sem
+      // depender de clique manual do usuário.
+      //
+      // Dois gatilhos levam à mesma tentativa de reconexão: o evento
+      // `online` (a rede voltou de fato) e, ao carregar o script,
+      // `navigator.onLine` já estar `true` — sinal de que um reload
+      // anterior tentou voltar para a aplicação real e caiu de novo aqui
+      // (o `fetch(request)` dentro do service worker pode falhar numa
+      // janela de tempo diferente da sondagem HEAD abaixo, que faz bypass
+      // total do SW). Em ambos os casos o reload só acontece depois de uma
+      // sondagem de rede real ter tido sucesso; sondagem que falha tenta
+      // de novo em vez de desistir. `sondando` evita empilhar sondagens
+      // concorrentes.
+      //
+      // Um contador em `sessionStorage` com backoff crescente protege
+      // contra loop de reload sem fim quando o problema é estrutural (todo
+      // reload cai de volta nesta página mesmo com rede real): acima do
+      // teto de tentativas a página para de tentar sozinha — a mensagem em
+      // tela já orienta o usuário a tentar de novo manualmente.
+      //
+      // O contador tem escopo de tempo, não só de evento `offline`: em
+      // Wi-Fi sem internet real o link físico nunca cai, então `offline`
+      // nunca dispara e o reset por evento sozinho deixaria o contador
+      // acumular reloads de episódios distintos ao longo do dia até parar
+      // de tentar. A contagem só soma reloads consecutivos de um mesmo
+      // loop (registra `t`, o timestamp da última tentativa, junto com
+      // `n`); se a última tentativa registrada é mais antiga que
+      // JANELA_RESET_MS, trata como um episódio novo e recomeça do zero —
+      // sem depender do evento `offline` disparar.
+      const CONTADOR_KEY = 'pwa-offline-retry-count';
+      const MAX_TENTATIVAS = 5;
+      const BACKOFF_BASE_MS = 2000;
+      const BACKOFF_TETO_MS = 30000;
+      // Acima do maior intervalo possível entre reloads de um loop real:
+      // teto de backoff (30s) + tempo da sondagem HEAD.
+      const JANELA_RESET_MS = 60000;
+
+      function lerContador() {
+        let bruto;
+        try {
+          bruto = JSON.parse(sessionStorage.getItem(CONTADOR_KEY));
+        } catch {
+          bruto = null;
+        }
+        if (
+          !bruto ||
+          typeof bruto.n !== 'number' ||
+          typeof bruto.t !== 'number' ||
+          Date.now() - bruto.t > JANELA_RESET_MS
+        ) {
+          return { n: 0, t: 0 };
+        }
+        return bruto;
+      }
+
+      let sondando = false;
+      function tentarReconectar() {
+        if (sondando) return;
+        sondando = true;
+        fetch('/', { method: 'HEAD', cache: 'no-store' })
+          .then(() => location.reload())
+          .catch(() => {
+            sondando = false;
+            setTimeout(tentarReconectar, 1500);
+          });
+      }
+
+      window.addEventListener('online', tentarReconectar);
+
+      window.addEventListener('offline', () => {
+        // Nova queda de rede é um cenário novo, não continuação do
+        // anterior — zera o contador de tentativas de reload.
+        sessionStorage.removeItem(CONTADOR_KEY);
+      });
+
+      if (navigator.onLine) {
+        const { n: tentativas } = lerContador();
+        if (tentativas < MAX_TENTATIVAS) {
+          sessionStorage.setItem(
+            CONTADOR_KEY,
+            JSON.stringify({ n: tentativas + 1, t: Date.now() })
+          );
+          const atraso = Math.min(
+            BACKOFF_BASE_MS * Math.pow(2, tentativas),
+            BACKOFF_TETO_MS
+          );
+          setTimeout(tentarReconectar, atraso);
+        }
+      }
+    </script>
+  </body>
+</html>

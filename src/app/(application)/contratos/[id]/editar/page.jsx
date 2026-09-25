@@ -20,6 +20,7 @@ export default function EditarContrato() {
     useEditarContrato(params.id, backUrl);
   const {
     formData,
+    fieldErrors,
     handleSubmit,
     handleChange,
     handleAlunoChange,
@@ -98,6 +99,7 @@ export default function EditarContrato() {
         isSubmitting={isSubmitting}
         errors={errors}
         message={message}
+        fieldErrors={fieldErrors}
         handleSubmit={handleSubmit}
         handleChange={handleChange}
         handleAlunoChange={handleAlunoChange}

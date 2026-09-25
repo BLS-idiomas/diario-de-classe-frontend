@@ -3,6 +3,7 @@ import { buildQueryString } from '@/utils/bindUrlParams';
 import { Eye, Pencil, Trash2 } from 'lucide-react';
 import Link from 'next/link';
 import { useMemo } from 'react';
+import { withStickyColumns } from '@/utils/tableResponsivo';
 
 export function useContratosList({
   contratos,
@@ -16,57 +17,68 @@ export function useContratosList({
   const columns = [
     {
       name: '#',
+      essential: true,
       selector: row => row.id,
       sortable: true,
       width: '75px',
     },
     {
       name: 'Aluno',
+      essential: true,
       selector: row => row.aluno,
       sortable: true,
     },
     {
       name: 'Idioma',
+      essential: false,
       selector: row => row.idioma,
       sortable: true,
     },
     {
       name: 'Data início',
+      essential: true,
       selector: row => row.dataInicio,
       sortable: true,
     },
     {
       name: 'Data fim',
+      essential: true,
       selector: row => row.dataTermino,
       sortable: true,
     },
     {
       name: 'Total de aulas',
+      essential: false,
       selector: row => row.totalAulas,
       sortable: true,
     },
     {
       name: 'Aulas',
+      essential: false,
       selector: row => row.totalAulasFeitas,
       sortable: true,
     },
     {
       name: 'Reposições',
+      essential: false,
       selector: row => row.totalReposicoes,
       sortable: true,
     },
     {
       name: 'Faltas',
+      essential: false,
       selector: row => row.totalFaltas,
       sortable: true,
     },
     {
       name: 'Canceladas',
+      essential: false,
       selector: row => row.totalAulasCanceladas,
       sortable: true,
     },
     {
       name: 'Ações',
+      isAction: true,
       selector: row => row.acoes,
       sortable: false,
       width: 'auto',
@@ -76,6 +88,8 @@ export function useContratosList({
   if (readOnly) {
     columns.splice(columns.length - 1, 1);
   }
+
+  const stickyColumns = withStickyColumns(columns);
 
   const data = useMemo(() => {
     if (!contratos) return [];
@@ -120,5 +134,5 @@ export function useContratosList({
       ),
     }));
   }, [contratos, dataFormatter, handleDeleteContrato, isAdmin, backUrlParam]);
-  return { columns, data };
+  return { columns: stickyColumns, data };
 }

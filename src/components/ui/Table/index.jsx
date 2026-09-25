@@ -31,6 +31,8 @@ export function Table({
           headCells: {
             style: {
               color: 'var(--color-white)',
+              minHeight: 'var(--tap-target-size)',
+              minWidth: 'var(--tap-target-size)',
             },
           },
           rows: {
@@ -44,6 +46,11 @@ export function Table({
               backgroundColor: 'var(--color-gray-900)', // bg-gray-800
             },
             highlightOnHoverStyle: {
+              backgroundColor: '#334155', // bg-slate-700 — antes só em CSS
+              // morto (.dark .rdt_TableRow:hover, nunca aplicado — o app usa
+              // data-theme, não a classe .dark); sem isso, o merge com o tema
+              // "default" da lib (que este componente sempre usa, sem prop
+              // `theme`) deixava o hover cair no cinza claro do library default.
               color: 'var(--color-white)',
             },
           },
@@ -52,12 +59,50 @@ export function Table({
               backgroundColor: 'var(--color-gray-900)', // => 1f2937
               color: 'var(--color-gray-300)',
             },
+            // react-data-table-component NÃO aplica pagination.style aos
+            // botões — só ao <nav> container. Os botões (#pagination-*)
+            // consomem pageButtonsStyle.
+            pageButtonsStyle: {
+              height: 'var(--tap-target-size)',
+              width: 'var(--tap-target-size)',
+            },
+          },
+          progress: {
+            style: {
+              backgroundColor: '#1f2937', // bg-gray-900 // => 1f2937
+              color: 'var(--color-gray-300)',
+            },
+          },
+          noData: {
+            style: {
+              backgroundColor: '#1f2937', // bg-gray-900 // => 1f2937
+              color: 'var(--color-gray-300)',
+            },
           },
         }
-      : {};
+      : {
+          pagination: {
+            // react-data-table-component NÃO aplica pagination.style aos
+            // botões — só ao <nav> container. Os botões (#pagination-*)
+            // consomem pageButtonsStyle.
+            pageButtonsStyle: {
+              height: 'var(--tap-target-size)',
+              width: 'var(--tap-target-size)',
+            },
+          },
+          headCells: {
+            style: {
+              minHeight: 'var(--tap-target-size)',
+              minWidth: 'var(--tap-target-size)',
+            },
+          },
+        };
   return (
     <div
-      className={className || 'bg-main p-2 rounded-lg shadow-md'}
+      className={
+        className ||
+        'bg-main p-2 rounded-lg shadow-md overflow-x-auto max-w-full'
+      }
       data-testid="table"
     >
       <DataTable

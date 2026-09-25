@@ -1,8 +1,12 @@
-/* DataTable dark mode hover fix */
-.dark .rdt_TableRow:hover {
-  background-color: #334155 !important; /* bg-slate-700 */
-}
+/* Importado sem escopo de tema em globals.css — a regra abaixo é
+   theme-agnostic (vale claro e escuro). O hover do tema escuro (bg-slate-700)
+   mora em customStyles.rows.highlightOnHoverStyle (Table/index.jsx), não
+   aqui: uma tentativa anterior via `.dark .rdt_TableRow:hover` nunca
+   aplicava (o app usa o atributo `data-theme`, nunca a classe `.dark`) e foi
+   removida. */
 
-.dark .rdt_TableRow {
-  transition: background-color 0.2s;
+/* O <select> "Linhas por página" da lib vem com height:24px fixo via CSS
+   interno, fora do alcance de customStyles. */
+.rdt_Pagination select {
+  min-height: var(--tap-target-size);
 }

@@ -12,6 +12,51 @@ jest.mock('sweetalert2', () => ({
   resumeTimer: jest.fn(),
 }));
 
+describe('useSweetAlert - camadas flutuantes responsivas (TASK-002-015)', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it('dá largura relativa ao viewport ao popup e área de toque aos botões na confirmação', () => {
+    const { result } = renderHook(() => useSweetAlert());
+
+    act(() => {
+      result.current.showConfirm();
+    });
+
+    const { width, customClass } = Swal.fire.mock.calls[0][0];
+
+    // A folha de estilo do SweetAlert2 não usa @layer, então classe
+    // Tailwind em customClass.popup não vence a cascata — a largura só
+    // funciona pela opção nativa `width` (estilo inline aplicado pela lib).
+    expect(width).toBe('min(90vw, 32rem)');
+    expect(customClass.popup).not.toEqual(
+      expect.stringContaining('w-[min(90vw,32rem)]')
+    );
+    expect(customClass.confirmButton).toEqual(
+      expect.stringContaining('tap-target')
+    );
+    expect(customClass.cancelButton).toEqual(
+      expect.stringContaining('tap-target')
+    );
+  });
+
+  it('mantém a mesma contenção responsiva no aviso de exclusão', () => {
+    const { result } = renderHook(() => useSweetAlert());
+
+    act(() => {
+      result.current.showDeleteConfirm('este registro');
+    });
+
+    const { width, customClass } = Swal.fire.mock.calls[0][0];
+
+    expect(width).toBe('min(90vw, 32rem)');
+    expect(customClass.confirmButton).toEqual(
+      expect.stringContaining('tap-target')
+    );
+  });
+});
+
 describe.skip('useSweetAlert', () => {
   beforeEach(() => {
     jest.clearAllMocks();

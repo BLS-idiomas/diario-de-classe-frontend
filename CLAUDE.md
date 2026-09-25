@@ -108,7 +108,7 @@ const handleChange = e => {
 
 - Usar **classes semânticas** definidas em `app/globals.css` em vez de cores cruas: `bg-main`, `bg-secondary`, `text-main`, `text-muted`, `border-main`, `primary-color`; botões `.btn` + `.btn-primary/secondary/danger/success`.
 - Layout com Tailwind vanilla (`grid`, `flex`, `gap`, `p-`, `mb-`, responsivo `md:`/`lg:`).
-- Dark mode via `[data-theme='dark']` (ThemeProvider) — não hardcodar cores que quebrem o tema.
+- Dark mode via `[data-theme='dark']` (ThemeProvider, escolha explícita) — não hardcodar cores que quebrem o tema. Sem escolha explícita ainda, `[data-theme='system']` cobre a preferência do SO (`@media (prefers-color-scheme: dark)` escopado, DEC-002-004) — o ambiente nunca sobrepõe a escolha do usuário.
 
 ## Testes
 

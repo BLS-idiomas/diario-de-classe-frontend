@@ -1,10 +1,11 @@
-import { render } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import {
   classNameDefault,
   LabelField,
   InputGroupField,
   OptionField,
   BaseField,
+  describedByIds,
 } from './base';
 
 describe('Fields Base Components', () => {
@@ -15,6 +16,10 @@ describe('Fields Base Components', () => {
 
     it('contains disabled state CSS classes', () => {
       // Não precisa testar classes de estado, pois está tudo em input-field
+    });
+
+    it('contains tap-target for touch area', () => {
+      expect(classNameDefault).toContain('tap-target');
     });
   });
 
@@ -183,6 +188,92 @@ describe('Fields Base Components', () => {
       );
       const label = container.querySelector('label');
       expect(label).toHaveAttribute('for', 'associated-input');
+    });
+
+    it('renders the hint paragraph with the expected id when hint is present', () => {
+      render(
+        <BaseField htmlFor="campo" label="Campo" hint="Texto de apoio">
+          <input type="text" id="campo" />
+        </BaseField>
+      );
+      const hint = screen.getByText('Texto de apoio');
+      expect(hint.tagName).toBe('P');
+      expect(hint).toHaveAttribute('id', 'campo-hint');
+    });
+
+    it('renders the hint paragraph with the typographic and semantic-color classes', () => {
+      render(
+        <BaseField htmlFor="campo" label="Campo" hint="Texto de apoio">
+          <input type="text" id="campo" />
+        </BaseField>
+      );
+      const hint = screen.getByText('Texto de apoio');
+      expect(hint).toHaveClass('mt-1');
+      expect(hint).toHaveClass('text-sm');
+      expect(hint).toHaveClass('text-muted');
+    });
+
+    it('does not render the hint paragraph when hint is absent (default preserved)', () => {
+      const { container } = render(
+        <BaseField htmlFor="campo" label="Campo">
+          <input type="text" id="campo" />
+        </BaseField>
+      );
+      expect(container.querySelector('#campo-hint')).not.toBeInTheDocument();
+    });
+
+    it('renders the error paragraph as an alert with the expected id when error is present', () => {
+      render(
+        <BaseField htmlFor="campo" label="Campo" error="Valor inválido">
+          <input type="text" id="campo" />
+        </BaseField>
+      );
+      const error = screen.getByRole('alert');
+      expect(error).toHaveTextContent('Valor inválido');
+      expect(error).toHaveAttribute('id', 'campo-error');
+    });
+
+    it('renders the error paragraph with the typographic and semantic-color classes', () => {
+      render(
+        <BaseField htmlFor="campo" label="Campo" error="Valor inválido">
+          <input type="text" id="campo" />
+        </BaseField>
+      );
+      const error = screen.getByRole('alert');
+      expect(error).toHaveClass('mt-1');
+      expect(error).toHaveClass('text-sm');
+      expect(error).toHaveClass('text-error');
+    });
+
+    it('does not render the error paragraph when error is absent (default preserved)', () => {
+      const { container } = render(
+        <BaseField htmlFor="campo" label="Campo">
+          <input type="text" id="campo" />
+        </BaseField>
+      );
+      expect(container.querySelector('#campo-error')).not.toBeInTheDocument();
+      expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+    });
+  });
+
+  describe('describedByIds', () => {
+    it('returns only the hint id when just hint is present', () => {
+      expect(describedByIds('campo', { hint: 'ajuda' })).toBe('campo-hint');
+    });
+
+    it('returns only the error id when just error is present', () => {
+      expect(describedByIds('campo', { error: 'ruim' })).toBe('campo-error');
+    });
+
+    it('returns both ids space-separated when hint and error are both present', () => {
+      expect(describedByIds('campo', { hint: 'ajuda', error: 'ruim' })).toBe(
+        'campo-hint campo-error'
+      );
+    });
+
+    it('returns undefined when neither hint nor error is present', () => {
+      expect(describedByIds('campo', {})).toBeUndefined();
+      expect(describedByIds('campo')).toBeUndefined();
     });
   });
 });

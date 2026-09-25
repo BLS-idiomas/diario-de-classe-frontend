@@ -1,11 +1,29 @@
 import { useLogout } from '@/hooks/auth/useLogout';
 import { useTheme } from '@/providers/ThemeProvider';
-import { MoonIcon, SunIcon } from 'lucide-react';
+import { useUnsavedChangesGuard } from '@/providers/UnsavedChangesGuardProvider';
+import { Menu, MoonIcon, SunIcon, X } from 'lucide-react';
 import Image from 'next/image';
 
-export const Header = () => {
+export const Header = ({ isExpanded, toggleSidebar }) => {
   const { logoutUser } = useLogout();
   const { toggleTheme, theme } = useTheme();
+  const { confirmNavigation } = useUnsavedChangesGuard();
+
+  const handleLogoutClick = () => {
+    // `liberarSeFalhar`: sessão encerrada vence rascunho — se o diálogo
+    // falhar ao ser exibido, desloga mesmo assim.
+    const resultado = confirmNavigation({ liberarSeFalhar: true });
+    if (resultado === true) {
+      logoutUser();
+      return;
+    }
+
+    // Há alteração pendente: só desloga se o administrador confirmar.
+    resultado.then(confirmado => {
+      if (confirmado) logoutUser();
+    });
+  };
+
   return (
     <header
       className="fixed top-0 left-0 right-0 h-16 bg-main border-b border-main shadow-sm z-40"
@@ -13,6 +31,17 @@ export const Header = () => {
     >
       <div className="flex items-center justify-between h-full px-6">
         <div className="flex items-center gap-3">
+          {toggleSidebar && (
+            <button
+              onClick={toggleSidebar}
+              aria-expanded={isExpanded}
+              aria-controls="main-navigation"
+              aria-label={isExpanded ? 'Fechar navegação' : 'Abrir navegação'}
+              className="tap-target md:hidden flex items-center justify-center text-muted hover:text-main transition-colors cursor-pointer"
+            >
+              {isExpanded ? <X /> : <Menu />}
+            </button>
+          )}
           <div>
             <Image
               className="h-full "
@@ -32,7 +61,7 @@ export const Header = () => {
             {theme === 'light' ? <MoonIcon /> : <SunIcon />}
           </button>
           <button
-            onClick={logoutUser}
+            onClick={handleLogoutClick}
             className="text-muted hover:text-main transition-colors cursor-pointer"
           >
             Sair

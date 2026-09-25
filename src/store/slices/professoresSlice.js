@@ -10,6 +10,7 @@ import { DeleteProfessorService } from '@/services/professor/deleteProfessorServ
 import { GetAulasByProfessorService } from '@/services/professor/getAulasByProfessorService';
 import { GetAlunosByProfessorService } from '@/services/professor/getAlunosByProfessorService';
 import { UpdateDisponibilidadeProfessorService } from '@/services/professor/updateDisponibilidadeProfessorService';
+import { getRequestErrorMessage } from '@/utils/thunkErrorPayload';
 
 // GET ALL
 export const getProfessores = createAsyncThunk(
@@ -20,8 +21,7 @@ export const getProfessores = createAsyncThunk(
       return res.data;
     } catch (error) {
       // Capturar a mensagem de erro da resposta da API
-      const errorMessage =
-        error.response?.data?.message || error.message || 'Erro desconhecido';
+      const errorMessage = getRequestErrorMessage(error, 'Erro desconhecido');
       return rejectWithValue({
         message: errorMessage,
         statusError: error.response?.status,
@@ -39,8 +39,7 @@ export const getProfessor = createAsyncThunk(
       return res.data;
     } catch (error) {
       // Capturar a mensagem de erro da resposta da API
-      const errorMessage =
-        error.response?.data?.message || error.message || 'Erro desconhecido';
+      const errorMessage = getRequestErrorMessage(error, 'Erro desconhecido');
       return rejectWithValue({
         message: errorMessage,
         statusError: error.response?.status,
@@ -57,10 +56,10 @@ export const createProfessor = createAsyncThunk(
       const res = await CreateProfessorService.handle(data);
       return res.data;
     } catch (error) {
-      const errorMessage =
-        error.response?.data?.message ||
-        error.message ||
-        'Erro ao criar professor';
+      const errorMessage = getRequestErrorMessage(
+        error,
+        'Erro ao criar professor'
+      );
 
       const validationErrors = error.response?.data?.errors || [];
 
@@ -81,10 +80,10 @@ export const updateProfessor = createAsyncThunk(
       const res = await UpdateProfessorService.handle(id, data);
       return res.data;
     } catch (error) {
-      const errorMessage =
-        error.response?.data?.message ||
-        error.message ||
-        'Erro ao atualizar professor';
+      const errorMessage = getRequestErrorMessage(
+        error,
+        'Erro ao atualizar professor'
+      );
 
       const validationErrors = error.response?.data?.errors || [];
 
@@ -105,10 +104,10 @@ export const deleteProfessor = createAsyncThunk(
       await DeleteProfessorService.handle(id);
       return id;
     } catch (error) {
-      const errorMessage =
-        error.response?.data?.message ||
-        error.message ||
-        'Erro ao deletar professor';
+      const errorMessage = getRequestErrorMessage(
+        error,
+        'Erro ao deletar professor'
+      );
       return rejectWithValue({
         message: errorMessage,
         statusError: error.response?.status,
@@ -127,8 +126,7 @@ export const getAulasProfessor = createAsyncThunk(
       return res.data;
     } catch (error) {
       // Capturar a mensagem de erro da resposta da API
-      const errorMessage =
-        error.response?.data?.message || error.message || 'Erro desconhecido';
+      const errorMessage = getRequestErrorMessage(error, 'Erro desconhecido');
       return rejectWithValue({
         message: errorMessage,
         statusError: error.response?.status,
@@ -147,8 +145,7 @@ export const getAlunosProfessor = createAsyncThunk(
       return res.data;
     } catch (error) {
       // Capturar a mensagem de erro da resposta da API
-      const errorMessage =
-        error.response?.data?.message || error.message || 'Erro desconhecido';
+      const errorMessage = getRequestErrorMessage(error, 'Erro desconhecido');
       return rejectWithValue({
         message: errorMessage,
         statusError: error.response?.status,
@@ -165,10 +162,10 @@ export const updateDisponibilidadeProfessor = createAsyncThunk(
       const res = await UpdateDisponibilidadeProfessorService.handle(id, data);
       return res.data;
     } catch (error) {
-      const errorMessage =
-        error.response?.data?.message ||
-        error.message ||
-        'Erro ao atualizar professor';
+      const errorMessage = getRequestErrorMessage(
+        error,
+        'Erro ao atualizar professor'
+      );
 
       const validationErrors = error.response?.data?.errors || [];
 

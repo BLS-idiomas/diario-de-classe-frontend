@@ -1,3 +1,9 @@
+// Fixa o fuso do runner de testes no fuso real do usuário (BLS Idiomas opera
+// só em America/Sao_Paulo). Sem isso, teste que crava instante/data local
+// (ex.: `todayLocalDate`) só passa por acidente de onde o runner roda. Tem
+// que vir antes de `require('next/jest')`, para vencer o `TZ` do shell.
+process.env.TZ = 'America/Sao_Paulo';
+
 const nextJest = require('next/jest');
 
 const createJestConfig = nextJest({

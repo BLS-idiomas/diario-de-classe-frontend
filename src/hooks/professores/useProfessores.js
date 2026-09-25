@@ -31,6 +31,7 @@ export function useProfessores(currentUser = null) {
   return {
     professores: list,
     status,
+    action,
     isLoading,
     professorOptions,
     searchParams,

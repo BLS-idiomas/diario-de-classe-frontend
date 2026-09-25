@@ -3,6 +3,7 @@ import { STATUS } from '@/constants';
 import { LoiginService } from '@/services/auth/loginService';
 import { LogoutService } from '@/services/auth/logoutService';
 import { RefreshTokenService } from '@/services/auth/refreshTokenService';
+import { getRequestErrorMessage } from '@/utils/thunkErrorPayload';
 
 // LOGIN
 export const login = createAsyncThunk(
@@ -12,8 +13,7 @@ export const login = createAsyncThunk(
       const res = await LoiginService.handle(data);
       return res.data;
     } catch (error) {
-      const errorMessage =
-        error.response?.data?.message || error.message || 'Erro ao logar';
+      const errorMessage = getRequestErrorMessage(error, 'Erro ao logar');
       const validationErrors = error.response?.data?.errors || [];
       return rejectWithValue({
         message: errorMessage,
@@ -31,8 +31,7 @@ export const logout = createAsyncThunk(
       const res = await LogoutService.handle(refreshToken);
       return res.data;
     } catch (error) {
-      const errorMessage =
-        error.response?.data?.message || error.message || 'Erro ao deslogar';
+      const errorMessage = getRequestErrorMessage(error, 'Erro ao deslogar');
       return rejectWithValue({ message: errorMessage });
     }
   }
@@ -46,10 +45,10 @@ export const refreshToken = createAsyncThunk(
       const res = await RefreshTokenService.handle(data);
       return res.data;
     } catch (error) {
-      const errorMessage =
-        error.response?.data?.message ||
-        error.message ||
-        'Erro ao atualizar token';
+      const errorMessage = getRequestErrorMessage(
+        error,
+        'Erro ao atualizar token'
+      );
       return rejectWithValue({ message: errorMessage });
     }
   }

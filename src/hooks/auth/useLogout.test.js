@@ -14,6 +14,7 @@ jest.mock('@/store/slices/authSlice', () => ({
   clearStatus: jest.fn(),
 }));
 jest.mock('@/utils/filterStorage', () => ({ clearAllFilters: jest.fn() }));
+jest.mock('@/utils/appCache', () => ({ clearAppCache: jest.fn() }));
 
 describe('useLogout', () => {
   let dispatchMock, routerMock, infoMock, removeAuthenticateMock;
@@ -63,6 +64,15 @@ describe('useLogout', () => {
     result.current.logoutUser();
 
     expect(clearAllFilters).toHaveBeenCalled();
+  });
+
+  it('should clear the app cache on logout (AC-001-009)', () => {
+    const { result } = renderHook(() => useLogout());
+    const { clearAppCache } = require('@/utils/appCache');
+
+    result.current.logoutUser();
+
+    expect(clearAppCache).toHaveBeenCalled();
   });
 
   it('should handle logout without refreshToken', () => {

@@ -4,6 +4,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { STATUS } from '@/constants';
 import { GetConfiguracaoService } from '@/services/configuracao/getConfiguracaoService';
 import { UpdateConfiguracaoService } from '@/services/configuracao/updateConfiguracaoService';
+import { getRequestErrorMessage } from '@/utils/thunkErrorPayload';
 
 // GET CONFIGURACAO
 export const getConfiguracao = createAsyncThunk(
@@ -33,10 +34,10 @@ export const updateConfiguracao = createAsyncThunk(
       const res = await UpdateConfiguracaoService.handle(data);
       return res.data;
     } catch (error) {
-      const errorMessage =
-        error.response?.data?.message ||
-        error.message ||
-        'Erro ao atualizar configuração';
+      const errorMessage = getRequestErrorMessage(
+        error,
+        'Erro ao atualizar configuração'
+      );
       const validationErrors = error.response?.data?.errors || [];
       return rejectWithValue({
         message: errorMessage,

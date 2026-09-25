@@ -1,7 +1,6 @@
 'use client';
 
 import { usePathname } from 'next/navigation';
-import { IS_DEVELOPMENT } from '@/constants';
 import {
   Book,
   CircleUser,
@@ -9,7 +8,6 @@ import {
   ClipboardClock,
   GraduationCap,
   Home,
-  Info,
   NotebookTabs,
   Settings,
   User,
@@ -60,12 +58,6 @@ export function useSidebar(isAdmin) {
       label: 'Relatórios',
       icon: <NotebookTabs strokeWidth={strokeWidth} />,
       show: isAdmin() && false,
-    },
-    {
-      href: '/exemplo',
-      label: 'Exemplos',
-      icon: <Info strokeWidth={strokeWidth} />,
-      show: IS_DEVELOPMENT,
     },
     {
       href: '/meu-perfil',

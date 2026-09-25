@@ -1,6 +1,7 @@
 'use client';
 
 import React, { createContext, useContext, useState } from 'react';
+import { clearAppCache } from '@/utils/appCache';
 
 const UserAuthContext = createContext();
 
@@ -78,6 +79,7 @@ export function UserAuthProvider({ children }) {
       tolerancia,
       diasDeFuncionamento,
     };
+    clearAppCache();
     if (typeof window !== 'undefined') {
       localStorage.setItem('token', JSON.stringify(token));
       localStorage.setItem('settings', JSON.stringify(settings));

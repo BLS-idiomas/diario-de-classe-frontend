@@ -13,7 +13,7 @@ export function useConfiguracao() {
   const dispatch = useDispatch();
   const router = useRouter();
   const { success } = useToast();
-  const { data, status, action, message, errors } = useSelector(
+  const { data, status, action, message, errors, statusError } = useSelector(
     state => state.configuracao
   );
   const isLoading =
@@ -42,6 +42,8 @@ export function useConfiguracao() {
     submit,
     configuracao: data,
     status,
+    action,
+    statusError,
     isLoading,
     message,
     errors,

@@ -16,14 +16,6 @@ export function useAvatar() {
     return text.replaceAll(' ', '-') + '-avatar-key';
   };
 
-  const getColorCache = id => {
-    return localStorage.getItem(id) || null;
-  };
-
-  const saveColorCache = (id, color) => {
-    localStorage.setItem(id, color);
-  };
-
   const getTitleByText = text => {
     let title = text?.charAt(0);
     const array = text?.split(' ');
@@ -33,14 +25,10 @@ export function useAvatar() {
   };
 
   const getColorByText = text => {
-    const id = getKeyByText(text);
-    let color = getColorCache(id);
-
-    if (!color) {
-      const position = Math.floor(Math.random() * colors.length);
-      color = colors[position];
-      saveColorCache(id, color);
-    }
+    const key = getKeyByText(text);
+    const sum = [...key].reduce((acc, char) => acc + char.codePointAt(0), 0);
+    const position = sum % colors.length;
+    const color = colors[position];
 
     return `${color} text-white`;
   };
